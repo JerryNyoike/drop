@@ -42,6 +42,6 @@ CREATE TABLE payment(
 	client_id BINARY(16) NOT NULL,
 
 	PRIMARY KEY(payment_id),
-	FOREIGN KEY beat_id REFERENCES beat(beat_id)
+	FOREIGN KEY (beat_id) REFERENCES beat(beat_id)
 	ON UPDATE CASCADE ON DELETE CASCADE
 );
