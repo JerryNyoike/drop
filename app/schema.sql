@@ -26,7 +26,6 @@ CREATE TABLE beat(
 	name VARCHAR(36) NOT NULL,
 	genre VARCHAR(36) NOT NULL,
 	address VARCHAR(36) NOT NULL,
-	preview_address VARCHAR(36) NOT NULL,
 	lease_price INT(11) NOT NULL,
 	selling_price INT(11),
 
