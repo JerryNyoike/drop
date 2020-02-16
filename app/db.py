@@ -2,6 +2,7 @@ import pymysql.cursors
 from flask import current_app, g
 from flask.cli import with_appcontext, click
 
+<<<<<<< HEAD
 
 def get_db():
     if 'db' not in g:
@@ -10,7 +11,6 @@ def get_db():
                                , password=current_app.config['DB_PASS']
                                , db=current_app.config['DB']
                                , cursorclass=current_app.config['CURSOR'])
-
     return g.db
 
 
