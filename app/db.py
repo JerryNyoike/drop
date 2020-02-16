@@ -2,8 +2,6 @@ import pymysql.cursors
 from flask import current_app, g
 from flask.cli import with_appcontext, click
 
-<<<<<<< HEAD
-
 def get_db():
     if 'db' not in g:
         g.db = pymysql.connect(host=current_app.config['DB_HOST']
