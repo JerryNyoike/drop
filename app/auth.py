@@ -46,10 +46,9 @@ def register_user(user_data):
     query = "INSERT INTO {} ({}, email, phone_number, name, pwd) VALUES (UUID_TO_BIN(UUID()), '{}', {}, '{}', '{}')".format(table, uid, user_data['email'], user_data['phone'],  user_data['name'], user_data['pwd'])
     print(query)
 
-    cur.execute(query)
+    result = cur.execute(query)
     conn.commit()
-    print(cur.fetchone())
-    return cur.fetchone()
+    return result
     
 
 def user_exists(user_type, email):
