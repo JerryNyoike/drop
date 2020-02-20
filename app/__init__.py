@@ -7,12 +7,12 @@ from flask import Flask
 def create_app(test_config=None):
     app = Flask(__name__, instance_relative_config=True)
     app.config.from_mapping(
-            DB='dropbeats'
-            , DB_HOST='localhost'
-            , DB_USER='droppy'
-            , DB_PASS='dropitlikeitshot'
-            , CURSOR=pymysql.cursors.DictCursor
-            , SCRT='topsecrettochangelater')
+        DB='dropbeats'
+        , DB_HOST='localhost'
+        , DB_USER='droppy'
+        , DB_PASS='dropitlikeitshot'
+        , CURSOR=pymysql.cursors.DictCursor
+        , SCRT='topsecrettochangelater')
 
     try:
         os.makedirs(app.instance_path)

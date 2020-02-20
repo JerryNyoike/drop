@@ -2,13 +2,14 @@ import pymysql.cursors
 from flask import current_app, g
 from flask.cli import with_appcontext, click
 
+
 def get_db():
     if 'db' not in g:
         g.db = pymysql.connect(host=current_app.config['DB_HOST']
-                , user=current_app.config['DB_USER']
-                , password=current_app.config['DB_PASS']
-                , db=current_app.config['DB']
-                , cursorclass=current_app.config['CURSOR'])
+                               , user=current_app.config['DB_USER']
+                               , password=current_app.config['DB_PASS']
+                               , db=current_app.config['DB']
+                               , cursorclass=current_app.config['CURSOR'])
 
     return g.db
 
