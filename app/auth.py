@@ -33,8 +33,10 @@ def login():
         user_data = fetch_user(request_data)
         if user_data is not None:
             # create token and return it to client side
-            token = jwt.encode({'aud': request_data['type'], 'exp': datetime.now() + timedelta(days=10)},
-                               current_app.config['SCRT'], algorithm='HS256').decode('utf-8')
+            if 'c_id' in user_data:
+                token = jwt.encode({'aud': request_data['type'], 'exp': datetime.now() + timedelta(days=10), 'sub': user_data['c_id']}, current_app.config['SCRT'], algorithm='HS256').decode('utf-8')
+            else:
+                token = jwt.encode({'aud': request_data['type'], 'exp': datetime.now() + timedelta(days=10), 'sub': user_data['producer_id']}, current_app.config['SCRT'], algorithm='HS256').decode('utf-8')
             return make_response({'status': 1, 'message': 'Successful login', 'payload': token})
         else:
             return make_response({'status': 0, 'message': 'User does not exist'})
@@ -60,7 +62,7 @@ def user_exists(user_type, email):
     cur = db.get_db().cursor()
     table, uid = db_info(user_type)
 
-    query = "SELECT * FROM {} WHERE email = '{}' LIMIT 1".format(table, email)
+    query = "SELECT (BIN_TO_UUID({})) FROM {} WHERE email = '{}' LIMIT 1".format(uid, table, email)
     print(query)
     cur.execute(query)
     result = cur.fetchone()
@@ -74,7 +76,7 @@ def fetch_user(request_data):
     cur = db.get_db().cursor()
     table, uid = db_info(request_data['type'])
 
-    query = "SELECT * FROM {} WHERE `email` = '{}' AND `pwd` = '{}' LIMIT 1".format(
+    query = "SELECT (BIN_TO_UUID({})) FROM {} WHERE `email` = '{}' AND `pwd` = '{}' LIMIT 1".format(uid, 
         table, request_data['email'], request_data['pwd'])
     cur.execute(query)
     return cur.fetchone()
