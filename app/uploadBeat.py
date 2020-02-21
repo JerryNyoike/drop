@@ -8,7 +8,7 @@ from .auth import is_logged_in
 bp = Blueprint('uploadBeat', __name__, url_prefix="/beat")
 
 
-@bp.route('/redirectURL', methods=['POST'])
+@bp.route('/upload', methods=['POST'])
 def insertBeat():
     #Check for JSON
     if request.is_json():
