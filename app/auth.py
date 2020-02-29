@@ -49,7 +49,6 @@ def register_user(user_data):
 
     query = "INSERT INTO {} ({}, email, phone_number, name, pwd) VALUES (UUID_TO_BIN(UUID()), '{}', {}, '{}', '{}')".format(
         table, uid, user_data['email'], user_data['phone'], user_data['name'], user_data['pwd'])
-    print(query)
 
     result = cur.execute(query)
     conn.commit()
