@@ -88,7 +88,7 @@ def fetch_beats():
             # check the user type
             if user['typ'] is 'producer':
                 # fetch only beats uploaded by the producer
-                beats = get_beats(user['aud'])
+                beats = get_beats(user['aud'], limit, skip)
                 if beats is not None:
                     # return the beats
                     return make_response({'status': 1, 'message': 'Success.',
@@ -97,22 +97,31 @@ def fetch_beats():
                     return make_response({'status': 0, 'message': 'No beats found.'}, 404)
             else:
                 # fetch beats produced by all producers
+                beats = get_beats(limit, skip)
+                if beats is not None:
+                   # return the beats
+                   return make_response({'status': 1, 'message': 'Success.',
+                       'data': beats}, 200)
+                else:
+                   return make_response({'status': 0, 'message': 'No beats found.'}, 404)   
         else:
             return make_response({'status': 0, 'message': 
                                 'Must be logged in to complete this request'}, 403)
         
     else:
         return make_response({'status': 0, 'message': 'Invalid content type.'}, 404)
-@bp.route('fetch/<uuid:beat_id>', methods=['GET'])
 
 
-def get_beats(producer=None, limit, offset):
+def get_beats(producer=None, limit, skip):
+    ''' This function returns beats made by a certain producer,
+    if passed to the function, and adds a limit and offset contraint
+    to the query'''
     cur = get_db().cursor()
     query = 'SELECT * FROM beat'
     if producer is not None:
         query = str.join(' ', [query, 'WHERE producer_id={}'.format(producer)])
 
-    query = str.join(' ', [query, 'LIMIT {},{}'.format(limit, offset)])
+    query = str.join(' ', [query, 'LIMIT {},{}'.format(skip, limit)])
 
     cur.execute(query)
     cur.commit()
