@@ -52,6 +52,8 @@ def delete_beat():
                 query = "DELETE FROM beat WHERE beat_id={} LIMIT 1"
                 result = cur.execute(query)
                 cur.commit()
+
+                # remove file from the filesystem
                 if result == 1:
                     response = make_response({'status':1, 'message': 'Successfully deleted beat'})
                     return resp
@@ -68,11 +70,11 @@ def delete_beat():
 
 def beat_exists(beat_id):
     cur = get_db().cursor()
-    query = "SELECT name FROM beat WHERE beat_id={} LIMIT 1".format(beat_id)
+    query = "SELECT address FROM beat WHERE beat_id={} LIMIT 1".format(beat_id)
     cur.execute(query)
 
     result = cur.fetch_one()
-    if result is not None:
-        return True
+    if result is not None and Path.exists(result['address']):
+        return True, result['address']
 
-    return False
+    return False, None
