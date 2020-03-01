@@ -86,9 +86,9 @@ def fetch_beats():
         user = is_logged_in(request_info['tkn'])
         if user is not False:
             # check the user type
-            if user['typ'] is 'producer':
+            if user['aud'] is 'producer':
                 # fetch only beats uploaded by the producer
-                beats = get_beats(user['aud'], limit, skip)
+                beats = get_beats(user['sub'], limit, skip)
                 if beats is not None:
                     # return the beats
                     return make_response({'status': 1, 'message': 'Success.',
