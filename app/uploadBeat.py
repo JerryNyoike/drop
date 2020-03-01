@@ -46,14 +46,22 @@ def delete_beat():
     ''' remove the beat with beat_id from the database'''
     if request.content_type is 'application/json':
         if is_logged_in(request['tkn']):
-            if beat_exists():
-                #logic here
+            beat_details = beat_exists()
+            if beat_details[0]:
+                # remove the beat entry from the database
                 cur = get_db().cursor()
                 query = "DELETE FROM beat WHERE beat_id={} LIMIT 1"
                 result = cur.execute(query)
                 cur.commit()
 
-                # remove file from the filesystem
+                # remove the beat's file from the filesystem
+                try:
+                    Path.unlink(beat_details[1])
+                except FileNotFoundError e:
+                    return make_response({'status': 0,
+                                          'message': 'Beat does not exist or has
+                                                      already been deleted.'}
+                                          , 404)
                 if result == 1:
                     response = make_response({'status':1, 'message': 'Successfully deleted beat'})
                     return resp
