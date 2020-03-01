@@ -76,7 +76,51 @@ def delete_beat():
         return make_response({'status':0, 'message': 'Invalid content type.'}, 404)
 
 
+@bp.route('/fetch/all', method=['GET'])
+def fetch_beats():
+    if request.content_type is 'application/json':
+        request_info = request.get_json()
+        limit = request.args.get('limit', 30)
+        skip = request.args.get('skip', 0)
+        # check that user is logged in
+        user = is_logged_in(request_info['tkn'])
+        if user is not False:
+            # check the user type
+            if user['typ'] is 'producer':
+                # fetch only beats uploaded by the producer
+                beats = get_beats(user['aud'])
+                if beats is not None:
+                    # return the beats
+                    return make_response({'status': 1, 'message': 'Success.',
+                        'data': beats}, 200)
+                else:
+                    return make_response({'status': 0, 'message': 'No beats found.'}, 404)
+            else:
+                # fetch beats produced by all producers
+        else:
+            return make_response({'status': 0, 'message': 
+                                'Must be logged in to complete this request'}, 403)
+        
+    else:
+        return make_response({'status': 0, 'message': 'Invalid content type.'}, 404)
+@bp.route('fetch/<uuid:beat_id>', methods=['GET'])
+
+
+def get_beats(producer=None, limit, offset):
+    cur = get_db().cursor()
+    query = 'SELECT * FROM beat'
+    if producer is not None:
+        query = str.join(' ', [query, 'WHERE producer_id={}'.format(producer)])
+
+    query = str.join(' ', [query, 'LIMIT {},{}'.format(limit, offset)])
+
+    cur.execute(query)
+    cur.commit()
+    return cur.fetch_all()
+
 def beat_exists(beat_id):
+    ''' Function to check whether a beat is in the database and that it exists in the file
+        system'''
     cur = get_db().cursor()
     query = "SELECT address FROM beat WHERE beat_id={} LIMIT 1".format(beat_id)
     cur.execute(query)
