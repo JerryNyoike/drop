@@ -1,5 +1,7 @@
+from os import path
 import pymysql
 from flask import Blueprint, make_response, request, current_app
+from werkzeug.utils import secure_filename
 
 from . import db
 from .auth import is_logged_in
@@ -8,31 +10,45 @@ from .auth import is_logged_in
 bp = Blueprint('uploadBeat', __name__, url_prefix="/beat")
 
 
+def allowed_filename(filename):
+    return '.' in filename and filename.rsplit('.', 1)[1].lower() in current_app['ALLOWED_EXTENSIONS']
+
+
 @bp.route('/upload', methods=['POST'])
 def insertBeat():
     #Check for JSON
     if request.is_json():
-        producer = request['token']
+        producer = request.headers.get('Authorization').split(' ')[1]
         if is_logged_in(producer):
-            if request.files['beat'] is not None:
-                beatInfo = request.get_json()
+            if 'file' in request.files:
+                    beat = request.files['file']
+                    if beat.filename != '':
+                        if beat and allowed_filename(beat.filename):
+                            beatInfo = request.get_json()
 
-                producerID = beatInfo['producerID']
-                beatName = beatInfo['name']
-                beatGenre = beatInfo['genre']
-                beatFilePath = beatInfo['filePath']
-                beatLeasePrice = beatInfo['leasePrice']
-                beatSellingPrice = beatInfo['sellingPrice']
+                            producerID = is_logged_in(producer).get('sub')
+                            beatName = beatInfo['name']
+                            beatGenre = beatInfo['genre']
+                            beatFileName = secure_filename(beat.filename)
+                            beatFilePath = beat.save(path.join(app.config['UPLOAD_FOLDER'], beatFileName))
+                            beatLeasePrice = beatInfo['leasePrice']
+                            beatSellingPrice = beatInfo['sellingPrice']
 
-                insertBeatQuery = "INSERT INTO beat VALUES ({}, {}, {}, {}, {}, {}, {}".format(producerID, beatName, beatGenre, beatFilePath, beatLeasePrice, beatSellingPrice)
+                            insertBeatQuery = "INSERT INTO beat (producer_id, name, genre, address, lease_price, selling_price) VALUES ({}, {}, {}, {}, {}, {}".format(producerID, beatName, beatGenre, beatFilePath, beatLeasePrice, beatSellingPrice)
 
-                databaseConnection = db.get_db()
-                databaseCursor = databaseConnection.cursor()
+                            databaseCursor = db.get_db().cursor()
 
-                databaseCursor.execute(insertBeatQuery)
-                databaseConnection.commit()
+                            result = databaseCursor.execute(insertBeatQuery)
+                            databaseConnection.commit()
 
-                return make_response({'status': 1, 'message': "The beat has been successfully uploaded"}, 200)
+                            if result is not None:
+                                return make_response({'status': 1, 'message': 'The beat has been successfully uploaded'}, 200)
+                            else:
+                                return make_response({'status': 0, 'message': 'An error occurred when uploading the beat'}, 500)
+                        else:
+                            return make_response({'status': 0, 'message': 'Illegal file extension.'}, 400)
+                    else:
+                        return make_response({'status': 0, 'message': 'Upload file cannot be null'}, 400)
             else:
                 return make_response({'status': 0, 'message': 'Upload file cannot be null.'}, 400)
         else:
@@ -57,9 +73,9 @@ def delete_beat():
                 # remove the beat's file from the filesystem
                 try:
                     Path.unlink(beat_details[1])
-                except FileNotFoundError e:
+                except FileNotFoundError:
                     return make_response({'status': 0,
-                                          'message': 'Beat does not exist or has
+                                          'message': 'Beat does not exist or has\
                                                       already been deleted.'}
                                           , 404)
                 if result == 1:
@@ -76,7 +92,7 @@ def delete_beat():
         return make_response({'status':0, 'message': 'Invalid content type.'}, 404)
 
 
-@bp.route('/fetch/all', method=['GET'])
+@bp.route('/fetch/all', methods=['GET'])
 def fetch_beats():
     if request.content_type is 'application/json':
         request_info = request.get_json()
@@ -88,7 +104,7 @@ def fetch_beats():
             # check the user type
             if user['aud'] is 'producer':
                 # fetch only beats uploaded by the producer
-                beats = get_beats(user['sub'], limit, skip)
+                beats = get_beats(limit, skip, user['sub'])
                 if beats is not None:
                     # return the beats
                     return make_response({'status': 1, 'message': 'Success.',
@@ -112,7 +128,7 @@ def fetch_beats():
         return make_response({'status': 0, 'message': 'Invalid content type.'}, 404)
 
 
-def get_beats(producer=None, limit, skip):
+def get_beats(limit, skip, producer=None):
     ''' This function returns beats made by a certain producer,
     if passed to the function, and adds a limit and offset contraint
     to the query'''
