@@ -11,30 +11,30 @@ bp = Blueprint('uploadBeat', __name__, url_prefix="/beat")
 
 
 def allowed_filename(filename):
-    return '.' in filename and filename.rsplit('.', 1)[1].lower() in current_app['ALLOWED_EXTENSIONS']
+    return '.' in filename and filename.rsplit('.', 1)[1].lower() in current_app.config['ALLOWED_EXTENSIONS']
 
 
 @bp.route('/upload', methods=['POST'])
 def insertBeat():
-    #Check for JSON
-    if request.is_json():
+    if request.content_type != 'multipart/form-data':
         producer = request.headers.get('Authorization').split(' ')[1]
         if is_logged_in(producer):
             if 'file' in request.files:
                     beat = request.files['file']
                     if beat.filename != '':
                         if beat and allowed_filename(beat.filename):
-                            beatInfo = request.get_json()
+                            beatInfo = request.form
 
-                            producerID = is_logged_in(producer).get('sub')
                             beatName = beatInfo['name']
                             beatGenre = beatInfo['genre']
                             beatFileName = secure_filename(beat.filename)
-                            beatFilePath = beat.save(path.join(app.config['UPLOAD_FOLDER'], beatFileName))
+                            beatFilePath = path.join(current_app.config['UPLOAD_FOLDER'], beatFileName)
+                            beat.save(beatFilePath)
                             beatLeasePrice = beatInfo['leasePrice']
                             beatSellingPrice = beatInfo['sellingPrice']
 
-                            insertBeatQuery = "INSERT INTO beat (producer_id, name, genre, address, lease_price, selling_price) VALUES ({}, {}, {}, {}, {}, {}".format(producerID, beatName, beatGenre, beatFilePath, beatLeasePrice, beatSellingPrice)
+                            insertBeatQuery = "INSERT INTO beat (producer_id, name, genre, address, lease_price, selling_price) VALUES ({}, '{}', '{}', '{}', {}, {})".format(producer, beatName, beatGenre, beatFilePath, beatLeasePrice, beatSellingPrice)
+                            print(insertBeatQuery)
 
                             databaseCursor = db.get_db().cursor()
 
@@ -102,7 +102,7 @@ def fetch_beats():
         user = is_logged_in(request_info['tkn'])
         if user is not False:
             # check the user type
-            if user['aud'] is 'producer':
+            if user['typ'] is 'producer':
                 # fetch only beats uploaded by the producer
                 beats = get_beats(limit, skip, user['sub'])
                 if beats is not None:
