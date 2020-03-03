@@ -17,8 +17,9 @@ def allowed_filename(filename):
 @bp.route('/upload', methods=['POST'])
 def insertBeat():
     if request.content_type != 'multipart/form-data':
-        producer = request.headers.get('Authorization').split(' ')[1]
-        if is_logged_in(producer):
+        token = request.headers.get('Authorization').split(' ')[1]
+        user_info = is_logged_in(token);
+        if user_info is not False and user_info['typ'] == 'producer':
             if 'file' in request.files:
                     beat = request.files['file']
                     if beat.filename != '':
@@ -33,7 +34,7 @@ def insertBeat():
                             beatLeasePrice = beatInfo['leasePrice']
                             beatSellingPrice = beatInfo['sellingPrice']
 
-                            insertBeatQuery = "INSERT INTO beat (producer_id, name, genre, address, lease_price, selling_price) VALUES ({}, '{}', '{}', '{}', {}, {})".format(producer, beatName, beatGenre, beatFilePath, beatLeasePrice, beatSellingPrice)
+                            insertBeatQuery = "INSERT INTO beat (producer_id, name, genre, address, lease_price, selling_price) VALUES ({}, '{}', '{}', '{}', {}, {})".format(token['sub'], beatName, beatGenre, beatFilePath, beatLeasePrice, beatSellingPrice)
                             print(insertBeatQuery)
 
                             databaseCursor = db.get_db().cursor()
