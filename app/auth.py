@@ -33,9 +33,9 @@ def login():
         if user_data is not None:
             # create token and return it to client side
             if 'c_id' in user_data:
-                token = jwt.encode({'aud': request_data['type'], 'exp': datetime.now() + timedelta(days=10), 'sub': user_data['c_id']}, current_app.config['SCRT'], algorithm='HS256').decode('utf-8')
+                token = jwt.encode({'typ': request_data['type'], 'exp': datetime.now() + timedelta(days=10), 'sub': user_data['c_id']}, current_app.config['SCRT'], algorithm='HS256').decode('utf-8')
             else:
-                token = jwt.encode({'aud': request_data['type'], 'exp': datetime.now() + timedelta(days=10), 'sub': user_data['producer_id']}, current_app.config['SCRT'], algorithm='HS256').decode('utf-8')
+                token = jwt.encode({'typ': request_data['type'], 'exp': datetime.now() + timedelta(days=10), 'sub': user_data['producer_id']}, current_app.config['SCRT'], algorithm='HS256').decode('utf-8')
             return make_response({'status': 1, 'message': 'Successful login', 'payload': token})
         else:
             return make_response({'status': 0, 'message': 'User does not exist'})
