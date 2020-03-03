@@ -48,6 +48,9 @@ def register_user(user_data):
     cur = conn.cursor()
     table, uid = db_info(user_data['type'])
 
+    if table is None or uid is None:
+        return None
+
     query = "INSERT INTO {} ({}, email, phone_number, name, pwd) VALUES (UUID_TO_BIN(UUID()), '{}', {}, '{}', '{}')".format(
         table, uid, user_data['email'], user_data['phone'], user_data['name'], user_data['pwd'])
 
@@ -59,6 +62,9 @@ def register_user(user_data):
 def user_exists(user_type, email):
     cur = db.get_db().cursor()
     table, uid = db_info(user_type)
+
+    if table is None or uid is None:
+        return None
 
     query = "SELECT (BIN_TO_UUID({})) FROM {} WHERE email = '{}' LIMIT 1".format(uid, table, email)
     print(query)
@@ -73,12 +79,13 @@ def user_exists(user_type, email):
 def fetch_user(request_data):
     cur = db.get_db().cursor()
     table, uid = db_info(request_data['type'])
-    print(table, uid)
+    
+    if table is None or uid is None:
+        return None
 
     query = "SELECT BIN_TO_UUID({}) {} FROM {} WHERE `email` = '{}' AND `pwd` = '{}' LIMIT 1".format(uid, uid, table, request_data['email'], request_data['pwd'])
     cur.execute(query)
     result = cur.fetchone()
-    print(result)
     return result
 
 
@@ -92,5 +99,6 @@ def is_logged_in(token):
 def db_info(user_type):
     if user_type == 'client':
         return 'client', 'c_id'
-
-    return 'producer', 'producer_id'
+    elif user_type == 'producer':
+        return 'producer', 'producer_id'
+    return None, None
