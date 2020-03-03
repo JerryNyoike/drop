@@ -25,9 +25,9 @@ def init_db():
     with current_app.open_resource('./schema.sql') as f:
         queries = f.read().decode('utf-8').replace('\n', ' ').replace('\t', ' ').split(';')
         for num, query in enumerate(queries):
-            if query == '':
-                continue
             query = query.strip()
+            if not query:
+                continue
             cur.execute(query)
             db.commit()
 
