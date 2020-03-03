@@ -15,7 +15,6 @@ def register():
             if result is not None:
                 return make_response({'status': 1, 'message': 'Registration successful'})
             else:
-                print(result)
                 return make_response({'status': 0, 'message': 'Registration unsuccessful'})
         else:
             return make_response({'status': 0, 'message': 'User already exists'}, 400)
@@ -74,11 +73,13 @@ def user_exists(user_type, email):
 def fetch_user(request_data):
     cur = db.get_db().cursor()
     table, uid = db_info(request_data['type'])
+    print(table, uid)
 
-    query = "SELECT (BIN_TO_UUID({})) FROM {} WHERE `email` = '{}' AND `pwd` = '{}' LIMIT 1".format(uid, 
-        table, request_data['email'], request_data['pwd'])
+    query = "SELECT BIN_TO_UUID({}) {} FROM {} WHERE `email` = '{}' AND `pwd` = '{}' LIMIT 1".format(uid, uid, table, request_data['email'], request_data['pwd'])
     cur.execute(query)
-    return cur.fetchone()
+    result = cur.fetchone()
+    print(result)
+    return result
 
 
 def is_logged_in(token):
