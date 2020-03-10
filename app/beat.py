@@ -8,7 +8,7 @@ from . import db
 from .auth import is_logged_in
 
 
-bp = Blueprint('uploadBeat', __name__, url_prefix="/beat")
+bp = Blueprint('beat', __name__, url_prefix="/beat")
 
 
 def allowed_filename(filename):
@@ -97,54 +97,52 @@ def delete_beat():
 @bp.route('/fetch/all', methods=['GET'])
 def fetch_beats():
     token = request.headers.get('Authorization').split(' ')[1]
-    user = is_logged_in(request_info['tkn'])
-    if request.content_type is 'application/json':
-        request_info = request.get_json()
-        limit = request.args.get('limit', 30)
-        skip = request.args.get('skip', 0)
-        # check that user is logged in
-        if user is not False:
-            # check the user type
-            if user['typ'] is 'producer':
-                # fetch only beats uploaded by the producer
-                beats = get_beats(limit, skip, user['sub'])
-                if beats is not None:
-                    # return the beats
-                    return make_response({'status': 1, 'message': 'Success.',
-                        'data': beats}, 200)
-                else:
-                    return make_response({'status': 0, 'message': 'No beats found.'}, 404)
+    request_info = request.get_json()
+    user = is_logged_in(token)
+    limit = request.args.get('limit', 30)
+    skip = request.args.get('skip', 0)
+    # check that user is logged in
+    if user is not False:    
+        # check the user type
+        if user['typ'] is 'producer':
+            # fetch only beats uploaded by the producer
+            beats = get_beats(limit, skip, user['sub'])
+            if beats is not None:
+                # return the beats
+                return make_response({'status': 1, 'message': 'Success.',
+                    'data': beats}, 200)
             else:
-                # fetch beats produced by all producers
-                beats = get_beats(limit, skip)
-                if beats is not None:
-                   # return the beats
-                   return make_response({'status': 1, 'message': 'Success.',
-                       'data': beats}, 200)
-                else:
-                   return make_response({'status': 0, 'message': 'No beats found.'}, 404)   
+                return make_response({'status': 0, 'message': 'No beats found.'}, 404)
         else:
-            return make_response({'status': 0, 'message': 
-                                'Must be logged in to complete this request'}, 403)
-        
+            # fetch beats produced by all producers
+            beats = get_beats(limit, skip)
+            if beats is not None:   
+                # return the beats
+                return make_response({'status': 1, 'message': 'Success.',
+                    'data': beats}, 200)
+            else:
+                return make_response({'status': 0, 'message': 'No beats found.'}, 404)   
     else:
-        return make_response({'status': 0, 'message': 'Invalid content type.'}, 404)
+        return make_response({'status': 0, 'message': 'Must be logged in to complete this request'}, 403)
 
 
 def get_beats(limit, skip, producer=None):
     ''' This function returns beats made by a certain producer,
     if passed to the function, and adds a limit and offset contraint
     to the query'''
-    cur = get_db().cursor()
-    query = 'SELECT * FROM beat'
+    conn = db.get_db()
+    cur = conn.cursor()
+    query = 'SELECT (BIN_TO_UUID(beat_id)) beat_id, address, genre, lease_price, selling_price, upload_date FROM beat'
     if producer is not None:
         query = str.join(' ', [query, 'WHERE producer_id={}'.format(producer)])
 
     query = str.join(' ', [query, 'LIMIT {},{}'.format(skip, limit)])
 
     cur.execute(query)
-    cur.commit()
-    return cur.fetch_all()
+    conn.commit()
+    res = cur.fetchall()
+    print(res)
+    return res
 
 def beat_exists(beat_id):
     ''' Function to check whether a beat is in the database and that it exists in the file
