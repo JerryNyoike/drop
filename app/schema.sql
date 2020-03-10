@@ -29,7 +29,7 @@ CREATE TABLE beat(
 	producer_id BINARY(16) NOT NULL,
 	name VARCHAR(36) NOT NULL,
 	genre VARCHAR(36) NOT NULL,
-	address VARCHAR(36) NOT NULL,
+	address VARCHAR(100) NOT NULL,
 	lease_price INT(11) NOT NULL,
 	selling_price INT(11) NOT NULL,
 	upload_date DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
