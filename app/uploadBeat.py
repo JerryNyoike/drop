@@ -3,6 +3,7 @@ import pymysql
 from flask import Blueprint, make_response, request, current_app
 from werkzeug.utils import secure_filename
 
+
 from . import db
 from .auth import is_logged_in
 
@@ -95,12 +96,13 @@ def delete_beat():
 
 @bp.route('/fetch/all', methods=['GET'])
 def fetch_beats():
+    token = request.headers.get('Authorization').split(' ')[1]
+    user = is_logged_in(request_info['tkn'])
     if request.content_type is 'application/json':
         request_info = request.get_json()
         limit = request.args.get('limit', 30)
         skip = request.args.get('skip', 0)
         # check that user is logged in
-        user = is_logged_in(request_info['tkn'])
         if user is not False:
             # check the user type
             if user['typ'] is 'producer':
