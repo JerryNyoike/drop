@@ -34,7 +34,9 @@ def insertBeat():
                             beatLeasePrice = beatInfo['leasePrice']
                             beatSellingPrice = beatInfo['sellingPrice']
 
-                            insertBeatQuery = "INSERT INTO beat (producer_id, name, genre, address, lease_price, selling_price) VALUES ({}, '{}', '{}', '{}', {}, {})".format(token['sub'], beatName, beatGenre, beatFilePath, beatLeasePrice, beatSellingPrice)
+
+                            print(user_info)
+                            insertBeatQuery = "INSERT INTO beat (beat_id, producer_id, name, genre, address, lease_price, selling_price) VALUES (UUID_TO_BIN(UUID()), UUID_TO_BIN('{}'), '{}', '{}', '{}', {}, {})".format(user_info['sub'], beatName, beatGenre, beatFilePath, beatLeasePrice, beatSellingPrice)
                             print(insertBeatQuery)
 
                             databaseCursor = db.get_db().cursor()
