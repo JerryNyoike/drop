@@ -1,6 +1,7 @@
 import os
 import pymysql
 from . import auth, db, uploadBeat
+from flask_cors import CORS
 from flask import Flask
 
 
@@ -24,4 +25,6 @@ def create_app(test_config=None):
     app.register_blueprint(auth.bp)
     app.register_blueprint(uploadBeat.bp)
 
+    CORS(app)
+    
     return app
