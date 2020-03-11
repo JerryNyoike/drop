@@ -1,4 +1,5 @@
 from os import path
+from pydub import AudioSegment
 import pymysql
 from flask import Blueprint, make_response, request, current_app
 from werkzeug.utils import secure_filename
@@ -15,11 +16,47 @@ def allowed_filename(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in current_app.config['ALLOWED_EXTENSIONS']
 
 
+def crop_beat(beat_path):
+    '''
+    This function slices a beat to just the first 30
+    seconds and saves the preview to the file system and
+    database
+    '''
+    extension = beat_path.split('.')[1]
+    preview_name = beat_path.split('/')[-1]
+    if extension is in current_app['ALLOWED_EXTENSIONS']:
+        if extension is 'mp3':
+            beat = AudioSegment.from_mp3(beat_path)
+        elif extension is 'ogg':
+            beat = AudioSegment.from_ogg(beat_path)
+        elif extension is 'flac':
+            beat = AudioSegment.from_flac(beat_path)
+        else:
+            beat = AudioSegment.from_wav(beat_path)
+
+    # slice the audio to the first 30 seconds
+    preview = beat[:30000]
+
+    # save preview to the file system and database
+    filename = path.join(current_app['PREVIEW_DIR'], preview_name)
+    preview.export(filepath)
+
+    conn = db.get_db()
+    cursor = conn.cursor()
+    query = 'UPDATE beat SET prev_address = {} WHERE beat_id={}'.format(filepath, beat_id)
+    result = cursor.execute(query)
+    conn.commit()
+        
+    if result == 1:
+        return True
+
+    return False
+        
 @bp.route('/upload', methods=['POST'])
 def insertBeat():
     if request.content_type != 'multipart/form-data':
         token = request.headers.get('Authorization').split(' ')[1]
-        user_info = is_logged_in(token);
+        user_info = is_logged_in(token)
         if user_info is not False and user_info['typ'] == 'producer':
             if 'file' in request.files:
                     beat = request.files['file']
@@ -42,6 +79,9 @@ def insertBeat():
 
                             result = databaseCursor.execute(insertBeatQuery)
                             databaseConnection.commit()
+
+                            # crop a 30 seconds preview of the beat
+                            crop_beat(beat_path)
 
                             if result is not None:
                                 return make_response({'status': 1, 'message': 'The beat has been successfully uploaded'}, 200)
