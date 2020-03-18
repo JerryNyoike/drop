@@ -1,19 +1,15 @@
 import os
 import pymysql
-from . import auth, db, uploadBeat
-from flask_cors import CORS
+from . import auth, db, beat
 from flask import Flask
 
 
 def create_app(test_config=None):
     app = Flask(__name__, instance_relative_config=True)
     app.config.from_mapping(
-        DB='dropbeats'
-        , DB_HOST='localhost'
-        , DB_USER='droppy'
-        , DB_PASS='dropitlikeitshot'
-        , CURSOR=pymysql.cursors.DictCursor
-        , SCRT='topsecrettochangelater')
+        ALLOWED_EXTENSIONS=['mp3', 'flac', 'ogg', 'wav']
+    )
+    app.config.from_pyfile("config.py", silent=True)
 
     try:
         os.makedirs(app.instance_path)
@@ -23,8 +19,6 @@ def create_app(test_config=None):
     db.init_app(app)
 
     app.register_blueprint(auth.bp)
-    app.register_blueprint(uploadBeat.bp)
+    app.register_blueprint(beat.bp)
 
-    CORS(app)
-    
     return app
