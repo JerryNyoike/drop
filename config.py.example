@@ -1,0 +1,11 @@
+# This file is an example of the attributes you
+# need to configure the API. It should be placed in
+# the instance folder and renamed by removing the
+# .example at the end
+
+DB='db_name'
+DB_HOST='host'
+DB_USER='db_user'
+DB_PASS='db_password'
+CURSOR='pymysql_cursor_class'
+SCRT='key_for_hashing_tokens'
