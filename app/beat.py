@@ -1,4 +1,4 @@
-from os import path
+from os import path, makedirs
 from pydub import AudioSegment
 import pymysql
 from flask import Blueprint, make_response, request, current_app
@@ -20,38 +20,29 @@ def crop_beat(beat_path):
     '''
     This function slices a beat to just the first 30
     seconds and saves the preview to the file system and
-    database
+    returns the path to the preview.
     '''
-    extension = beat_path.split('.')[1]
+    extension = beat_path.split('.')[2]
     preview_name = beat_path.split('/')[-1]
-    if extension is in current_app['ALLOWED_EXTENSIONS']:
-        if extension is 'mp3':
-            beat = AudioSegment.from_mp3(beat_path)
-        elif extension is 'ogg':
-            beat = AudioSegment.from_ogg(beat_path)
-        elif extension is 'flac':
-            beat = AudioSegment.from_flac(beat_path)
-        else:
-            beat = AudioSegment.from_wav(beat_path)
+    if extension in current_app.config['ALLOWED_EXTENSIONS']:
+        beat = AudioSegment.from_file(beat_path, extension)
 
-    # slice the audio to the first 30 seconds
-    preview = beat[:30000]
+        # slice the audio to the first 30 seconds
+        preview = beat[:30000]
 
-    # save preview to the file system and database
-    filename = path.join(current_app['PREVIEW_DIR'], preview_name)
-    preview.export(filepath)
+        # save preview to the file system
+        filename = path.join(current_app.config['PREVIEW_DIR'], preview_name)
+        try:
+            makedirs(current_app.config['PREVIEW_DIR'])
+        except OSError:
+            return None
 
-    conn = db.get_db()
-    cursor = conn.cursor()
-    query = 'UPDATE beat SET prev_address = {} WHERE beat_id={}'.format(filepath, beat_id)
-    result = cursor.execute(query)
-    conn.commit()
-        
-    if result == 1:
-        return True
+        preview.export(filename, format='mp3')
 
-    return False
-        
+        return filename
+    
+    return None
+
 @bp.route('/upload', methods=['POST'])
 def insertBeat():
     if request.content_type != 'multipart/form-data':
@@ -67,21 +58,24 @@ def insertBeat():
                             beatName = beatInfo['name']
                             beatGenre = beatInfo['genre']
                             beatFileName = secure_filename(beat.filename)
-                            beatFilePath = path.join(current_app.config['UPLOAD_FOLDER'], beatFileName)
+                            beatFilePath = path.join(current_app.config['BEAT_DIR'], beatFileName)
                             beat.save(beatFilePath)
                             beatLeasePrice = beatInfo['leasePrice']
                             beatSellingPrice = beatInfo['sellingPrice']
+
+                            # crop a 30 seconds preview of the beat
+                            preview = crop_beat(beatFilePath)
                             
-                            insertBeatQuery = "INSERT INTO beat (beat_id, producer_id, name, genre, address, lease_price, selling_price) VALUES (UUID_TO_BIN(UUID()), UUID_TO_BIN('{}'), '{}', '{}', '{}', {}, {})".format(user_info['sub'], beatName, beatGenre, beatFilePath, beatLeasePrice, beatSellingPrice)
+                            if preview is None:
+                                return make_response({'status': 0, 'message':  'Could not upload beat successfully.'})
+
+                            insertBeatQuery = "INSERT INTO beat (beat_id, producer_id, name, genre, address, prev_address, lease_price, selling_price) VALUES (UUID_TO_BIN(UUID()), UUID_TO_BIN('{}'), '{}', '{}', '{}', '{}', {}, {})".format(user_info['sub'], beatName, beatGenre, beatFilePath, preview, beatLeasePrice, beatSellingPrice)
 
                             databaseConnection = db.get_db()
                             databaseCursor = databaseConnection.cursor()
 
                             result = databaseCursor.execute(insertBeatQuery)
                             databaseConnection.commit()
-
-                            # crop a 30 seconds preview of the beat
-                            crop_beat(beat_path)
 
                             if result is not None:
                                 return make_response({'status': 1, 'message': 'The beat has been successfully uploaded'}, 200)
@@ -149,8 +143,7 @@ def fetch_beats():
             beats = get_beats(limit, skip, user['sub'])
             if beats is not None:
                 # return the beats
-                return make_response({'status': 1, 'message': 'Success.',
-                    'data': beats}, 200)
+                return make_response({'status': 1, 'message': 'Success.', 'data': beats}, 200)
             else:
                 return make_response({'status': 0, 'message': 'No beats found.'}, 404)
         else:
@@ -158,8 +151,7 @@ def fetch_beats():
             beats = get_beats(limit, skip)
             if beats is not None:   
                 # return the beats
-                return make_response({'status': 1, 'message': 'Success.',
-                    'data': beats}, 200)
+                return make_response({'status': 1, 'message': 'Success.', 'data': beats}, 200)
             else:
                 return make_response({'status': 0, 'message': 'No beats found.'}, 404)   
     else:
@@ -181,7 +173,6 @@ def get_beats(limit, skip, producer=None):
     cur.execute(query)
     conn.commit()
     res = cur.fetchall()
-    print(res)
     return res
 
 def beat_exists(beat_id):
