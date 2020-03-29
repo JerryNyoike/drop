@@ -7,7 +7,7 @@ from flask import Flask
 def create_app(test_config=None):
     app = Flask(__name__, instance_relative_config=True)
     app.config.from_mapping(
-        ALLOWED_EXTENSIONS=['mp3', 'flac', 'ogg', 'wav']
+        ALLOWED_EXTENSIONS=['mp3', 'flac', 'ogg', 'wav', 'm4a']
     )
     app.config.from_pyfile("config.py", silent=True)
 
