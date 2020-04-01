@@ -34,6 +34,7 @@ CREATE TABLE beat(
 	lease_price INT(11) NOT NULL,
 	selling_price INT(11) NOT NULL,
 	upload_date DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+	beat_hash VARCHAR(100) NOT NULL,
 
 	PRIMARY KEY(beat_id),
 	FOREIGN KEY(producer_id) REFERENCES producer(producer_id)
