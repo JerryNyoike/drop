@@ -3,6 +3,7 @@ from pydub import AudioSegment
 import pymysql
 from flask import Blueprint, make_response, request, current_app
 from werkzeug.utils import secure_filename
+from hashlib import md5  
 
 
 from . import db
@@ -49,44 +50,42 @@ def insertBeat():
         token = request.headers.get('Authorization').split(' ')[1]
         user_info = is_logged_in(token)
         if user_info is not False and user_info['typ'] == 'producer':
-            if 'file' in request.files:
-                    beat = request.files['file']
-                    if beat.filename != '':
-                        if beat and allowed_filename(beat.filename):
-                            beatInfo = request.form
+            if 'file' in request.files and allowed_filename(beat.filename):
+                beat = request.files['file']
+                is_duplicate = check_beat_duplicate(beat)
+                if not is_duplicate:
+                    beatInfo = request.form
 
-                            beatName = beatInfo['name']
-                            beatGenre = beatInfo['genre']
-                            beatFileName = secure_filename(beat.filename)
-                            beatFilePath = path.join(current_app.config['BEAT_DIR'], beatFileName)
-                            beat.save(beatFilePath)
-                            beatLeasePrice = beatInfo['leasePrice']
-                            beatSellingPrice = beatInfo['sellingPrice']
+                    beatName = beatInfo['name']
+                    beatGenre = beatInfo['genre']
+                    beatFileName = secure_filename(beat.filename)
+                    beatFilePath = path.join(current_app.config['BEAT_DIR'], beatFileName)
+                    beat.save(beatFilePath)
+                    beatLeasePrice = beatInfo['leasePrice']
+                    beatSellingPrice = beatInfo['sellingPrice']
 
-                            # crop a 30 seconds preview of the beat
-                            preview = crop_beat(beatFilePath)
-                            
-                            if preview is None:
-                                return make_response({'status': 0, 'message':  'Could not upload beat successfully.'})
+                    # crop a 30 seconds preview of the beat
+                    preview = crop_beat(beatFilePath)
+                    
+                    if preview is None:
+                        return make_response({'status': 0, 'message':  'Could not upload beat successfully.'})
 
-                            insertBeatQuery = "INSERT INTO beat (beat_id, producer_id, name, genre, address, prev_address, lease_price, selling_price) VALUES (UUID_TO_BIN(UUID()), UUID_TO_BIN('{}'), '{}', '{}', '{}', '{}', {}, {})".format(user_info['sub'], beatName, beatGenre, beatFilePath, preview, beatLeasePrice, beatSellingPrice)
+                    insertBeatQuery = "INSERT INTO beat (beat_id, producer_id, name, genre, address, prev_address, lease_price, selling_price) VALUES (UUID_TO_BIN(UUID()), UUID_TO_BIN('{}'), '{}', '{}', '{}', '{}', {}, {})".format(user_info['sub'], beatName, beatGenre, beatFilePath, preview, beatLeasePrice, beatSellingPrice)
 
-                            databaseConnection = db.get_db()
-                            databaseCursor = databaseConnection.cursor()
+                    databaseConnection = db.get_db()
+                    databaseCursor = databaseConnection.cursor()
 
-                            result = databaseCursor.execute(insertBeatQuery)
-                            databaseConnection.commit()
+                    result = databaseCursor.execute(insertBeatQuery)
+                    databaseConnection.commit()
 
-                            if result is not None:
-                                return make_response({'status': 1, 'message': 'The beat has been successfully uploaded'}, 200)
-                            else:
-                                return make_response({'status': 0, 'message': 'An error occurred when uploading the beat'}, 500)
-                        else:
-                            return make_response({'status': 0, 'message': 'Illegal file extension.'}, 400)
+                    if result is not None:
+                        return make_response({'status': 1, 'message': 'The beat has been successfully uploaded'}, 200)
                     else:
-                        return make_response({'status': 0, 'message': 'Upload file cannot be null'}, 400)
+                        return make_response({'status': 0, 'message': 'An error occurred when uploading the beat'}, 500)
+                else:
+                    return make_response({'status': 0, 'message': 'Duplicate file upload.'}, 409)
             else:
-                return make_response({'status': 0, 'message': 'Upload file cannot be null.'}, 400)
+                return make_response({'status': 0, 'message': 'File type not allowed.'}, 400)
         else:
             return make_response({'status': 0, 'message': 'Must be logged in to perform this request.'}, 404)
     else:
@@ -187,3 +186,12 @@ def beat_exists(beat_id):
         return True, result['address']
 
     return False, None
+
+def check_beat_duplicate(beat):
+    ''' Queries database for the beat hash and
+    returns True if the hash exists, False otherwise
+    '''
+    beat_hash = md5(beat).hexdigest()
+    check_duplicate_beat = "SELECT beat_hash FROM beat WHERE beat_hash = %s" % beat_hash
+    cur = get_db().cursor()
+    return cur.execute(check_duplicate_beat) > 0
