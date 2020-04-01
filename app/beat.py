@@ -203,6 +203,7 @@ def beat_exists(beat_id):
 
     return False, None
 
+<<<<<<< HEAD
 def check_beat_duplicate(beatFilePath):
     ''' Queries database for the beat hash and
     returns True if the hash exists, False otherwise
@@ -232,3 +233,13 @@ def save_file_permanently(beatFilePath):
             return file_path
         except OSError as e:
             log_error("At save_file_permanently, " + str(e), "os_error_logs.txt")
+=======
+def check_beat_duplicate(beat):
+    ''' Queries database for the beat hash and
+    returns True if the hash exists, False otherwise
+    '''
+    beat_hash = md5(beat).hexdigest()
+    check_duplicate_beat = "SELECT beat_hash FROM beat WHERE beat_hash = %s" % beat_hash
+    cur = get_db().cursor()
+    return cur.execute(check_duplicate_beat) > 0
+>>>>>>> Check for duplicate entries
