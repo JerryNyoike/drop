@@ -1,5 +1,6 @@
 from os import path, makedirs
 from pydub import AudioSegment
+from pydub.utils import which
 import pymysql
 from flask import Blueprint, make_response, request, current_app
 from werkzeug.utils import secure_filename
@@ -12,6 +13,7 @@ from .auth import is_logged_in
 
 bp = Blueprint('beat', __name__, url_prefix="/beat")
 
+AudioSegment.converter = which("ffmpeg")
 
 def allowed_filename(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in current_app.config['ALLOWED_EXTENSIONS']
@@ -25,8 +27,10 @@ def crop_beat(beat_path):
     '''
     extension = beat_path.split('.')[2]
     preview_name = beat_path.split('/')[-1]
+    print(extension)
+    print(preview_name)
     if extension in current_app.config['ALLOWED_EXTENSIONS']:
-        beat = AudioSegment.from_file(beat_path, extension)
+        beat = AudioSegment.from_file(beat_path, format=extension)
 
         # slice the audio to the first 30 seconds
         preview = beat[:30000]
@@ -49,9 +53,9 @@ def insertBeat():
     if request.content_type != 'multipart/form-data':
         token = request.headers.get('Authorization').split(' ')[1]
         user_info = is_logged_in(token)
-        if user_info is not False and user_info['typ'] == 'producer':
+        if user_info is not None and user_info['typ'] == 'producer':
+            beat = request.files['file']
             if 'file' in request.files and allowed_filename(beat.filename):
-                beat = request.files['file']
                 is_duplicate = check_beat_duplicate(beat)
                 if not is_duplicate:
                     beatInfo = request.form
@@ -177,7 +181,7 @@ def get_beats(limit, skip, producer=None):
 def beat_exists(beat_id):
     ''' Function to check whether a beat is in the database and that it exists in the file
         system'''
-    cur = get_db().cursor()
+    cur = db.get_db().cursor()
     query = "SELECT address FROM beat WHERE beat_id={} LIMIT 1".format(beat_id)
     cur.execute(query)
 
@@ -191,7 +195,7 @@ def check_beat_duplicate(beat):
     ''' Queries database for the beat hash and
     returns True if the hash exists, False otherwise
     '''
-    beat_hash = md5(beat).hexdigest()
-    check_duplicate_beat = "SELECT beat_hash FROM beat WHERE beat_hash = %s" % beat_hash
-    cur = get_db().cursor()
+    beat_hash = md5(beat.read()).hexdigest()
+    check_duplicate_beat = "SELECT beat_hash FROM beat WHERE beat_hash = '%s'" % beat_hash
+    cur = db.get_db().cursor()
     return cur.execute(check_duplicate_beat) > 0
