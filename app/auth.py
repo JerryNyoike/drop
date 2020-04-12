@@ -2,6 +2,7 @@ from flask import Blueprint, request, make_response, current_app
 from . import db
 import jwt
 from datetime import datetime, timedelta
+from hashlib import sha256
 
 bp = Blueprint('auth', __name__, url_prefix='/auth')
 
@@ -52,7 +53,7 @@ def register_user(user_data):
         return None
 
     query = "INSERT INTO {} ({}, email, phone_number, name, pwd) VALUES (UUID_TO_BIN(UUID()), '{}', {}, '{}', '{}')".format(
-        table, uid, user_data['email'], user_data['phone'], user_data['name'], user_data['pwd'])
+        table, uid, user_data['email'], user_data['phone'], user_data['name'], pwd_hash(user_data['pwd']))
 
     result = cur.execute(query)
     conn.commit()
@@ -67,7 +68,6 @@ def user_exists(user_type, email):
         return None
 
     query = "SELECT (BIN_TO_UUID({})) FROM {} WHERE email = '{}' LIMIT 1".format(uid, table, email)
-    print(query)
     cur.execute(query)
     result = cur.fetchone()
     if result is not None:
@@ -83,7 +83,9 @@ def fetch_user(request_data):
     if table is None or uid is None:
         return None
 
-    query = "SELECT BIN_TO_UUID({}) {} FROM {} WHERE `email` = '{}' AND `pwd` = '{}' LIMIT 1".format(uid, uid, table, request_data['email'], request_data['pwd'])
+    query = "SELECT BIN_TO_UUID({}) {} FROM {} WHERE `email` = '{}' AND `pwd` = '{}' LIMIT 1".format(
+            uid, uid, table, request_data['email'], pwd_hash(request_data['pwd'])
+        )
     cur.execute(query)
     result = cur.fetchone()
     return result
@@ -102,3 +104,6 @@ def db_info(user_type):
     elif user_type == 'producer':
         return 'producer', 'producer_id'
     return None, None
+
+def pwd_hash(pwd):
+    return sha256(pwd.encode()).hexdigest()
