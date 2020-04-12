@@ -1,4 +1,4 @@
-from os import path, makedirs
+from os import path, makedirs, remove
 from pydub import AudioSegment
 from pydub.utils import which
 import pymysql
@@ -26,9 +26,7 @@ def crop_beat(beat_path):
     returns the path to the preview.
     '''
     extension = beat_path.split('.')[2]
-    preview_name = beat_path.split('/')[-1]
-    print(extension)
-    print(preview_name)
+    preview_name = beat_path.split('\\')[-1]
     if extension in current_app.config['ALLOWED_EXTENSIONS']:
         beat = AudioSegment.from_file(beat_path, format=extension)
 
@@ -37,10 +35,6 @@ def crop_beat(beat_path):
 
         # save preview to the file system
         filename = path.join(current_app.config['PREVIEW_DIR'], preview_name)
-        try:
-            makedirs(current_app.config['PREVIEW_DIR'])
-        except OSError:
-            return None
 
         preview.export(filename, format='mp3')
 
@@ -53,43 +47,53 @@ def insertBeat():
     if request.content_type != 'multipart/form-data':
         token = request.headers.get('Authorization').split(' ')[1]
         user_info = is_logged_in(token)
+        
         if user_info is not None and user_info['typ'] == 'producer':
-            beat = request.files['file']
-            if 'file' in request.files and allowed_filename(beat.filename):
-                is_duplicate = check_beat_duplicate(beat)
-                if not is_duplicate:
-                    beatInfo = request.form
+            if 'file' in request.files:
+                beat = request.files['file']
 
-                    beatName = beatInfo['name']
-                    beatGenre = beatInfo['genre']
+                if allowed_filename(beat.filename): 
                     beatFileName = secure_filename(beat.filename)
-                    beatFilePath = path.join(current_app.config['BEAT_DIR'], beatFileName)
+                    beatFilePath = path.join(current_app.config['TEMP_FOLDER'], beatFileName)
                     beat.save(beatFilePath)
-                    beatLeasePrice = beatInfo['leasePrice']
-                    beatSellingPrice = beatInfo['sellingPrice']
-
-                    # crop a 30 seconds preview of the beat
-                    preview = crop_beat(beatFilePath)
                     
-                    if preview is None:
-                        return make_response({'status': 0, 'message':  'Could not upload beat successfully.'})
+                    is_duplicate, beat_hash = check_beat_duplicate(beatFilePath)
+                    if not is_duplicate:
+                        beatInfo = request.form
 
-                    insertBeatQuery = "INSERT INTO beat (beat_id, producer_id, name, genre, address, prev_address, lease_price, selling_price) VALUES (UUID_TO_BIN(UUID()), UUID_TO_BIN('{}'), '{}', '{}', '{}', '{}', {}, {})".format(user_info['sub'], beatName, beatGenre, beatFilePath, preview, beatLeasePrice, beatSellingPrice)
+                        beatName = beatInfo['name']
+                        beatGenre = beatInfo['genre']
+                        beatLeasePrice = beatInfo['leasePrice']
+                        beatSellingPrice = beatInfo['sellingPrice']
 
-                    databaseConnection = db.get_db()
-                    databaseCursor = databaseConnection.cursor()
+                        beatFilePath = save_file_permanently(beatFilePath)
+                        # crop a 30 seconds preview of the beat
+                        preview = crop_beat(beatFilePath)
+                        
+                        if preview is None:
+                            return make_response({'status': 0, 'message':  'Could not upload beat successfully.'})
 
-                    result = databaseCursor.execute(insertBeatQuery)
-                    databaseConnection.commit()
+                        insertBeatQuery = '''INSERT INTO beat (beat_id, producer_id, name, genre, address, prev_address, lease_price, 
+                        selling_price, beat_hash) VALUES (UUID_TO_BIN(UUID()), UUID_TO_BIN('{}'), '{}', '{}', '{}', '{}', {}, {}, '{}')
+                        '''.format(user_info['sub'], beatName, beatGenre, beatFilePath, preview, beatLeasePrice, beatSellingPrice, 
+                            beat_hash)
 
-                    if result is not None:
-                        return make_response({'status': 1, 'message': 'The beat has been successfully uploaded'}, 200)
+                        databaseConnection = db.get_db()
+                        databaseCursor = databaseConnection.cursor()
+
+                        result = databaseCursor.execute(insertBeatQuery)
+                        databaseConnection.commit()
+
+                        if result is not None:
+                            return make_response({'status': 1, 'message': 'The beat has been successfully uploaded'}, 200)
+                        else:
+                            return make_response({'status': 0, 'message': 'An error occurred when uploading the beat'}, 500)
                     else:
-                        return make_response({'status': 0, 'message': 'An error occurred when uploading the beat'}, 500)
+                        return make_response({'status': 0, 'message': 'Duplicate file upload.'}, 409)
                 else:
-                    return make_response({'status': 0, 'message': 'Duplicate file upload.'}, 409)
+                    return make_response({'status': 0, 'message': 'File type not allowed.'}, 409)
             else:
-                return make_response({'status': 0, 'message': 'File type not allowed.'}, 400)
+                return make_response({'status': 0, 'message': 'No beat file uploaded'}, 400)
         else:
             return make_response({'status': 0, 'message': 'Must be logged in to perform this request.'}, 404)
     else:
@@ -186,16 +190,27 @@ def beat_exists(beat_id):
     cur.execute(query)
 
     result = cur.fetch_one()
-    if result is not None and Path.exists(result['address']):
+    if result is not None and path.exists(result['address']):
         return True, result['address']
 
     return False, None
 
-def check_beat_duplicate(beat):
+def check_beat_duplicate(beatFilePath):
     ''' Queries database for the beat hash and
     returns True if the hash exists, False otherwise
     '''
-    beat_hash = md5(beat.read()).hexdigest()
-    check_duplicate_beat = "SELECT beat_hash FROM beat WHERE beat_hash = '%s'" % beat_hash
-    cur = db.get_db().cursor()
-    return cur.execute(check_duplicate_beat) > 0
+    with open(beatFilePath, "rb") as f:
+        beat_hash = md5(f.read()).hexdigest()
+        check_duplicate_beat = "SELECT beat_hash FROM beat WHERE beat_hash = '%s'" % beat_hash
+        cur = db.get_db().cursor()
+        return (cur.execute(check_duplicate_beat) > 0), beat_hash
+
+def save_file_permanently(beatFilePath):
+    with open(beatFilePath, "rb") as f:
+        file_path = path.join(current_app.config['BEAT_DIR'], beatFilePath.split('\\')[-1])
+        beatFile = open(file_path, "wb")
+        beatFile.write(f.read())
+        beatFile.close()
+        f.close()
+        remove(beatFilePath)
+        return file_path
