@@ -27,15 +27,8 @@ def crop_beat(beat_path):
     seconds and saves the preview to the file system and
     returns the path to the preview.
     '''
-<<<<<<< HEAD
     preview_name = beat_path.split('\\')[-1]
     extension = preview_name.split('.')[-1]
-=======
-    extension = beat_path.split('.')[2]
-    preview_name = beat_path.split('/')[-1]
-    print(extension)
-    print(preview_name)
->>>>>>> Add functionality to prevent duplicate beat entries
     if extension in current_app.config['ALLOWED_EXTENSIONS']:
         beat = AudioSegment.from_file(beat_path, format=extension)
 
