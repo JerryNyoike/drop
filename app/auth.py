@@ -1,7 +1,9 @@
+from os.path import join
 from flask import Blueprint, request, make_response, current_app
 from . import db
 import jwt
 from datetime import datetime, timedelta
+from .helpers import log_error
 
 bp = Blueprint('auth', __name__, url_prefix='/auth')
 
@@ -93,8 +95,7 @@ def is_logged_in(token):
     try:
         return jwt.decode(token, current_app.config['SCRT'], algorithm='HS256')
     except jwt.exceptions.DecodeError as e:
-        return False
-
+        log_error("At is_logged_in, " + str(e), "jwt_error_logs.txt")
 
 def db_info(user_type):
     if user_type == 'client':
