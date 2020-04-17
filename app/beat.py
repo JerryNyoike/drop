@@ -250,18 +250,27 @@ def check_beat_duplicate(beatFilePath):
     returns True if the hash exists, False otherwise
     '''
     with open(beatFilePath, "rb") as f:
-        beat_hash = md5(f.read()).hexdigest()
-        check_duplicate_beat = "SELECT beat_hash FROM beat WHERE beat_hash = '%s'" % beat_hash
-        cur = db.get_db().cursor()
-        return (cur.execute(check_duplicate_beat) > 0), beat_hash
+        try:
+            beat_hash = md5(f.read()).hexdigest()
+            check_duplicate_beat = "SELECT beat_hash FROM beat WHERE beat_hash = '%s'" % beat_hash
+            cur = db.get_db().cursor()
+            return (cur.execute(check_duplicate_beat) > 0), beat_hash
+        except OSError as e:
+            log_error("At check_beat_duplicate, " + str(e), "os_error_logs.txt")
 
 def save_file_permanently(beatFilePath):
+    '''
+    Saves the temporary file at beatFilePath to the BEAT_DIR
+    then deletes the temporary file
+    '''
     with open(beatFilePath, "rb") as f:
-        file_path = path.join(current_app.config['BEAT_DIR'], beatFilePath.split('\\')[-1])
-        beatFile = open(file_path, "wb")
-        beatFile.write(f.read())
-        beatFile.close()
-        f.close()
-        remove(beatFilePath)
-        return file_path
->>>>>>> applied use of temp folder to store beats being uploaded
+        try:
+            file_path = path.join(current_app.config['BEAT_DIR'], beatFilePath.split('\\')[-1])
+            beatFile = open(file_path, "wb")
+            beatFile.write(f.read())
+            beatFile.close()
+            f.close()
+            remove(beatFilePath)
+            return file_path
+        except OSError as e:
+            log_error("At save_file_permanently, " + str(e), "os_error_logs.txt")
