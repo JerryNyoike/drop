@@ -5,10 +5,12 @@ import pymysql
 from flask import Blueprint, make_response, request, current_app
 from werkzeug.utils import secure_filename
 from hashlib import md5  
-
-
+from asyncio import run
 from . import db
+from .routines import main
 from .auth import is_logged_in
+from datetime import datetime
+from .helpers import log_error
 
 
 bp = Blueprint('beat', __name__, url_prefix="/beat")
@@ -25,8 +27,8 @@ def crop_beat(beat_path):
     seconds and saves the preview to the file system and
     returns the path to the preview.
     '''
-    extension = beat_path.split('.')[2]
     preview_name = beat_path.split('\\')[-1]
+    extension = preview_name.split('.')[-1]
     if extension in current_app.config['ALLOWED_EXTENSIONS']:
         beat = AudioSegment.from_file(beat_path, format=extension)
 
@@ -54,7 +56,7 @@ def insertBeat():
 
                 if allowed_filename(beat.filename): 
                     beatFileName = secure_filename(beat.filename)
-                    beatFilePath = path.join(current_app.config['TEMP_FOLDER'], beatFileName)
+                    beatFilePath = path.join(current_app.config['TEMP_DIR'], beatFileName)
                     beat.save(beatFilePath)
                     
                     is_duplicate, beat_hash = check_beat_duplicate(beatFilePath)
@@ -67,8 +69,12 @@ def insertBeat():
                         beatSellingPrice = beatInfo['sellingPrice']
 
                         beatFilePath = save_file_permanently(beatFilePath)
+
                         # crop a 30 seconds preview of the beat
                         preview = crop_beat(beatFilePath)
+
+                        # Get metadata from the audio file using ffmpeg
+                        run(main(beatFilePath))
                         
                         if preview is None:
                             return make_response({'status': 0, 'message':  'Could not upload beat successfully.'})
@@ -104,7 +110,8 @@ def insertBeat():
 def delete_beat():
     ''' remove the beat with beat_id from the database'''
     if request.content_type is 'application/json':
-        if is_logged_in(request['tkn']):
+        token = request.headers.get('Authorization').split(' ')[1]
+        if is_logged_in(token): 
             beat_details = beat_exists()
             if beat_details[0]:
                 # remove the beat entry from the database
@@ -116,7 +123,8 @@ def delete_beat():
                 # remove the beat's file from the filesystem
                 try:
                     Path.unlink(beat_details[1])
-                except FileNotFoundError:
+                except FileNotFoundError as e:
+                    log_error("At unlink request file, " + str(e), "fnf_error_logs.txt")
                     return make_response({'status': 0,
                                           'message': 'Beat does not exist or has\
                                                       already been deleted.'}
@@ -200,17 +208,27 @@ def check_beat_duplicate(beatFilePath):
     returns True if the hash exists, False otherwise
     '''
     with open(beatFilePath, "rb") as f:
-        beat_hash = md5(f.read()).hexdigest()
-        check_duplicate_beat = "SELECT beat_hash FROM beat WHERE beat_hash = '%s'" % beat_hash
-        cur = db.get_db().cursor()
-        return (cur.execute(check_duplicate_beat) > 0), beat_hash
+        try:
+            beat_hash = md5(f.read()).hexdigest()
+            check_duplicate_beat = "SELECT beat_hash FROM beat WHERE beat_hash = '%s'" % beat_hash
+            cur = db.get_db().cursor()
+            return (cur.execute(check_duplicate_beat) > 0), beat_hash
+        except OSError as e:
+            log_error("At check_beat_duplicate, " + str(e), "os_error_logs.txt")
 
 def save_file_permanently(beatFilePath):
+    '''
+    Saves the temporary file at beatFilePath to the BEAT_DIR
+    then deletes the temporary file
+    '''
     with open(beatFilePath, "rb") as f:
-        file_path = path.join(current_app.config['BEAT_DIR'], beatFilePath.split('\\')[-1])
-        beatFile = open(file_path, "wb")
-        beatFile.write(f.read())
-        beatFile.close()
-        f.close()
-        remove(beatFilePath)
-        return file_path
+        try:
+            file_path = path.join(current_app.config['BEAT_DIR'], beatFilePath.split('\\')[-1])
+            beatFile = open(file_path, "wb")
+            beatFile.write(f.read())
+            beatFile.close()
+            f.close()
+            remove(beatFilePath)
+            return file_path
+        except OSError as e:
+            log_error("At save_file_permanently, " + str(e), "os_error_logs.txt")
