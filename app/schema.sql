@@ -9,7 +9,7 @@ CREATE TABLE client(
 	email VARCHAR(36) NOT NULL UNIQUE,
 	phone_number INT(20) NOT NULL UNIQUE,
 	name VARCHAR(36) NOT NULL,
-	pwd VARCHAR(36) NOT NULL,
+	pwd VARCHAR(1024) NOT NULL,
 
 	PRIMARY KEY(c_id)
 );
@@ -19,7 +19,7 @@ CREATE TABLE producer(
 	email VARCHAR(36) NOT NULL UNIQUE,
 	name VARCHAR(36) NOT NULL,
 	phone_number VARCHAR(36) NOT NULL UNIQUE,
-	pwd VARCHAR(36) NOT NULL,
+	pwd VARCHAR(1024) NOT NULL,
 
 	PRIMARY KEY(producer_id)
 );
@@ -30,9 +30,11 @@ CREATE TABLE beat(
 	name VARCHAR(36) NOT NULL,
 	genre VARCHAR(36) NOT NULL,
 	address VARCHAR(100) NOT NULL,
+	prev_address VARCHAR(100) NOT NULL,
 	lease_price INT(11) NOT NULL,
 	selling_price INT(11) NOT NULL,
 	upload_date DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+	beat_hash VARCHAR(100) NOT NULL,
 
 	PRIMARY KEY(beat_id),
 	FOREIGN KEY(producer_id) REFERENCES producer(producer_id)
