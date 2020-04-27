@@ -1,4 +1,4 @@
-from os import path, makedirs, remove
+from os import path, makedirs, remove, sep
 from pydub import AudioSegment
 from pydub.utils import which
 import pymysql
@@ -26,7 +26,7 @@ def crop_beat(beat_path):
     returns the path to the preview.
     '''
     extension = beat_path.split('.')[2]
-    preview_name = beat_path.split('\\')[-1]
+    preview_name = beat_path.split(sep)[-1]
     if extension in current_app.config['ALLOWED_EXTENSIONS']:
         beat = AudioSegment.from_file(beat_path, format=extension)
 
@@ -207,7 +207,7 @@ def check_beat_duplicate(beatFilePath):
 
 def save_file_permanently(beatFilePath):
     with open(beatFilePath, "rb") as f:
-        file_path = path.join(current_app.config['BEAT_DIR'], beatFilePath.split('\\')[-1])
+        file_path = path.join(current_app.config['BEAT_DIR'], beatFilePath.split(sep)[-1])
         beatFile = open(file_path, "wb")
         beatFile.write(f.read())
         beatFile.close()
