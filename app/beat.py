@@ -145,43 +145,28 @@ def delete_beat():
 
 @bp.route('/fetch/all', methods=['GET'])
 def fetch_beats():
-    token = request.headers.get('Authorization').split(' ')[1]
     request_info = request.get_json()
-    user = is_logged_in(token)
     limit = request.args.get('limit', 30)
     skip = request.args.get('skip', 0)
-    # check that user is logged in
-    if user is not False:    
-        # check the user type
-        if user['typ'] is 'producer':
-            # fetch only beats uploaded by the producer
-            beats = get_beats(limit, skip, user['sub'])
-            if beats is not None:
-                # return the beats
-                return make_response({'status': 1, 'message': 'Success.', 'data': beats}, 200)
-            else:
-                return make_response({'status': 0, 'message': 'No beats found.'}, 404)
-        else:
-            # fetch beats produced by all producers
-            beats = get_beats(limit, skip)
-            if beats is not None:   
-                # return the beats
-                return make_response({'status': 1, 'message': 'Success.', 'data': beats}, 200)
-            else:
-                return make_response({'status': 0, 'message': 'No beats found.'}, 404)   
-    else:
-        return make_response({'status': 0, 'message': 'Must be logged in to complete this request'}, 403)
+
+    # fetch all beats
+    beats = get_beats(limit, skip)
+    if not beats:
+        return make_response({'status': 0, 'message': 'No beats found'}, 200)
+    # return the beats
+    return make_response({'status': 1, 'message': 'Beats fetched successfully','beats': beats}, 200)
 
 
-def get_beats(limit, skip, producer=None):
+def get_beats(limit, skip):
     ''' This function returns beats made by a certain producer,
     if passed to the function, and adds a limit and offset contraint
     to the query'''
     conn = db.get_db()
     cur = conn.cursor()
-    query = 'SELECT (BIN_TO_UUID(beat_id)) beat_id, address, genre, lease_price, selling_price, upload_date FROM beat'
-    if producer is not None:
-        query = str.join(' ', [query, 'WHERE producer_id={}'.format(producer)])
+    query = '''SELECT (BIN_TO_UUID(beat.beat_id)) beat_id, beat.name, beat.genre, beat.address, beat.lease_price, 
+    beat.selling_price, beat.upload_date, producer.name producer FROM beat INNER JOIN producer ON beat.producer_id=producer.producer_id'''
+    # if producer is not None:
+    #     query = str.join(' ', [query, 'WHERE producer_id={}'.format(producer)])
 
     query = str.join(' ', [query, 'LIMIT {},{}'.format(skip, limit)])
 
@@ -203,8 +188,6 @@ def beat_exists(beat_id):
 
     return False, None
 
-<<<<<<< HEAD
-<<<<<<< HEAD
 def check_beat_duplicate(beatFilePath):
     ''' Queries database for the beat hash and
     returns True if the hash exists, False otherwise
