@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta name="description" content="">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<title>DropBeats | {{ page }}</title>
+		<!-- Icon for site-->
+		<link rel="icon" href="{{ url_for('static', filename='assets/images/headphones_icon.png') }}">
+		<!--Icon stylesheets-->
+		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+		<link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+		<!--Google Fonts-->
+		<link href="https://fonts.googleapis.com/css2?family=Notable&family=Ultra&family=Abril+Fatface&family=Zilla+Slab+Highlight:wght@700&family=Amatic+SC:wght@700&family=Merriweather:ital,wght@1,900&family=Montserrat&family=Open+Sans&display=swap" rel="stylesheet">
+		<!--Style for this site -->
+		<link href="{{ url_for('static', filename='assets/css/general.css') }}" rel="stylesheet">
+		<link href="{{ url_for('static', filename='assets/css/animations.css') }}" rel="stylesheet">
+		<link href="{{ url_for('static', filename='assets/css/style.css') }}" rel="stylesheet">
+		{% block style %}{% endblock %}
+	</head>
+	<body>
+		<div class="navbar">
+			<div class="brand">
+				<a class="navbar-toggle"><span class="fa fa-bars"></span></a>
+				<a class="navbar-collapse"><span class="fa fa-chevron-left"></span></a>
+				<a class="name">DropBeats</a>
+			</div>
+			<nav>
+				<div class="search">
+					<form id="search_form">
+						<input name="query" placeholder="Search for beats">
+						<button type="submit" class="btn-pr"><span class="fa fa-search"></span></button>
+					</form>
+				</div>
+				<a href="{{ url_for('routes.index') }}" id="home-link">
+					<span class="fa fa-home"></span>
+					<p>Home</p>
+				</a>
+				<a href="{{ url_for('routes.explore') }}" id="explore-link">
+					<span class="fa fa-music"></span>
+					<p>Explore</p>
+				</a>
+				<a href="{{ url_for('routes.about') }}" id="about-link">
+					<span class="fa fa-info"></span>
+					<p>About</p>
+				</a>
+				<a href="{{ url_for('routes.produce') }}" id="produce-link">
+					<span class="fa fa-microphone"></span>
+					<p>Produce</p>
+				</a>
+				<a href="{{ url_for('routes.contacts') }}" id="contacts-link">
+					<span class="fa fa-address-book"></span>
+					<p>Contacts</p>
+				</a>
+				<a href="{{ url_for('user.login') }}">
+					<span class="fa fa-sign-in"></span>
+					<p>Login</p>
+				</a>
+				<a href="{{ url_for('user.register') }}">
+					<span class="fa fa-user"></span>
+					<p>Register</p>
+				</a>
+			</nav>
+		</div>
+		<div class="navbar-minimal">
+			<div class="brand">
+				<a class="navbar-toggle"><span class="fa fa-bars"></span></a>
+				<a class="navbar-collapse"><span class="fa fa-chevron-left"></span></a>
+				<a href="{{ url_for('routes.index') }}">
+					<img class="logo" src="{{ url_for('static', filename='assets/images/headphones_icon.png') }}">
+				</a>
+			</div>
+			<nav>
+				<a href="{{ url_for('routes.index') }}" id="home-link">
+					<span class="fa fa-home"></span>
+				</a>
+				<a href="{{ url_for('routes.explore') }}" id="explore-link">
+					<span class="fa fa-music"></span>
+				</a>
+				<a href="{{ url_for('routes.about') }}" id="about-link">
+					<span class="fa fa-info"></span>
+				</a>
+				<a href="{{ url_for('routes.produce') }}" id="produce-link">
+					<span class="fa fa-microphone"></span>
+				</a>
+				<a href="{{ url_for('routes.contacts') }}" id="contacts-link">
+					<span class="fa fa-address-book"></span>
+				</a>
+				<a href="{{ url_for('user.login') }}">
+					<span class="fa fa-sign-in"></span>
+				</a>
+				<a href="{{ url_for('user.register') }}">
+					<span class="fa fa-user"></span>
+				</a>
+			</nav>
+		</div>
+		<div class="container">	
+			{% block content %}{% endblock %}
+		</div>
+	    <div class="prompt">
+	        <span class="fa fa-check" id="prompt-icon"></span>
+	        <p class="prompt-message"></p>
+	    </div>
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+		<script src="{{ url_for('static', filename='assets/js/config.js') }}"></script>
+		<script src="{{ url_for('static', filename='assets/js/general.js') }}"></script>
+		<script type="text/javascript">
+			const page = "{{ page }}".toLowerCase();
+			$("nav").children().removeClass("active");
+            $("#" + page + "-link").addClass("active");
+		</script>>
+		{% block scripts %}{% endblock %}
+	</body>
+</html>

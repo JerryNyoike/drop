@@ -1,0 +1,101 @@
+/* Beats */
+.beats{
+	width: 95%;
+	margin: auto;
+}
+.category{
+	margin-bottom: 30px;
+}
+.beat-item{
+	width: 92%;
+	min-height: 160px;
+	border-radius: 5px;
+	box-shadow: 2px 2px 4px 2px rgba(0, 0, 0, 0.5);
+	position: relative;
+	margin: auto;
+	margin-bottom: 15px;
+}
+.beat-item .image{
+	width: 100%;
+	height: 130px;
+	position: relative;
+}
+.beat-item img{
+	width: 100%;
+	height: 100%;
+	border-top-left-radius: 5px;
+	border-top-right-radius: 5px;
+	margin: 0;
+}
+.beat-item .overlay{
+	width: 100%;
+	height: 100%;
+	top: 0;
+	left: 0;
+	position: absolute;
+	background-color: rgba(0, 0, 0, 0.6);
+	border-top-left-radius: 5px;
+	border-top-right-radius: 5px;
+}
+.beat-item #play{
+	width: 30px;
+	height: 30px;
+	position: absolute;
+	top: -10px;
+	left: 50%;
+	opacity: 0;
+	margin-left: -20px;
+	border-radius: 20px;
+	padding: 5px;
+	text-align: center;
+	background-color: #ffffff;
+}
+.beat-item #play span{
+	font-size: 20px;
+	color: #191d52;
+	margin-top: 5px;
+	margin-left: 5px;
+}
+.beat-item:hover #play{
+	top: 30px;
+	opacity: 1;
+	transition: all .5s ease; 
+}
+.beat-item .date{
+	position: absolute;
+	top: 90px;
+	right: 5px;
+	color: #ffffff;
+	font-size: 13px;
+	font-family: 'Amatic SC', sans-serif;
+	font-style: italic;
+	text-align: right;
+}
+.beat-details{
+	margin-top: -5px;
+	padding: 12px 8px 2px 8px;
+	background-color: #ffffff;
+	border-bottom-left-radius: 5px;
+	border-bottom-right-radius: 5px;
+}
+.beat-details h3{
+	font-size: 13px;
+	margin: 0;
+	margin-top: 2.5px;
+	margin-bottom: 8px;
+	font-family: 'Merriweather', serif;
+}
+.beat-details p{
+	font-size: 13px;
+	margin: 0;
+	padding: 0;
+	margin-bottom: 5px;
+}
+
+/* Media Queries */
+@media screen and (max-width: 768px){
+	.beat-details p,
+	.beat-details span{
+		font-size: 13px;
+	}
+}

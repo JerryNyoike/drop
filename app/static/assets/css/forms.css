@@ -1,0 +1,77 @@
+/* Register */
+#register,
+#login{
+	width: 100%;
+	height: 100%;
+	position: fixed;
+	top: 0;
+	left: 0;
+	background-image: url('../images/background_bg.jpg');
+	background-repeat: no-repeat;
+	background-size: cover;
+	background-attachment: fixed;
+}
+.register, 
+.login{
+	width: 100%;
+	height: 100%;
+	position: fixed;
+	top: 0;
+	left: 0;
+	background-color: rgba(0, 0, 0, 0.5);
+}
+.dialog{
+	width: 35%;
+	height: 100%;
+	position: fixed;
+	top: 0;
+	right: 0;
+	background-color: #ffffff;
+	padding-top: 80px;
+}
+.login .dialog{
+	padding-top: 100px;
+}
+.dialog h1{
+	color: #2d2d30;
+}
+.dialog input{
+	width: 80%;
+	height: auto;
+	border: 1.5px #cecece solid;
+	border-radius: 5px;
+	background-color: #ffffff;
+	padding: 10px;
+	color: #2d2d30;
+	margin-left: auto;
+	margin-right: auto;
+	margin-top: 15px;
+}
+.login .dialog input,
+.login .dialog button{
+	margin-top: 25px;
+}
+.dialog button{
+	margin-top: 15px;
+}
+.dialog a{
+	text-align: center;
+	text-decoration: none;
+	margin-top: 5px;
+}
+@media screen and (max-width: 768px){
+	.dialog{
+		width: 100%;
+		height: 100%;
+		height: auto;
+		top: 20%;
+		bottom: 0;
+		padding-top: 20px;
+		overflow-y: scroll;
+	}
+	.dialog input,
+	.dialog a,
+	.dialog button{
+		font-size: 15px;
+	}
+}

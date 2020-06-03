@@ -1,0 +1,11 @@
+{% extends 'forms_base.html' %}
+
+{% block content %}
+	<form id="login_form">
+		<input type="email" id="email" placeholder="Enter your email" required>
+		<input type="email" id="email" placeholder="Enter your password" required>
+		<button type="submit" class="btn-pr">Login</button>
+		<a href=" {{ url_for('user.register') }} ">Don't have an account? Register here</a>
+		<a href=" {{ url_for('user.reset_pwd') }} ">Don't have an account? Register here</a>
+	</form>
+{% endblock %}
