@@ -1,6 +1,6 @@
 from os import path, makedirs
 import pymysql
-from . import auth, db, beat
+from . import routes, user, auth, db, beat
 from flask import Flask, current_app
 from datetime import datetime
 from .helpers import log_error
@@ -15,6 +15,9 @@ def create_app(test_config=None):
     app.config.from_pyfile("../config.py", silent=True)
 
     with app.app_context():
+        # Set the secret key to some random bytes. Keep this really secret!
+        app.secret_key = current_app.config['SCRT']
+
         try:
             if not path.exists(current_app.instance_path):
                 makedirs(app.instance_path)
@@ -36,6 +39,8 @@ def create_app(test_config=None):
 
     db.init_app(app)
 
+    app.register_blueprint(routes.bp)
+    app.register_blueprint(user.bp)
     app.register_blueprint(auth.bp)
     app.register_blueprint(beat.bp)
 
