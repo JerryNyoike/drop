@@ -1,0 +1,301 @@
+{% extends 'base.html' %}
+
+{% block style%}
+	<link href="{{ url_for('static', filename='assets/css/premium.css') }}" rel="stylesheet">
+{% endblock %}
+
+{% block current_page %}
+	<li><a href="{{ url_for('routes.premium') }}" class="crumb">{{ page }}</a></li>
+	<li><a href="#pricing" class="crumb">Pricing</a></li>
+{% endblock %}
+	
+{% block content%}
+	<div class="premium">
+		<div class="banner">
+			<img src="{{ url_for('static', filename='assets/images/illustration12.svg') }}" 
+			class="illustration slide_from_right">
+			<div class="intro slide_from_left">
+				<h2>Try Premium</h2>
+				<p>Get more from dropbeats</p>
+				<div class="buttons">
+					<a class="btn-pr" href="{{ url_for('client.register') }}">Get Started
+						<span class="fa fa-chevron-right"></span>
+					</a>
+				</div>
+			</div>
+		</div>	
+		<div class="features">
+			<h2>Why choose dropbeats?</h2>
+			<div class="feature">
+				<div class="row">
+					<div class="flex-bg-40 flex-md-50 flex-sm-100">
+						<img src="{{ url_for('static', filename='assets/images/illustration2.svg') }}" 
+						class="illustration slide-from-left">
+					</div>
+					<div class="flex-bg-60 flex-md-50 flex-sm-100">
+						<div class="feature-info slide-from-right">
+							<h3>Feature</h3>
+							<p>Lorem ipsum dolor sit amet, semper cetero iisque in usu. Sit vocent fuisset consequat ei, at wisi possim sea, utamur lobortis torquatos id sit. Has te bonorum consequat, at dicunt placerat eam, vocibus necessitatibus ei eos. Sea malorum forensibus ne, an mea habeo option copiosae, congue labores eu qui. Illud principes ne vix, vide novum consequuntur vim cu, mea ad tincidunt pertinacia consetetur. Eu nostro detraxit signiferumque pri, ne dolor vidisse eum, principes intellegebat est eu. Dolorem deterruisset ad nam, cum saepe aperiri an, ne sit modo urbanitas vulputate.</p>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="feature">
+				<div class="row">
+					<div class="flex-bg-60 flex-md-50 flex-sm-100">
+						<div class="feature-info slide-from-right">
+							<h3>Feature</h3>
+							<p>Lorem ipsum dolor sit amet, semper cetero iisque in usu. Sit vocent fuisset consequat ei, at wisi possim sea, utamur lobortis torquatos id sit. Has te bonorum consequat, at dicunt placerat eam, vocibus necessitatibus ei eos. Sea malorum forensibus ne, an mea habeo option copiosae, congue labores eu qui. Illud principes ne vix, vide novum consequuntur vim cu, mea ad tincidunt pertinacia consetetur. Eu nostro detraxit signiferumque pri, ne dolor vidisse eum, principes intellegebat est eu. Dolorem deterruisset ad nam, cum saepe aperiri an, ne sit modo urbanitas vulputate.</p>
+						</div>
+					</div>
+					<div class="flex-bg-40 flex-md-50 flex-sm-100">
+						<img src="{{ url_for('static', filename='assets/images/illustration8.svg') }}" 
+						class="illustration slide-from-left">
+					</div>
+				</div>
+			</div>
+			<div class="feature">
+				<div class="row">
+					<div class="flex-bg-40 flex-md-50 flex-sm-100">
+						<img src="{{ url_for('static', filename='assets/images/illustration9.svg') }}" 
+						class="illustration slide-from-left">
+					</div>
+					<div class="flex-bg-60 flex-md-50 flex-sm-100">
+						<div class="feature-info slide-from-right">
+							<h3>Feature</h3>
+							<p>Lorem ipsum dolor sit amet, semper cetero iisque in usu. Sit vocent fuisset consequat ei, at wisi possim sea, utamur lobortis torquatos id sit. Has te bonorum consequat, at dicunt placerat eam, vocibus necessitatibus ei eos. Sea malorum forensibus ne, an mea habeo option copiosae, congue labores eu qui. Illud principes ne vix, vide novum consequuntur vim cu, mea ad tincidunt pertinacia consetetur. Eu nostro detraxit signiferumque pri, ne dolor vidisse eum, principes intellegebat est eu. Dolorem deterruisset ad nam, cum saepe aperiri an, ne sit modo urbanitas vulputate.</p>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div id="pricing">
+			<div class="pricing">
+				<h2>Pricing</h2>
+				<div class="row">
+					<div class="flex-bg-33 flex-md-100">
+						<div class="pricing-item">
+							<h3>Free</h3>
+							<p><span id="currency">Ksh.</span><b>0</b></p>
+							<div class="plan-features">
+								<div class="plan-feature">
+									<button type="button" class="collapsible">
+										<span class="fa fa-check-circle"></span>
+										Feature
+										<span class="fa fa-chevron-down" id="expand-feature"></span>
+									</button>
+									<div class="content">
+									  <p>Lorem ipsum...</p>
+									</div> 
+								</div>
+								<div class="plan-feature">
+									<button type="button" class="collapsible">
+										<span class="fa fa-check-circle"></span>
+										Feature
+										<span class="fa fa-chevron-down" id="expand-feature"></span>
+									</button>
+									<div class="content">
+									  <p>Lorem ipsum...</p>
+									</div> 
+								</div>
+								<div class="plan-feature">
+									<button type="button" class="collapsible">
+										<span class="fa fa-check-circle"></span>
+										Feature
+										<span class="fa fa-chevron-down" id="expand-feature"></span>
+									</button>
+									<div class="content">
+									  <p>Lorem ipsum...</p>
+									</div> 
+								</div>
+								<div class="plan-feature">
+									<button type="button" class="collapsible">
+										<span class="fa fa-times-circle"></span>
+										Feature
+										<span class="fa fa-chevron-down" id="expand-feature"></span>
+									</button>
+									<div class="content">
+									  <p>Lorem ipsum...</p>
+									</div> 
+								</div>
+								<div class="plan-feature">
+									<button type="button" class="collapsible">
+										<span class="fa fa-times-circle"></span>
+										Feature
+										<span class="fa fa-chevron-down" id="expand-feature"></span>
+									</button>
+									<div class="content">
+									  <p>Lorem ipsum...</p>
+									</div> 
+								</div>
+							</div>
+							<button class="btn-pr">Try Now</button>
+						</div>
+					</div>
+					<div class="flex-bg-33 flex-md-100">
+						<div class="pricing-item">
+							<h3>Standard</h3>
+							<p><span id="currency">Ksh. </span><b>300</b></p>
+							<div class="plan-features">
+								<div class="plan-feature">
+									<button type="button" class="collapsible">
+										<span class="fa fa-check-circle"></span>
+										Feature
+										<span class="fa fa-chevron-down" id="expand-feature"></span>
+									</button>
+									<div class="content">
+									  <p>Lorem ipsum...</p>
+									</div> 
+								</div>
+								<div class="plan-feature">
+									<button type="button" class="collapsible">
+										<span class="fa fa-check-circle"></span>
+										Feature
+										<span class="fa fa-chevron-down" id="expand-feature"></span>
+									</button>
+									<div class="content">
+									  <p>Lorem ipsum...</p>
+									</div> 
+								</div>
+								<div class="plan-feature">
+									<button type="button" class="collapsible">
+										<span class="fa fa-check-circle"></span>
+										Feature
+										<span class="fa fa-chevron-down" id="expand-feature"></span>
+									</button>
+									<div class="content">
+									  <p>Lorem ipsum...</p>
+									</div> 
+								</div>
+								<div class="plan-feature">
+									<button type="button" class="collapsible">
+										<span class="fa fa-check-circle"></span>
+										Feature
+										<span class="fa fa-chevron-down" id="expand-feature"></span>
+									</button>
+									<div class="content">
+									  <p>Lorem ipsum...</p>
+									</div> 
+								</div>
+								<div class="plan-feature">
+									<button type="button" class="collapsible">
+										<span class="fa fa-times-circle"></span>
+										Feature
+										<span class="fa fa-chevron-down" id="expand-feature"></span>
+									</button>
+									<div class="content">
+									  <p>Lorem ipsum...</p>
+									</div> 
+								</div>
+							</div>
+							<button class="btn-pr">Try Now</button>
+						</div>
+					</div>
+					<div class="flex-bg-33 flex-md-100">
+						<div class="pricing-item">
+							<h3>Pro</h3>
+							<p><span id="currency">Ksh. </span><b>800</b></p>
+							<div class="plan-features">
+								<div class="plan-feature">
+									<button type="button" class="collapsible">
+										<span class="fa fa-check-circle"></span>
+										Feature
+										<span class="fa fa-chevron-down" id="expand-feature">
+									</button>
+									<div class="content">
+									  <p>Lorem ipsum...</p>
+									</div> 
+								</div>
+								<div class="plan-feature">
+									<button type="button" class="collapsible">
+										<span class="fa fa-check-circle"></span>
+										Feature
+										<span class="fa fa-chevron-down" id="expand-feature">
+									</button>
+									<div class="content">
+									  <p>Lorem ipsum...</p>
+									</div> 
+								</div>
+								<div class="plan-feature">
+									<button type="button" class="collapsible">
+										<span class="fa fa-check-circle"></span>
+										Feature
+										<span class="fa fa-chevron-down" id="expand-feature">
+									</button>
+									<div class="content">
+									  <p>Lorem ipsum...</p>
+									</div> 
+								</div>
+								<div class="plan-feature">
+									<button type="button" class="collapsible">
+										<span class="fa fa-check-circle"></span>
+										Feature
+										<span class="fa fa-chevron-down" id="expand-feature">
+									</button>
+									<div class="content">
+									  <p>Lorem ipsum...</p>
+									</div> 
+								</div>
+								<div class="plan-feature">
+									<button type="button" class="collapsible">
+										<span class="fa fa-check-circle"></span>
+										Feature
+										<span class="fa fa-chevron-down" id="expand-feature">
+									</button>
+									<div class="content">
+									  <p>Lorem ipsum...</p>
+									</div> 
+								</div>
+							</div>
+							<button class="btn-pr">Try Now</button>
+						</div>
+					</div>
+				</div>
+		</span>	</div>
+		</div>
+		<div class="testimonials">
+			<h2>Dont take our word for it</h2>
+			<p>Here are some of our customers thoughts</p>
+			<div class="caroussel">
+				<div class="caroussel-body">
+					
+				</div>
+				<div class="indicators">
+				</div>
+			</div>
+		</div>		
+		<div class="footer">
+			<div class="row">
+				<div class="flex-bg-33 flex-sm-100">
+					<div class="footer-item zoom-in">
+						<h2>Menu</h2>
+						<a href="{{ url_for('routes.index') }}">Home</a>
+						<a href="{{ url_for('routes.index') }}">Premium</a>
+						<a href="{{ url_for('routes.produce') }}">Producer?</a>
+						<a href="{{ url_for('client.login') }}" id="login-link">Login</a>
+						<a href="{{ url_for('client.register') }}" id="register-link">Sign Up</a>
+					</div>
+				</div>
+				<div class="flex-bg-33 flex-sm-100">
+					<div class="footer-item zoom-in">
+						<h2>Legal</h2>
+						<a href="{{ url_for('routes.index') }}">Privacy</a>
+						<a href="{{ url_for('routes.index') }}">Copyrights</a>
+						<a href="{{ url_for('routes.index') }}">Terms and Conditions</a>
+					</div>
+				</div>
+				<div class="flex-bg-33 flex-sm-100">
+					<div class="footer-item zoom-in">
+						<h2>Text</h2>
+						<p>Lorem ipsum dolor sit amet, te est possim invenire. Agam nostrum eleifend vis eu. Fastidii fabellas te has, usu illud fastidii in. Liber maiorum suscipiantur his cu. Et labore tritani propriae nam.</p>
+					</div>
+				</div>
+			</div>
+			<p class="copyright">Copyright &copy; Dropbeats <span id="year"></span></p>
+		</div>
+	</div>
+{% endblock %}
+
+{% block scripts %}
+	<script type="text/javascript" src="{{ url_for('static', filename='assets/js/premium.js') }}"></script>
+{% endblock %}
