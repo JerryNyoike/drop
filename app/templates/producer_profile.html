@@ -1,0 +1,81 @@
+{% extends 'base.html' %}
+
+{% block style%}
+	<link rel="stylesheet" href="https://cdn.plyr.io/3.6.2/plyr.css" />
+	<link href="{{ url_for('static', filename='assets/css/producer_profile.css') }}" rel="stylesheet">
+{% endblock %}
+
+{% block current_page %}
+	<li class="active"><a href="{{ url_for('routes.producer_profile', producer_id=producer.producer_id) }}" class="crumb">
+	{{ page }}</a></li>
+{% endblock %}
+	
+{% block content %}
+	<div class="producer">
+		{% if producer %}
+			<div class="row">
+				<div class="flex-bg-30 flex-md-100">
+					<h2>Profile</h2>
+					<div class="profile">
+						<div class="profile-img">
+							<img src="{{ url_for('routes.uploaded_image', filename=producer.profile_image) }}">
+						</div>
+						<div class="header">
+							<h2>{{ producer.name }}</h2>
+							<p id="beat-count"><b>12</b> Beats</p>
+							<div class="social">
+								<a><span class="fa fa-instagram"></span></a>
+								<a><span class="fa fa-twitter"></span></a>
+								<a><span class="fa fa-facebook"></span></a>
+								<a><span class="fa fa-phone"></span></a>
+								<a><span class="fa fa-envelope"></span></a>
+							</div>
+						</div>
+						<div class="list-divider"></div>
+						<div class="bio">
+							<h3>Bio</h3>
+							<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc vitae urna vulputate, convallis tellus eu, luctus magna. Integer non nisi eu turpis ullamcorper aliquet at in eros</p>
+						</div>
+						<div class="list-divider"></div>
+						<div class="details">
+							<h3>Details</h3>
+							<p>Name: {{ producer.name }}</p>
+							<p>Email: {{ producer.email }}</p>
+							<p>Phone: {{ producer.phone_number }}</p>
+						</div>
+						<div class="list-divider"></div>
+					</div>
+				</div>
+				<div class="vert-divider"></div>
+				<div class="flex-bg-70 flex-md-100">						
+					<div class="beats">	
+						<h2>Beats</h2>
+						<div class="row" id="beats-body">
+							{% if beats %}
+								{% for beat in beats %}
+									<div class="flex-bg-25 flex-md-30 flex-xs-50">
+										<div class="beat-item zoom_in" id="{{ beat.beat_id }}">
+											<div class="image">
+												<img src="{{ url_for('static', filename='assets/images/beat_img4.jpg') }}">
+												<div class="overlay"></div>
+											</div>
+											<a href="{{ url_for('beat.fetch_beat', beat_id=beat.beat_id) }}" class="play"><span class="fa fa-play"></span></a>
+											<p class="date">{{ beat.upload_date }}</p>
+											<div class="beat-details">
+												<h3>{{ beat.name }}</h3>
+												<p>{{ producer.name }}</p>
+											</div>
+										</div>
+									</div>
+								{% endfor %}
+							{% else %}
+								<p>The producer does not have any beats uploaded.<br>
+								Check back later for some awesome beats</p>
+							{% endif%}
+						</div>
+					</div>
+				</div>
+			</div>
+		{% endif %}
+	</div>
+{% endblock %}
