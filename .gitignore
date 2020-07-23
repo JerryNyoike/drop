@@ -62,9 +62,10 @@ db.sqlite3
 db.sqlite3-journal
 
 # Flask stuff:
+config.py
 instance/
 .webassets-cache
-app/static
+app/static/uploads
 static
 
 # Scrapy stuff:
