@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta name="description" content="">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<title>DropBeats | {{ page }}</title>
+		<!-- Icon for site-->
+		<link rel="icon" href="{{ url_for('static', filename='assets/images/headphones_icon.png') }}">
+		<!--Google Fonts-->
+		<link href="https://fonts.googleapis.com/css2?family=Notable&family=Ultra&family=Abril+Fatface&family=Zilla+Slab+Highlight:wght@700&family=Amatic+SC:wght@700&family=Merriweather:ital,wght@1,900&family=Montserrat&family=Open+Sans&display=swap" rel="stylesheet">
+		<style type="text/css">
+			.code{
+				text-align: center;
+				color: #2d2d30;
+				font-size: 40px;
+				font-family: 'Abril Fatface', sans-serif;
+				margin-top: 40%;
+			}
+			.message{
+				text-align: center;
+				font-size: 22px;
+				font-family: 'Merriweather', serif;
+				color: #2d2d30;
+			}
+		</style>
+	</head>
+	<body>
+		<h2 class="code">{{ error }}</h2>
+		<p class="message">{{ message }}</p>
+	</body>
+</html>
