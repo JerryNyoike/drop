@@ -1,0 +1,96 @@
+{% extends 'base.html' %}
+
+{% block style%}
+	<link rel="stylesheet" href="https://cdn.plyr.io/3.6.2/plyr.css" />
+	<link href="{{ url_for('static', filename='assets/css/client_profile.css') }}" rel="stylesheet">
+{% endblock %}
+
+{% block current_page %}
+	<li class="active"><a href="{{ url_for('client.profile', client_id=client.client_id) }}" class="crumb">
+	{{ page }}</a></li>
+{% endblock %}
+	
+{% block content %}
+	<div class="client">
+		{% if client %}
+			<div class="header">
+				<div class="row">
+					<div class="flex-bg-25 flex-md-100">
+						<div class="profile-img">
+							<img src="{{ url_for('routes.uploaded_image', filename=client.profile_image) }}">
+						</div>
+					</div>
+					<div class="flex-bg-50 flex-md-100">
+						<div class="intro">
+							<h2>{{ client.name }}</h2>
+							<p><b>Email: </b>{{ client.email }}</p>
+							<p><b>Occupation: </b>Musician</p>
+						</div>
+						<div class="social">
+							<a><span class="fa fa-instagram"></span></a>
+							<a><span class="fa fa-twitter"></span></a>
+							<a><span class="fa fa-facebook"></span></a>
+						</div>
+					</div>
+					<div class="flex-bg-25 flex-md-100">
+						<div class="buttons">
+							<a class="btn-pr" id="edit-link">Edit Profile<span class="fa fa-pencil"></span></a>
+							<a href="{{ url_for('client.settings') }}" class="btn-pr" id="settings-link">Settings<span class="fa fa-gear"></span></a>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="tabs">
+				<a class="tab active" id="profile"><span>Profile</span></a>
+				<a class="tab" id="history"><span>History</span></a>
+				<a class="tab" id="starred"><span>Starred</span></a>
+			</div>		
+			<div class="viewpager">
+				<div class="profile">
+					<div class="bio">
+						<h3>Bio</h3>
+						<p>No bio provided</p>
+					</div>
+					<div class="hor-divider"></div>
+					<div class="info">
+						<h3 style="margin-bottom: 0;">Details</h3>
+						<div class="row">
+							<div class="flex-bg-50 flex-sm-100">
+								<p>Name: {{ client.name }}</p>
+								<p>Phone: {{ client.phone_number }}</p>
+								<p>Email: {{ client.email }}</p>
+							</div>
+							<div class="flex-bg-50 flex-sm-100">
+								<p>Age: 21 years</p>
+								<p>Country: Kenya</p>
+								<p>City and Address: Westlands, Nairobi</p>
+							</div>
+						</div>
+					</div>
+					<div class="hor-divider"></div>
+					<div class="skills">
+						<h3>Skills</h3>
+						<div class="row">
+							<!-- <p class="skill">Skill</p> -->
+							<p>No listed skills</p>
+						</div>
+					</div>
+				</div>
+				<div class="history">
+					<div class="row" id="history-body">
+						
+					</div>
+				</div>
+				<div class="starred">
+					<div class="row" id="starred-body">
+						
+					</div>
+				</div>
+			</div>
+		{% endif %}
+	</div>
+{% endblock %}
+
+{% block scripts %}
+	<script type="text/javascript" src="{{ url_for('static', filename='assets/js/client_profile.js') }}"></script>
+{% endblock %}
