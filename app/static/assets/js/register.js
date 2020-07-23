@@ -1,61 +1,26 @@
-function register(user_type){
-    var user_type = user_type == 0 ? 'client' : 'producer';
-    const url = server + 'auth/register';
+$(document).ready(function(){
+    $('#profile-image').attr('src', '/static/assets/images/profile.png');
+    $('#select-img, #profile-image').on('click', function(){
+        $("#file").trigger("click");
+    });
 
-    password = document.forms.register_form.password.value;
-    confirm_password = document.forms.register_form.confirm_password.value;
+    $("#file").change(function() {
+        readURL(this);
+    });
+});
 
-    if (password == confirm_password) {
-        let data = {
-            name: document.forms.register_form.names.value,
-            email: document.forms.register_form.email.value,
-            phone: document.forms.register_form.phone.value,
-            type: user_type,
-            pwd: password
-        }
-        
-        let headers = new Headers();
-        headers.append("Content-Type", "application/json");
+function readURL(input) {
+    if (input.files && input.files[0]) {
+        var reader = new FileReader();
 
-        let fetchData = {
-            method: 'POST',
-            headers: headers,
-            body: JSON.stringify(data)
+        reader.onload = function(e) {
+            const img = $('#profile-image');
+            img.attr('src', e.target.result);
+            img.css("padding", "0");
+            img.css("width", "70px");
+            img.css("height", "70px");
         }
 
-        fetch(url, fetchData)
-            .then(response => response.json())
-            .then(function (response) {
-                showPrompt(response.message, response.status);
-                if (response.status == 1) {
-                    setTimeout(function(){
-                        if (user_type == "client") {
-                            window.location.assign("login.html");
-                        } else {
-                            window.location.assign("producerlogin.html");
-                        }
-                    }, 2000);
-                }
-            })
-            .catch(function (error) {
-                console.log(error);
-            });
+        reader.readAsDataURL(input.files[0]); // convert to base64 string
     }
-    else {
-        showPrompt("Password do not match!!");
-    }
-
-}
-
-function showPrompt(message, state){
-    console.log(state);
-    if (state == 0){
-        $("#prompt-icon").removeClass("fa-check");
-        $("#prompt-icon").addClass("fa-close");
-    }
-    $(".prompt-message").text(message);
-    $(".prompt").fadeToggle();
-    setTimeout(function(){
-        $(".prompt").fadeToggle();
-    }, 2000);
 }

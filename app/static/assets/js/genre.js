@@ -1,27 +1,20 @@
 let skip = 0;
-let player_open = false;
 $(window).ready(function() {
 
 	getBeats();
-	
-	$(".play").on("click", function(event){
-		event.preventDefault();
-	});
-
-	$("#play").on('click', function(){
-		
-	});
 
 });
 
 function getBeats(){
 	$('.loading').fadeIn("fast");
-	const url = server + 'beat/fetch/all?limit=' + beat_request_limit + '&skip=' + skip;
+	let url_elements = window.location.href.split("/");
+	const genre = url_elements[url_elements.length - 1];
+	const url = server + 'beat/fetch/genre/' + genre + '?limit=' + beat_request_limit + '&skip=' + skip;
 
     fetch(url, {method: 'GET'})
         .then(response => response.json())
         .then(function (response) {
-			$('.loading').css("display", "none");
+			$('.loading').fadeOut("fast");
             if (response.status == 1) {
                 populateBeatsBody(response.beats);
             } else {
@@ -30,6 +23,7 @@ function getBeats(){
         })
         .catch(function (error) {
             console.log(error);
+			$('.loading').fadeOut("fast");
         });
 }
 
@@ -41,7 +35,7 @@ function populateBeatsBody(beats){
 
 		let anim_class = 'zoom-in';
 		if (i < 20) anim_class = 'zoom_in';
-		
+
 		const div = `
 		<div class="flex-bg-20 flex-md-30 flex-xs-50">
 			<div class="beat-item ${anim_class}" id="${beat.beat_id}">
@@ -57,7 +51,6 @@ function populateBeatsBody(beats){
 				</div>
 			</div>
 		</div>`;
-		$('#new-releases').append(div);
-		$('#recents').append(div);
+		$('#beats-body').append(div);
 	}
 }

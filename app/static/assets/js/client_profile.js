@@ -1,18 +1,26 @@
-let skip = 0;
-let player_open = false;
-$(window).ready(function() {
-
+let skip = 30;
+$(document).ready(function(){
 	getBeats();
-	
-	$(".play").on("click", function(event){
+	$('.tab').on('click', function(){
+		const id = $(this).attr('id');
+		switchTab(id);
+	});
+
+	$('#edit-link').on('click', function(event){
 		event.preventDefault();
+		localStorage.setItem('active-tab', 'profile');
+		window.location.assign('/client/settings');
 	});
-
-	$("#play").on('click', function(){
-		
-	});
-
 });
+
+function switchTab(id){
+	$('.profile, .history, .starred').css('display', 'none');
+	$('.tab').each(function(){
+		$(this).removeClass('active');
+	});
+	$('#' + id).addClass('active');
+	$('.' + id).fadeIn('fast');
+}
 
 function getBeats(){
 	$('.loading').fadeIn("fast");
@@ -21,7 +29,7 @@ function getBeats(){
     fetch(url, {method: 'GET'})
         .then(response => response.json())
         .then(function (response) {
-			$('.loading').css("display", "none");
+			$('.loading').fadeOut("fast");
             if (response.status == 1) {
                 populateBeatsBody(response.beats);
             } else {
@@ -30,6 +38,7 @@ function getBeats(){
         })
         .catch(function (error) {
             console.log(error);
+			$('.loading').fadeOut("fast");
         });
 }
 
@@ -41,7 +50,7 @@ function populateBeatsBody(beats){
 
 		let anim_class = 'zoom-in';
 		if (i < 20) anim_class = 'zoom_in';
-		
+
 		const div = `
 		<div class="flex-bg-20 flex-md-30 flex-xs-50">
 			<div class="beat-item ${anim_class}" id="${beat.beat_id}">
@@ -57,7 +66,8 @@ function populateBeatsBody(beats){
 				</div>
 			</div>
 		</div>`;
-		$('#new-releases').append(div);
-		$('#recents').append(div);
+		$('#history-body').append(div);
+		$('#starred-body').append(div);
 	}
 }
+

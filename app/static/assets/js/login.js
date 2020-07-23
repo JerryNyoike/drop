@@ -1,10 +1,9 @@
 function login(user_type){
-    var user_type = user_type == 0 ? 'client' : 'producer';
-    const url = server + 'auth/login';
+    const type = user_type == 0 ? 'client' : 'producer';
+    const url = server + type + '/login';
 
     let data = {
         email: document.forms.login_form.email.value,
-        type: user_type,
         pwd: document.forms.login_form.password.value
     }
 
@@ -20,24 +19,27 @@ function login(user_type){
     fetch(url, fetchData)
         .then(response => response.json())
         .then(function (response) {
-            showPrompt(response.message, response.status);
             if (response.status == 1) {
-                localStorage.setItem("token", response.payload);
+                showPrompt(response.message, response.status);
                 localStorage.setItem("user_details", JSON.stringify(response.user_details));
-                if (user_type == "client"){
-                    window.location.assign("index.html");
+                if (type === 'client'){
+                    setTimeout(function(){
+                        window.location.assign("/");
+                    }, 1000);
                 } else {
-                    window.location.assign("producer/index.html");
+                    setTimeout(function(){
+                        window.location.assign(server + "producer/");
+                    }, 1000);
                 }
             }
         })
         .catch(function (error) {
-            showPrompt("Something went wrong.<br>Check your connection and try again")
+            showPrompt("Something went wrong.Check your connection and try again", 0);
+            console.log(error);
         });
 }
 
 function showPrompt(message, state){
-    console.log(state);
     if (state == 0){
         $("#prompt-icon").removeClass("fa-check");
         $("#prompt-icon").addClass("fa-close");
