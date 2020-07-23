@@ -26,7 +26,7 @@
 								<p>{{ beat.producer }}</p>
 							</a>
 							<h2>{{ beat.name }}</h2>
-							<p>Genre: {{ beat.genre }}</p>
+							<p>Genre: {{ beat.category }}</p>
 							<div class="prices">
 								<p>Lease Price: Ksh. {{ beat.lease_price }}</p>
 								<p>Buying Price: Ksh. {{ beat.selling_price }}</p>
@@ -40,9 +40,11 @@
 							<button class="btn-pr" id="sell">Buy<br><span>Ksh {{ beat.selling_price }}</span></button>
 							<div class="icons">
 								<a><span class="fa fa-star"></span><p>Star</p></a>
-								<a><span class="fa fa-chain"></span><p>Copy Shareable Link</p></a>
-								<a><span class="fa fa-twitter"></span><p>Share On Twitter</p></a>
-								<a><span class="fa fa-instagram"></span><p>Share on Instagram</p></a>
+								<a href="{{ url_for('beat.fetch_beat', beat_id=beat.beat_id) }}" id="copy-url">
+									<span class="fa fa-chain"></span><p>Link</p>
+								</a>
+								<a><span class="fa fa-twitter"></span><p>Twitter Share</p></a>
+								<a><span class="fa fa-instagram"></span><p>Instagram Share</p></a>
 							</div>
 						</div>
 					</div>
@@ -71,7 +73,7 @@
 	<script type="text/javascript" src="{{ url_for('static', filename='assets/js/beat.js') }}"></script>
 	<script type="text/javascript">
 		const player = new Plyr('#player');
-		const genre = "{{ beat.genre }}".split(' ').join("_");
-		getBeats(genre);
+		const category = "{{ beat.category }}".split(' ').join("_");
+		getBeats(category);
 	</script>
 {% endblock %}

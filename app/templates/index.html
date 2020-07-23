@@ -1,12 +1,16 @@
 {% extends 'base.html' %}
 
-{% block style%}
+{% block style %}
 	<link href="{{ url_for('static', filename='assets/css/home.css') }}" rel="stylesheet">
 	<link rel="stylesheet" href="https://cdn.plyr.io/3.6.2/plyr.css" />
 {% endblock %}
+
+{% block current_page %}
+	<li><a href="{{ url_for('routes.index') }}" class="crumb">{{ page }}</a></li>
+{% endblock %}
 	
-{% block content%}
-	<section id="beats">
+{% block content %}
+	<section class="home">
 		<div class="beats">
 			<div class="category">
 				<h2>New Releases</h2>
@@ -25,6 +29,5 @@
 {% endblock %}
 
 {% block scripts %}
-	<script src="https://cdn.plyr.io/3.6.2/plyr.js"></script>
 	<script type="text/javascript" src="{{ url_for('static', filename='assets/js/home.js') }}"></script>
 {% endblock %}

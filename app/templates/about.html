@@ -3,11 +3,102 @@
 {% block style%}
 	<link href="{{ url_for('static', filename='assets/css/about.css') }}" rel="stylesheet">
 {% endblock %}
+
+{% block current_page %}
+	<li><a href="{{ url_for('routes.about') }}" class="crumb">{{ page }}</a></li>
+{% endblock %}
 	
 {% block content%}
 	<section id="about">
-		<div class="about">
-			
-		</div>
+		<div class="about">	
+			<div class="banner">
+				<img src="{{ url_for('static', filename='assets/images/illustration4.svg') }}" 
+				class="illustration slide_from_right">
+				<div class="intro slide_from_left">
+					<h2>About Us</h2>
+					<p>Your one stop shop for beats</p>
+					<div class="buttons">
+						<a class="btn-pr" href="{{ url_for('client.login') }}">Get Started
+							<span class="fa fa-chevron-right"></span>
+						</a>
+					</div>
+				</div>
+			</div>	
+			<div class="about-item slide-from-top">
+				<h2>Who We Are</h2>
+				<p>Lorem ipsum dolor sit amet, semper cetero iisque in usu. Sit vocent fuisset consequat ei, at wisi possim sea, utamur lobortis torquatos id sit. Has te bonorum consequat, at dicunt placerat eam, vocibus necessitatibus ei eos. Sea malorum forensibus ne, an mea habeo option copiosae, congue labores eu qui. Illud principes ne vix, vide novum consequuntur vim cu, mea ad tincidunt pertinacia consetetur. Eu nostro detraxit signiferumque pri, ne dolor vidisse eum, principes intellegebat est eu. Dolorem deterruisset ad nam, cum saepe aperiri an, ne sit modo urbanitas vulputate.</p>
+			</div>
+			<div class="about-item slide-from-bottom">
+				<h2>What We Do</h2>
+				<p>Lorem ipsum dolor sit amet, semper cetero iisque in usu. Sit vocent fuisset consequat ei, at wisi possim sea, utamur lobortis torquatos id sit. Has te bonorum consequat, at dicunt placerat eam, vocibus necessitatibus ei eos. Sea malorum forensibus ne, an mea habeo option copiosae, congue labores eu qui. Illud principes ne vix, vide novum consequuntur vim cu, mea ad tincidunt pertinacia consetetur. Eu nostro detraxit signiferumque pri, ne dolor vidisse eum, principes intellegebat est eu. Dolorem deterruisset ad nam, cum saepe aperiri an, ne sit modo urbanitas vulputate.</p>
+			</div>
+			<div id="portfolio">
+				<div class="portfolio">
+					<div class="row">
+						<div class="flex-bg-25 flex-md-50 flex-sm-100">
+							<div class="portfolio-item">
+								<span class="fa fa-music"></span>
+								<h3 class="counter highest" id="2000000">2</h3>
+								<p>Beats</p>
+							</div>
+						</div>
+						<div class="flex-bg-25 flex-md-50 flex-sm-100">
+							<div class="portfolio-item">
+								<span class="fa fa-user"></span>
+								<h3 class="counter" id="100000">2</h3>
+								<p>Producers</p>
+							</div>
+						</div>
+						<div class="flex-bg-25 flex-md-50 flex-sm-100">
+							<div class="portfolio-item">
+								<span class="fa fa-handshake-o"></span>
+								<h3 class="counter" id="1000000">2</h3>
+								<p>Transactions</p>
+							</div>
+						</div>
+						<div class="flex-bg-25 flex-md-50 flex-sm-100">
+							<div class="portfolio-item">
+								<span class="fa fa-clock-o"></span>
+								<h3 class="counter" id="3">2</h3>
+								<p>Years</p>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>	
+		<div class="footer">
+			<div class="row">
+				<div class="flex-bg-33 flex-sm-100">
+					<div class="footer-item zoom-in">
+						<h2>Menu</h2>
+						<a href="{{ url_for('routes.index') }}">Home</a>
+						<a href="{{ url_for('routes.index') }}">Premium</a>
+						<a href="{{ url_for('routes.produce') }}">Producer?</a>
+						<a href="{{ url_for('client.login') }}" id="login-link">Login</a>
+						<a href="{{ url_for('client.register') }}" id="register-link">Sign Up</a>
+					</div>
+				</div>
+				<div class="flex-bg-33 flex-sm-100">
+					<div class="footer-item zoom-in">
+						<h2>Legal</h2>
+						<a href="{{ url_for('routes.index') }}">Privacy</a>
+						<a href="{{ url_for('routes.index') }}">Copyrights</a>
+						<a href="{{ url_for('routes.index') }}">Terms and Conditions</a>
+					</div>
+				</div>
+				<div class="flex-bg-33 flex-sm-100">
+					<div class="footer-item zoom-in">
+						<h2>Text</h2>
+						<p>Lorem ipsum dolor sit amet, te est possim invenire. Agam nostrum eleifend vis eu. Fastidii fabellas te has, usu illud fastidii in. Liber maiorum suscipiantur his cu. Et labore tritani propriae nam.</p>
+					</div>
+				</div>
+			</div>
+			<p class="copyright">Copyright &copy; Dropbeats <span id="year"></span></p>
+		</div>	
 	</section>
+{% endblock %}
+
+{% block scripts %}
+	<script type="text/javascript" src="{{ url_for('static', filename='assets/js/about.js') }}"></script>
 {% endblock %}
