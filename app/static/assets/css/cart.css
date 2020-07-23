@@ -1,0 +1,167 @@
+#cart{
+	width: 95%;
+	margin: auto;
+	margin-top: 35px;
+	margin-bottom: 30px;
+	padding: 0;
+	background-color: #ffffff;
+	border-radius: 5px;
+	box-shadow: 1px 1px 5px 3px rgba(0, 0, 0, 0.2);
+}
+#cart h2{
+	margin-left: 2.5%;
+	padding-top: 15px;
+}
+.cart{
+	padding: 20px 0;
+}
+.cart-item{
+	width: 95%;
+	height: auto;
+	margin: auto;
+	position: relative;
+}
+.beat-img{
+	flex-basis: 20%;
+	max-width: 20%;
+	height: auto;
+	flex-grow: 0;
+	flex-shrink: 0;
+}
+.beat-img img{
+	width: 100%;
+	height: 100%;
+	border-radius: 5px;
+	text-align: right;
+}
+.beat-body{
+	flex-basis: 75%;
+	flex-grow: 0;
+	flex-shrink: 0;
+}
+.beat-body h3{
+	margin: 0;
+	margin-top: 10px;
+	font-size: 13px;
+}
+.info{
+	width: 90%;
+	margin: auto;
+	margin-top: 0;
+	padding-bottom: 10px;
+}
+.info h2{
+	font-size: 18px;
+	margin: 0;
+}
+.info p{
+	font-size: 13.5px;
+	display: inline-block;
+	padding: 0;
+	margin: 0;
+	margin-top: 10px;
+}
+.prices p:nth-child(2){
+	margin-left: 15px;
+}
+.player{
+	width: 95%;
+	margin: auto;
+}
+.purchase-type{
+	position: absolute;
+	top: 20px;
+	right: 80px;
+	border-radius: 3px;
+	padding: 5px 15px;
+	background-color: var(--bg-color-success);
+}
+#leasing{
+	background-color: var(--main-bg-color);
+}
+.purchase-type p{
+	margin: 0;
+	padding: 0;
+	color: #ffffff;
+	text-align: center;
+}
+.cart-item .delete{
+	position: absolute;
+	top: 24px;
+	right: 50px;
+}
+.cart-item .delete span{
+	font-size: 18px;
+	color: var(--main-bg-color);
+}
+.checkout{
+	width: 90%;
+	margin: auto;
+	padding-bottom: 30px;
+}
+.checkout p{
+	width: 80%;
+	margin: auto;
+	margin-bottom: 15px;
+	font-size: 20px;
+	text-align: right;
+}
+.checkout .summary span{
+	font-size: 18px;
+	font-family: 'Ultra', cursive;
+}
+.checkout .btn-pr{
+	width: 60%;
+	margin: 0;
+	margin-left: 35%;
+	margin-top: 20px;
+	padding: 5px 10px;
+	position: static;
+}
+.checkout .payment-options h2{
+	margin: 0;
+	padding-top: 0 !important;
+	margin-left: 0 !important;
+	margin-bottom: 20px;
+}
+.payment-options label{
+	display: inline-block;
+	font-size: 16px;
+	font-family: 'Source Sans Pro', sans-serif;
+}
+.payment-options .option{
+	margin: 10px 0;
+}
+
+@media screen and (max-width: 768px){
+	.prices p:nth-child(2){
+		margin-left: 0;
+	}
+	.purchase-type{
+		right: 60px;
+	}
+	.cart-item .delete{
+		right: 30px;
+	}
+}
+@media screen and (max-width: 550px){
+	#cart{
+		margin-top: 15px;
+	}
+	#cart h2{
+		margin-left: 6%;
+	}
+	.beat-img{
+		margin-left: 5%;
+	}
+	.beat-img img{
+		width: 100px;
+		height: 80px;
+	}
+	.beat-body{
+		flex-basis: 100%;
+	}
+	.player{
+		width: 100%;
+	}
+}

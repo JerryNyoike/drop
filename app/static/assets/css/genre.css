@@ -1,0 +1,12 @@
+.genre{
+	width: 100%;
+	position: relative;
+}
+.genre h2{
+	margin-left: 20px;
+}
+
+/* Media Queries */
+@media screen and (max-width: 768px){
+	
+}

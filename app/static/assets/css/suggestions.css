@@ -1,0 +1,41 @@
+/* Suggestions */
+.suggestions h2{
+	margin-left: 20px;
+}
+/* Beats */
+.beats{
+	display: none;
+}
+.genre{
+	position: relative;
+	margin-bottom: 20px;
+}
+.genre h2{
+    position: relative;
+}
+.genre h2:before{
+	width: 20px;
+	height: 3px;
+	position: absolute;
+	top: 100%;
+	left: 10px;
+	color: #191d52
+}
+.genre .see-all{
+	position: absolute;
+	top: 8px;
+	right: 30px;
+	font-size: 11px;
+	color: #2d2d30;
+	opacity: .9;
+}
+.genre .see-all:hover{
+	color: var(--main-hover-color);
+	transition: color .3s ease;
+}
+
+
+/* Media Queries */
+@media screen and (max-width: 768px){
+	
+}

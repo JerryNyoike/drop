@@ -1,4 +1,4 @@
-.produce{
+.premium{
 	width: 95%;
 	margin: auto;
 	margin-top: 35px;
@@ -28,6 +28,50 @@
 }
 .feature-info h3{
 	font-size: 20px;
+}
+#pricing{
+	width: 100%;
+	background-color: #fff9ea;
+}
+.pricing{
+	width: 85%;
+	margin: auto;
+	padding: 30px 0;
+}
+.pricing-item{
+	width: 90%;
+	height: auto;
+	background-color: #ffffff;
+	padding: 10px 2.5%;
+	border-radius: 3px;
+	box-shadow: 1px 1px 5px 3px rgba(0, 0, 0, 0.2);
+}
+.pricing-item h3{
+	text-align: center;
+	font-size: 24px;
+	margin: 10px 0;
+}
+.pricing-item p{
+	margin: 10px 0;
+	padding: 0 10px;
+	font-size: 18px;
+	text-align: center;
+}
+.pricing-item p b{
+	font-family: 'Abril Fatface', sans-serif;
+}
+.plan-feature p{
+	font-size: 15px;
+	text-align: left;
+}
+.pricing-item .btn-pr{
+	margin: 15px auto;
+}
+#expand-feature{
+	position: absolute;
+	top: 18px;
+	right: 0;
+	font-size: 12px;
 }
 .testimonials{
 	width: 100%;
@@ -130,5 +174,8 @@
 	}
 	.testimonial p{
 		font-size: 13px;
+	}
+	.pricing-item{
+		margin-top: 20px;
 	}
 }

@@ -1,77 +1,141 @@
-/* Register */
-#register,
-#login{
+.form{
 	width: 100%;
 	height: 100%;
 	position: fixed;
+	left: 0;
+	right: 0;
+}
+.form-img{
+	width: 40%;
+	height: 100%;
 	top: 0;
 	left: 0;
-	background-image: url('../images/background_bg.jpg');
-	background-repeat: no-repeat;
-	background-size: cover;
-	background-attachment: fixed;
+	position: absolute;
 }
-.register, 
-.login{
+.form-img img{
 	width: 100%;
 	height: 100%;
-	position: fixed;
-	top: 0;
-	left: 0;
-	background-color: rgba(0, 0, 0, 0.5);
 }
+.form-img .credit{
+	position: absolute;
+	bottom: -5px;
+	right: 5px;
+	font-size: 10px;
+	color: #ffffff;
+	opacity: 0.2;
+}
+.welcome{
+	position: absolute;
+	top: 25%;
+	left: 40px;
+}
+.welcome h1{
+	color: #ffffff;
+	font-size: 50px;
+	font-family: 'Notable', cursive;
+}
+.welcome p{
+	font-size: 16px;
+	font-family: 'Pacifico', cursive;
+	color: #ffffff;
+}
+
+/* Dialog */
 .dialog{
-	width: 35%;
+	width: 50%;
 	height: 100%;
 	position: fixed;
 	top: 0;
 	right: 0;
+	padding: 50px 5%;
 	background-color: #ffffff;
-	padding-top: 80px;
 }
-.login .dialog{
-	padding-top: 100px;
+.dialog h2{
+	margin: 0;
+	font-size: 18px;
+	margin-top: 5%;
 }
-.dialog h1{
-	color: #2d2d30;
+.dialog form{
+	width: 60%;
+	margin-top: 5%;
 }
 .dialog input{
-	width: 80%;
+	width: 90%;
 	height: auto;
-	border: 1.5px #cecece solid;
-	border-radius: 5px;
-	background-color: #ffffff;
-	padding: 10px;
-	color: #2d2d30;
-	margin-left: auto;
-	margin-right: auto;
-	margin-top: 15px;
+	padding: 10px 2.5%;
+	color: #545455;
+	background-color: transparent;
+	border-color: transparent;
+	border-bottom: 2px #545455 solid;
 }
-.login .dialog input,
-.login .dialog button{
-	margin-top: 25px;
+.dialog .btn-pr{
+	width: 40%;
+	position: relative;
+	right: 0;
+	margin: 20px 0;
 }
-.dialog button{
-	margin-top: 15px;
+.dialog .btn-pr span{
+	position: absolute;
+	right: 12px;
+	top: 11px;
+	font-size: 15px;
+	color: #ffffff;
+}
+.dialog form .btn-pr:hover span{
+	right: 5px;
+	transition: right .3s ease;
 }
 .dialog a{
-	text-align: center;
-	text-decoration: none;
-	margin-top: 5px;
+	font-size: 13px;
+	color: #2d2d30;
+	margin-bottom: 5px;
+}
+.dialog a:hover{
+	color: var(--main-hover-color);
+	transition: color .3s ease;
+}
+
+/* Media Queries */
+@media screen and (max-width: 968px){
+	.welcome{
+		left: 30px;
+	}
+	.welcome h1{
+		font-size: 35px;
+	}
 }
 @media screen and (max-width: 768px){
-	.dialog{
-		width: 100%;
-		height: 100%;
-		height: auto;
-		top: 20%;
-		bottom: 0;
-		padding-top: 20px;
+	.form{
 		overflow-y: scroll;
 	}
-	.dialog input,
-	.dialog a,
-	.dialog button{
-		font-size: 15px;
+	.form-img, 
+	.dialog{
+		left: 0;
+	}
+	.form-img{
+		width: 100%;
+		height: 80%;
+	}
+	.dialog{
+		width: 90%;
+		top: 230px;
+		padding: 10px 5%;
+		overflow-y: scroll;
+	}
+	.welcome{
+		top: 20px;
+		left: 20px;
+	}
+	.welcome h1{
+		font-size: 30px;
+	}
+	.dialog form{
+		width: 100%;
+		margin-top: 20px;
+	}
+}
+@media screen and (max-width: 400px){
+	.dialog{
+		top: 200px;
 	}
 }

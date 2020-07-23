@@ -1,0 +1,121 @@
+.client{
+	width: 85%;
+	margin: auto;
+	margin-bottom: 30px;
+	position: relative;
+}
+.client h2{
+	margin-left: 0;
+}
+.profile-img{
+	width: 100%;
+	height: auto;
+}
+.profile-img img{
+	width: 100%;
+	height: auto;
+	border-radius: 5px;
+}
+.header .social{
+	width: 100%;
+	margin-left: 0;
+}
+.buttons{
+	margin-top: 20px;
+}
+.btn-pr{
+	width: 60%;
+	margin: auto;
+	margin-top: 10px;
+}
+a.btn-pr{
+	padding-right: 20px;
+}
+.btn-pr span{
+	position: absolute;
+	right: 12px;
+	top: 11px;
+	font-size: 15px;
+	color: #ffffff;
+}
+.btn-pr:hover span{
+	right: 5px;
+	transition: right .3s ease;
+}
+.intro{
+	padding: 10px;
+}
+.viewpager{
+	width: 100%;
+	height: auto;
+	margin-top: 10px;
+	margin-bottom: 30px;
+	position: relative;
+}
+.history,
+.starred,
+.profile{
+	width: 100%;
+	display: none;
+}
+.header,
+.profile{
+	width: 95%;
+	margin: auto;
+	margin-top: 20px;
+	border-radius: 5px; 
+	background-color: #ffffff;
+	padding: 10px 2.5%;
+	box-shadow: 1px 1px 5px 3px rgba(0, 0, 0, 0.2);
+}
+.profile{
+	display: block;
+}
+.tabs{
+	width: 100%;
+	margin: auto;
+	margin-top: 20px;
+}
+.profile .skill{
+	width: auto;
+	min-width: 80px;
+	text-align: center;
+	border-radius: 20px;
+	border: 1px #cecece solid;
+	margin: 5px;
+	padding: 8px 0;
+}
+.beat-item p{
+	margin: 0;
+}
+
+/* Media Queries */
+@media screen and (max-width: 900px){
+	a.btn-pr{
+		margin: 5px 0;
+	}
+}
+@media screen and (max-width: 768px){	
+	.profile-img{
+		text-align: center;
+		margin-top: 10px;
+	}
+	.profile-img img{
+		width: 75%;
+		height: auto;
+	}
+	.intro,
+	.details{
+		padding: 10px;
+	}
+	.social,
+	.intro{
+		width: 100%;
+		text-align: center;
+	}
+	a.btn-pr{
+		width: 50%;
+		margin: auto;
+		margin-bottom: 15px;
+	}
+}

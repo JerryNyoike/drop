@@ -65,6 +65,7 @@
 	-webkit-animation-duration: .8s;
 	-webkit-animation-timing-function: ease;
 	-webkit-animation-fill-mode: forwards;
+	-webkit-transform-origin: top;
 }
 @keyframes slide_from_top{
 	0%{
@@ -101,7 +102,7 @@
 }
 @keyframes slide_from_bottom{
 	0%{
-		transform: translateY(100%);
+		transform: translateY(-100%);
 		opacity: 0;
 	}
 	100%{
@@ -111,7 +112,7 @@
 }
 @-webkit-keyframes slide_from_bottom{
 	0%{
-		-webkit-transform: translateY(100%);
+		-webkit-transform: translateY(-100%);
 		opacity: 0;
 	}
 	100%{
@@ -127,7 +128,7 @@
 	animation-duration: .8s;
 	animation-timing-function: ease;
 	animation-fill-mode: forwards;
-	-webkit-animation-name: slide_from_top;
+	-webkit-animation-name: slide_from_bottom;
 	-webkit-animation-duration: .8s;
 	-webkit-animation-timing-function: ease;
 	-webkit-animation-fill-mode: forwards;
