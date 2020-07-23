@@ -1,8 +1,8 @@
-from os import path, makedirs, remove
+from os import path, makedirs
 from pydub import AudioSegment
 from pydub.utils import which
 import pymysql
-from flask import Blueprint, make_response, request, current_app
+from flask import Blueprint, make_response, url_for, render_template, request, current_app
 from werkzeug.utils import secure_filename
 from hashlib import md5  
 from asyncio import run
@@ -11,9 +11,10 @@ from .routines import main
 from .auth import is_logged_in
 from datetime import datetime
 from .helpers import log_error
+from markupsafe import escape
 
 
-bp = Blueprint('beat', __name__, url_prefix="/beat")
+bp = Blueprint('beat', __name__, url_prefix='/beat')
 
 AudioSegment.converter = which("ffmpeg")
 
@@ -40,21 +41,18 @@ def crop_beat(beat_path):
 
         preview.export(filename, format='mp3')
 
-        return filename
-    
-    return None
 
-@bp.route('/upload', methods=['POST'])
+@bp.route('beat/upload', methods=['POST'])
 def insertBeat():
-    if request.content_type != 'multipart/form-data':
-        token = request.headers.get('Authorization').split(' ')[1]
+    if 'multipart/form-data' in request.content_type:
+        token = request.cookies.get('token')
         user_info = is_logged_in(token)
         
         if user_info is not None and user_info['typ'] == 'producer':
             if 'file' in request.files:
                 beat = request.files['file']
 
-                if allowed_filename(beat.filename): 
+                if allowed_filename(beat.filename):
                     beatFileName = secure_filename(beat.filename)
                     beatFilePath = path.join(current_app.config['TEMP_DIR'], beatFileName)
                     beat.save(beatFilePath)
@@ -64,14 +62,14 @@ def insertBeat():
                         beatInfo = request.form
 
                         beatName = beatInfo['name']
-                        beatGenre = beatInfo['genre']
+                        beatcategory = beatInfo['category']
                         beatLeasePrice = beatInfo['leasePrice']
                         beatSellingPrice = beatInfo['sellingPrice']
 
-                        beatFilePath = save_file_permanently(beatFilePath)
+                        beatFilePath = save_beat_permanently(beatFileName)
 
                         # crop a 30 seconds preview of the beat
-                        preview = crop_beat(beatFilePath)
+                        crop_beat(beatFilePath)
 
                         # Get metadata from the audio file using ffmpeg
                         run(main(beatFilePath))
@@ -79,9 +77,9 @@ def insertBeat():
                         if preview is None:
                             return make_response({'status': 0, 'message':  'Could not upload beat successfully.'})
 
-                        insertBeatQuery = '''INSERT INTO beat (beat_id, producer_id, name, genre, address, prev_address, lease_price, 
+                        insertBeatQuery = '''INSERT INTO beat (beat_id, producer_id, name, category, beat_file, lease_price, 
                         selling_price, beat_hash) VALUES (UUID_TO_BIN(UUID()), UUID_TO_BIN('{}'), '{}', '{}', '{}', '{}', {}, {}, '{}')
-                        '''.format(user_info['sub'], beatName, beatGenre, beatFilePath, preview, beatLeasePrice, beatSellingPrice, 
+                        '''.format(user_info['sub'], beatName, beatcategory, beatFileName, beatLeasePrice, beatSellingPrice, 
                             beat_hash)
 
                         databaseConnection = db.get_db()
@@ -103,10 +101,10 @@ def insertBeat():
         else:
             return make_response({'status': 0, 'message': 'Must be logged in to perform this request.'}, 404)
     else:
-        return make_response({'status': 0, 'message': 'Invalid data.'}, 400)
+        return make_response({'status': 0, 'message': 'Bad Request'}, 400)
 
 
-@bp.route('delete', methods=['POST'])
+@bp.route('beat/delete', methods=['POST'])
 def delete_beat():
     ''' remove the beat with beat_id from the database'''
     if request.content_type is 'application/json':
@@ -143,7 +141,7 @@ def delete_beat():
         return make_response({'status':0, 'message': 'Invalid content type.'}, 404)
 
 
-@bp.route('/fetch/all', methods=['GET'])
+@bp.route('fetch/all', methods=['GET'])
 def fetch_beats():
     request_info = request.get_json()
     limit = request.args.get('limit', 30)
@@ -157,14 +155,36 @@ def fetch_beats():
     return make_response({'status': 1, 'message': 'Beats fetched successfully','beats': beats}, 200)
 
 
+@bp.route('<beat_id>', methods=['GET'])
+def fetch_beat(beat_id):
+    query = '''SELECT (BIN_TO_UUID(beat.beat_id)) beat_id, beat.name, beat.category, beat.beat_file, beat.lease_price, 
+    beat.selling_price, beat.upload_date, (BIN_TO_UUID(producer.producer_id)) producer_id, producer.profile_image, producer.name producer FROM beat INNER JOIN producer ON 
+    beat.producer_id=producer.producer_id WHERE beat.beat_id = UUID_TO_BIN("{}")'''.format(escape(beat_id))
+
+    conn = db.get_db()
+    cur = conn.cursor()
+    cur.execute(query) 
+    beat = cur.fetchone()
+
+    if not beat:
+        return render_template('beat.html'), 404
+
+    crumbs = [
+        {"name": "Discover", "url": url_for('routes.discover')},
+        {"name": beat["category"], "url": url_for('category.category', category='_'.join(beat["category"].lower().split(' ')))}
+    ]
+    return render_template('beat.html', page=beat["name"], crumbs=crumbs, beat=beat), 200
+
+
 def get_beats(limit, skip):
     ''' This function returns beats made by a certain producer,
     if passed to the function, and adds a limit and offset contraint
     to the query'''
     conn = db.get_db()
     cur = conn.cursor()
-    query = '''SELECT (BIN_TO_UUID(beat.beat_id)) beat_id, beat.name, beat.genre, beat.address, beat.lease_price, 
-    beat.selling_price, beat.upload_date, producer.name producer FROM beat INNER JOIN producer ON beat.producer_id=producer.producer_id'''
+    query = '''SELECT (BIN_TO_UUID(beat.beat_id)) beat_id, beat.name, beat.category, beat.beat_file, beat.lease_price, 
+    beat.selling_price, beat.upload_date, producer.name producer FROM beat INNER JOIN producer ON 
+    beat.producer_id=producer.producer_id'''
     # if producer is not None:
     #     query = str.join(' ', [query, 'WHERE producer_id={}'.format(producer)])
 
@@ -201,19 +221,18 @@ def check_beat_duplicate(beatFilePath):
         except OSError as e:
             log_error("At check_beat_duplicate, " + str(e), "os_error_logs.txt")
 
-def save_file_permanently(beatFilePath):
+def save_beat_permanently(beatFilePath):
     '''
     Saves the temporary file at beatFilePath to the BEAT_DIR
     then deletes the temporary file
     '''
-    with open(beatFilePath, "rb") as f:
+    with open(filename, "rb") as f:
         try:
-            file_path = path.join(current_app.config['BEAT_DIR'], beatFilePath.split('\\')[-1])
+            file_path = path.join(current_app.config['BEAT_DIR'], filename)
             beatFile = open(file_path, "wb")
             beatFile.write(f.read())
             beatFile.close()
             f.close()
-            remove(beatFilePath)
             return file_path
         except OSError as e:
-            log_error("At save_file_permanently, " + str(e), "os_error_logs.txt")
+            log_error("At save_beat_permanently, " + str(e), "os_error_logs.txt")
