@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+
+{% block style%}
+	<link href="{{ url_for('static', filename='assets/css/category.css') }}" rel="stylesheet">
+{% endblock %}
+	
+{% block current_page %}
+	<li><a href="{{ url_for('category.category', category=page) }}" class="crumb active">{{ page }}</a></li>
+{% endblock %}
+
+{% block content%}
+	<div class="category">
+		<h2>{{ page }}</h2>
+		<div class="row" id="beats-body">
+			<!-- Beats appended here -->
+		</div>
+	</div>
+{% endblock %}
+
+{% block scripts %}
+	<script type="text/javascript" src="{{ url_for('static', filename='assets/js/category.js') }}"></script>
+{% endblock %}
