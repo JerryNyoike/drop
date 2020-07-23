@@ -1,6 +1,6 @@
 from os import path, makedirs
 import pymysql
-from . import routes, user, auth, db, beat
+from . import routes, client, auth, db, beat, errors, category
 from flask import Flask, current_app
 from datetime import datetime
 from .helpers import log_error
@@ -22,6 +22,9 @@ def create_app(test_config=None):
             if not path.exists(current_app.instance_path):
                 makedirs(app.instance_path)
 
+            if not path.exists(current_app.config['PHOTO_DIR']):
+                makedirs(current_app.config['PHOTO_DIR'])
+
             if not path.exists(current_app.config['BEAT_DIR']):
                 makedirs(current_app.config['BEAT_DIR'])
 
@@ -40,9 +43,11 @@ def create_app(test_config=None):
     db.init_app(app)
 
     app.register_blueprint(routes.bp)
-    app.register_blueprint(user.bp)
+    app.register_blueprint(client.bp)
     app.register_blueprint(auth.bp)
     app.register_blueprint(beat.bp)
+    app.register_blueprint(category.bp)
+    app.register_blueprint(errors.bp)
 
     CORS(app)
 
