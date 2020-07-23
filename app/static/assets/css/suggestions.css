@@ -6,14 +6,14 @@
 .beats{
 	display: none;
 }
-.genre{
+.category{
 	position: relative;
 	margin-bottom: 20px;
 }
-.genre h2{
+.category h2{
     position: relative;
 }
-.genre h2:before{
+.category h2:before{
 	width: 20px;
 	height: 3px;
 	position: absolute;
@@ -21,7 +21,7 @@
 	left: 10px;
 	color: #191d52
 }
-.genre .see-all{
+.category .see-all{
 	position: absolute;
 	top: 8px;
 	right: 30px;
@@ -29,7 +29,7 @@
 	color: #2d2d30;
 	opacity: .9;
 }
-.genre .see-all:hover{
+.category .see-all:hover{
 	color: var(--main-hover-color);
 	transition: color .3s ease;
 }

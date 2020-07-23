@@ -276,18 +276,24 @@ nav a.visited span:nth-child(2),
 	height: 30px;
 	margin: 0;
 	padding: 0;
-	border-radius: 5px;
-	border: 1px #ccc;
+	border-top-left-radius: 5px;
+	border-bottom-left-radius: 5px;
 	background-color: #ffffff;
 }
 .breadcrumbs ul li{
 	width: auto;
 	height: 100%;
 	float: left;
-	padding: 0 5px 0 18px;
+	padding: 0 5px 0 15px;
 	list-style: none;
-	background-color: #ffffff;
 	position: relative;
+}
+#home-crumb span{
+	font-size: 16px;
+}
+#home-crumb{
+	margin-top: 6px;
+	margin-left: 5px;
 }
 .breadcrumbs ul li::before{
 	content:"";
@@ -796,6 +802,25 @@ nav a.visited span:nth-child(2),
 	.bottom-nav{
 		position: static;
 	}
+	.breadcrumbs ul li{
+		max-width: 100px;
+		padding: 0 5px 0 5px;
+		transform: translateX(10px);
+	}
+	#home-crumb{
+		margin-left: -13px;
+	}
+	.breadcrumbs ul li a{
+		overflow: hidden;
+		white-space: nowrap;
+		text-overflow: ellipsis;
+	}
+	.breadcrumbs ul li::before{
+		right: 1px;
+	}
+	.breadcrumbs ul li::after{
+		right: 0;
+	}
 	.notifications-dialog{
 		width: 90%;
 		height: auto;
@@ -830,4 +855,7 @@ nav a.visited span:nth-child(2),
 		top: unset;
 		transition: all .5s ease;
 	}
+}
+@media screen and (max-width: 350px){
+
 }

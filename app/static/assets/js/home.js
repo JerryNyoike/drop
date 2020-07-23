@@ -37,7 +37,6 @@ function populateBeatsBody(beats){
 	for (var i = 0; i < beats.length; i++) {
 		const beat = beats[i];
 		const photo = beat_images[Math.floor(Math.random() * 10)];
-		const genre = beat.genre.toLowerCase().split(' ').join('_');
 
 		let anim_class = 'zoom-in';
 		if (i < 20) anim_class = 'zoom_in';

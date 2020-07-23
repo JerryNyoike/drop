@@ -1,11 +1,11 @@
 let skip = 0;
 let player_open = false;
 
-function getBeats(genre){
+function getBeats(category){
 	$('.loading').fadeIn("fast");
-	const url = server + 'beat/fetch/genre/' + genre + '?limit=' + beat_request_limit + '&skip=' + skip;
+	const url = server + 'category/' + category + '?limit=' + beat_request_limit + '&skip=' + skip;
 
-    fetch(url, {method: 'GET'})
+    fetch(url, {method: 'POST'})
         .then(response => response.json())
         .then(function (response) {
 			$('.loading').fadeOut("fast");
@@ -25,7 +25,7 @@ function populateBeatsBody(beats){
 	for (var i = 0; i < beats.length; i++) {
 		const beat = beats[i];
 		const photo = beat_images[Math.floor(Math.random() * 10)];
-		const genre = beat.genre.toLowerCase().split(' ').join('_');
+		const category = beat.category.toLowerCase().split(' ').join('_');
 
 		let anim_class = 'zoom-in';
 		if (i < 20) anim_class = 'zoom_in';

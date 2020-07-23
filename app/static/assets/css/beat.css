@@ -76,8 +76,7 @@
 }
 .icons a{
 	flex: 25%;
-	justify-content: center;
-	align-items: center;
+	text-align: center;
 }
 .icons a:hover span,
 .icons a:hover p{
@@ -104,5 +103,17 @@
 @media screen and (max-width: 768px){
 	.beat-img{
 		text-align: center;
+	}
+	.actions{
+		text-align: left;
+		padding-top: 0;
+	}
+	.actions .btn-pr{
+		margin: 10px 4%;
+	}
+}
+@media screen and (max-width: 768px){
+	.actions .btn-pr{
+		width: 90%;
 	}
 }

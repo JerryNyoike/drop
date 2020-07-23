@@ -1,6 +1,6 @@
 let skip = 0;
 let player_open = false;
-let genres = [];
+let categories = [];
 $(window).ready(function() {
 
 	checkPreferences();
@@ -8,23 +8,23 @@ $(window).ready(function() {
 	$(document).on('click', '.preference-item', function(){
 		const id = $(this).attr('id');
 		const radio = $('#radio' + id);
-		const genre = $('#' + id + ' p').text();
+		const category = $('#' + id + ' p').text();
 		if (radio.attr('class').includes("selected")) {
 			$(radio).removeClass('fa-dot-circle-o');
 			$(radio).addClass('fa-circle-o');
 			radio.toggleClass("selected");
-			genres.splice(genres.indexOf(genre), 1);
+			categories.splice(categories.indexOf(category), 1);
 		} else {
 			$(radio).removeClass('fa-circle-o');
 			$(radio).addClass('fa-dot-circle-o');
 			radio.toggleClass("selected");
-			genres.push(genre);
+			categories.push(category);
 		}
 	});
 
-	$('#save-genres').on('click', function(event) {
+	$('#save-categories').on('click', function(event) {
 		event.preventDefault();
-		if (genres) localStorage.setItem("genre-preferences", JSON.stringify(genres));
+		if (categories) localStorage.setItem("category-preferences", JSON.stringify(categories));
 		$('.preferences').fadeOut();
 		$('.beats').fadeIn();	
 		getBeats();
@@ -33,10 +33,10 @@ $(window).ready(function() {
 });
 
 function checkPreferences(){
-	if (!localStorage.getItem("genre-preferences")) {
+	if (!localStorage.getItem("category-preferences")) {
 		$('.beats').fadeOut('fast');
 		$('.preferences').fadeIn('fast');
-		getGenres();
+		getcategories();
 	} else {
 		$('.preferences').fadeOut('fast');
 		$('.beats').fadeIn('fast');
@@ -44,16 +44,16 @@ function checkPreferences(){
 	}
 }
 
-function getGenres(){
+function getcategories(){
 	$('.loading').fadeIn("fast");
-	const url = server + 'beat/genres';
+	const url = server + 'beat/categories';
 
     fetch(url, {method: 'GET'})
         .then(response => response.json())
         .then(function (response) {
 			$('.loading').fadeOut("fast");
             if (response.status == 1) {
-                addPreferences(response.genres);
+                addPreferences(response.categories);
             } else {
             	showPrompt(response.message, response.status);
 				$('.preferences').fadeOut('fast');
@@ -70,18 +70,18 @@ function getGenres(){
         });
 }
 
-function addPreferences(genres){
-	for (var i = 0; i < genres.length; i++) {
-		const genre = genres[i].genre;
+function addPreferences(categories){
+	for (var i = 0; i < categories.length; i++) {
+		const category = categories[i].category;
 		const r = Math.floor(Math.random() * 255);
 		const g = Math.floor(Math.random() * 255);
 		const b = Math.floor(Math.random() * 255);
 		let div = `
 		<div class="preference-item" id="${i}" style="background-color: rgb(${r}, ${g}, ${b})">
-			<p>${genre}</p>
+			<p>${category}</p>
 			<span class="fa fa-circle-o" id="radio${i}"></span>
 		</div>`;
-		$('.genres').append(div);
+		$('.categories').append(div);
 	}
 }
 
@@ -111,12 +111,12 @@ function populateBeatsBody(beats){
 	for (var i = 0; i < beats.length; i++) {
 		const beat = beats[i];
 		const photo = beat_images[Math.floor(Math.random() * 10)];
-		const genre_id = beat.genre.toLowerCase().split(' ').join('_');
+		const category_id = beat.category.toLowerCase().split(' ').join('_');
 
 		let anim_class = 'zoom-in';
 		if (i < 20) anim_class = 'zoom_in';
 		
-		checkGenreDiv(beat.genre, genre_id);
+		checkcategoryDiv(beat.category, category_id);
 		const div = `
 		<div class="flex-bg-20 flex-md-30 flex-xs-50">
 			<div class="beat-item ${anim_class}">
@@ -132,17 +132,17 @@ function populateBeatsBody(beats){
 				</div>
 			</div>
 		</div>`;
-		$('#' + genre_id).append(div);
+		$('#' + category_id).append(div);
 	}
 }
 
-function checkGenreDiv(genre, genre_id){
-	if ($('#' + genre_id).length < 1) {
+function checkcategoryDiv(category, category_id){
+	if ($('#' + category_id).length < 1) {
 		let element = `
-		<div class="genre">
-			<h2>${genre}</h2>
-			<a class="see-all" href="explore/${genre_id}">See all</a>
-			<div class="row" id="${genre_id}">
+		<div class="category">
+			<h2>${category}</h2>
+			<a class="see-all" href="category/${category_id}">See all</a>
+			<div class="row" id="${category_id}">
 				<!-- Beats appended here -->
 			</div>
 		</div>`;

@@ -91,18 +91,18 @@ const photo_contributions = [
 	}
 ];
 
-function Beat(file, albumart, name, genre, leasePrice, sellingPrice, genres){
+function Beat(file, albumart, name, category, leasePrice, sellingPrice, categories){
 	this.file = file;
 	this.albumart = albumart;
 	this.name = name;
-	this.genre = genre;
+	this.category = category;
 	this.leasePrice = leasePrice;
 	this.sellingPrice = sellingPrice;
-	this.genres = genre;
+	this.categories = categories;
 }
 
-function Genre(){
-	this.genre_id = genre_id;
+function Category(){
+	this.category_id = category_id;
 	this.name = name;
 }
 
