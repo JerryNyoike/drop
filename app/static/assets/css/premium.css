@@ -1,0 +1,190 @@
+.premium{
+	width: 95%;
+	margin: auto;
+	margin-top: 35px;
+	margin-bottom: 30px;
+	padding: 0;
+	background-color: #ffffff;
+	border-radius: 5px;
+	box-shadow: 1px 1px 5px 3px rgba(0, 0, 0, 0.2);
+}
+.features{
+	width: 85%;
+	margin: auto;
+	padding: 30px 0;
+}
+.feature{
+	padding: 20px 0;
+}
+.feature img{
+	width: 80%;
+	height: auto;
+	max-height: 180px;
+	margin-top: 15%;
+}
+.feature-info{
+	width: 85%;
+	margin: auto;
+}
+.feature-info h3{
+	font-size: 20px;
+}
+#pricing{
+	width: 100%;
+	background-color: #fff9ea;
+}
+.pricing{
+	width: 85%;
+	margin: auto;
+	padding: 30px 0;
+}
+.pricing-item{
+	width: 90%;
+	height: auto;
+	background-color: #ffffff;
+	padding: 10px 2.5%;
+	border-radius: 3px;
+	box-shadow: 1px 1px 5px 3px rgba(0, 0, 0, 0.2);
+}
+.pricing-item:hover{
+	transform: scale(1.05, 1.05) !important;
+	transform-origin: center;
+	-webkit-transform: scale(1.05, 1.05) !important;
+	-webkit-transform-origin: center;
+	transition: all 1s ease;
+}
+.pricing-item h3{
+	text-align: center;
+	font-size: 24px;
+	margin: 10px 0;
+}
+.pricing-item p{
+	margin: 10px 0;
+	padding: 0 10px;
+	font-size: 18px;
+	text-align: center;
+}
+.pricing-item p b{
+	font-family: 'Abril Fatface', sans-serif;
+}
+.plan-feature p{
+	font-size: 15px;
+	text-align: left;
+}
+.pricing-item .btn-pr{
+	margin: 15px auto;
+}
+#expand-feature{
+	position: absolute;
+	top: 18px;
+	right: 0;
+	font-size: 12px;
+}
+.testimonials{
+	width: 100%;
+	height: auto;
+	padding: 30px 0;
+	background-color: #f2f5fa;
+}
+.testimonials h2,
+.testimonials p{
+	margin-left: 10%;
+}
+.testimonial p{
+	margin-left: 0;
+}
+.caroussel{
+	width: 95%;
+	height: auto;
+	margin: auto;
+	padding: 10px 0;
+}
+.caroussel-body{
+	width: 100%;
+	height: auto;
+	min-height: 250px;
+	position: relative;
+}
+.caroussel-body .row{
+	width: 100%;
+	height: auto;
+	position: absolute;
+	top: 0;
+	left: 0;
+}
+.testimonial{
+	width: 70%;
+	height: auto;
+	margin: auto; 
+	margin-top: 15px;
+	border-radius: 5px;
+	margin-left: 10%;
+	background-color: #ffffff;
+	padding: 10px 10px 10px 60px;
+	box-shadow: 1px 1px 2px 2px rgba(0, 0, 0, 0.1);
+	position: relative;
+	box-sizing: content-box;
+}
+.testimonial img{
+	width: 70px;
+	height: 70px;
+	position: absolute;
+	top: 15%;
+	left: -40px;
+	border-radius: 5px;
+	padding: 5px;
+	background-color: #ffffff;
+	box-shadow: 1px 1px 3px 3px rgba(0, 0, 0, 0.1);
+}
+.testimonial h3{
+	font-size: 16px;
+}
+.testimonial p{
+	font-size: 15px;
+}
+.testimonial p span{
+	font-size: 10px;
+	margin: 0 2px;
+}
+.indicators{
+	width: 100%;
+	text-align: center;
+	padding-top: 50px;
+}
+.indicators span{
+	color: #cecece;
+	margin: 0 4px;
+}
+.indicators span.active{
+	color: var(--main-bg-color);
+}
+
+@media screen and (max-width: 950px){
+	.caroussel-body{
+		min-height: 400px;
+	}
+}
+
+@media screen and (min-width: 900px){
+	.testimonial img{
+		width: 55px;
+		height: 55px;
+		left: -37.5px;
+	}
+	.testimonial{
+		width: 78%;
+		margin-left: 11%;
+		padding: 8px 8px 8px 35px;
+	}
+	.pricing-item{
+		margin-top: 20px;
+	}
+}
+@media screen and (max-width: 900px){
+	.testimonial h3{
+		font-size: 14px;
+	}
+	.testimonial p{
+		font-size: 13px;
+	}
+}

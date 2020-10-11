@@ -1,0 +1,84 @@
+{% extends 'base.html' %}
+
+{% block style %}
+	<link rel="stylesheet" href="https://cdn.plyr.io/3.6.2/plyr.css" />
+	<link href="{{ url_for('static', filename='assets/css/beat.css') }}" rel="stylesheet">
+{% endblock %}
+
+{% block current_page %}
+	<li class="active"><a href="{{ url_for('beat.fetch_beat', beat_id=beat.beat_id) }}" class="crumb">{{ page }}</a></li>
+{% endblock %}
+	
+{% block content%}
+	<div class="beat">
+		{% if beat %}
+			<div class="details">
+				<div class="row">
+					<div class="flex-bg-30 flex-md-50 flex-sm-100">
+						<div class="beat-img">	
+							<img src="/static/assets/images/beat_img4.jpg" alt="Beat Image">
+						</div>
+					</div>
+					<div class="flex-bg-30 flex-md-50 flex-sm-100">
+						<div class="info">
+							<a href="{{ url_for('routes.producer_profile', producer_id=beat.producer_id) }}" class="producer">
+								<img src="{{ url_for('routes.uploaded_image', filename=beat.profile_image) }}">
+								<p>{{ beat.producer }}</p>
+							</a>
+							<h2>{{ beat.name }}</h2>
+							<p>Genre: {{ beat.category }}</p>
+							<div class="prices">
+								<p>Lease Price: Ksh. {{ beat.lease_price }}</p>
+								<p>Buying Price: Ksh. {{ beat.selling_price }}</p>
+							</div>
+							<p>{{ beat.upload_date }}</p>
+						</div>
+					</div>
+					<div class="flex-bg-40 flex-md-100 flex-sm-100">
+						<div class="actions">
+							<button class="btn-pr" id="lease">Lease<br><span>Ksh {{ beat.lease_price }}</span></button>
+							<button class="btn-pr" id="sell">Buy<br><span>Ksh {{ beat.selling_price }}</span></button>
+							<div class="icons">
+								<a><span class="fa fa-star"></span><p>Star</p></a>
+								<a href="{{ url_for('beat.fetch_beat', beat_id=beat.beat_id) }}" class="copy-link">
+									<span class="fa fa-chain"></span>
+									<p>Link</p>
+								</a>
+								<a><span class="fa fa-twitter"></span><p>Twitter Share</p></a>
+								<a><span class="fa fa-instagram"></span><p>Instagram Share</p></a>
+							</div>
+						</div>
+					</div>
+				</div>	
+				<div class="player">
+					<audio id="player" controls>
+					  <source src="{{ url_for('routes.uploaded_preview', filename=beat.beat_file) }}" type="audio/mpeg" />
+					  <source src="{{ url_for('routes.uploaded_preview', filename=beat.beat_file) }}" type="audio/wav" />
+					  <source src="{{ url_for('routes.uploaded_preview', filename=beat.beat_file) }}" type="audio/ogg" />
+					  Your Browser doesnt support this audio file
+					</audio>
+				</div>
+			</div>
+			<div class="related">
+				<h2>Related</h2>
+				<div class="empty">
+					<img src="{{ url_for('static', filename='assets/images/illustration14.svg') }}">
+					<h2 class="message"></h2>
+				</div>
+				<div class="row" id="beats-body">
+					
+				</div>
+			</div>
+		{% endif %}
+	</div>
+{% endblock %}
+
+{% block scripts %}
+	<script src="https://cdn.plyr.io/3.6.2/plyr.js"></script>
+	<script type="text/javascript" src="{{ url_for('static', filename='assets/js/beat.js') }}"></script>
+	<script type="text/javascript">
+		const player = new Plyr('#player');
+		const category = "{{ beat.category }}".split(' ').join("_");
+		getBeats(category);
+	</script>
+{% endblock %}

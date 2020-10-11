@@ -1,0 +1,104 @@
+{% extends 'base.html' %}
+
+{% block style%}
+	<link href="{{ url_for('static', filename='assets/css/contacts.css') }}" rel="stylesheet">
+{% endblock %}
+
+{% block current_page %}
+	<li><a href="{{ url_for('routes.contacts') }}" class="crumb">{{ page }}</a></li>
+{% endblock %}
+	
+{% block content%}
+	<section id="contacts">
+		<div class="contacts">
+			<div class="banner">
+				<img src="{{ url_for('static', filename='assets/images/illustration3.svg') }}" 
+				class="illustration slide_from_right">
+				<div class="intro slide_from_left">
+					<h2>Contact Us</h2>
+					<p>We are always ready to listen.</p>
+					<div class="buttons">
+						<a class="btn-pr" href="#feedback">Give Feedback
+							<span class="fa fa-chevron-right"></span>
+						</a>
+					</div>
+				</div>
+			</div>	
+			<div class="row">
+				<div class="flex-bg-50 flex-md-100">
+					<div class="contacts-item slide-from-bottom">
+						<h3>Contact Us</h3>
+						<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Culpa repellendus adipisci laborum placeat delectus labore cupiditate deserunt minus numquam consequatur esse, hic at earum illo animi eaque et, dolorem quo qui eos? Quam rerum possimus maxime veniam aut ratione eveniet aliquid cumque aspernatur ipsum libero quaerat, nam. </p>
+					</div>
+				</div>
+				<div class="flex-bg-50 flex-md-100">
+					<div class="contacts-item slide-from-bottom">
+						<h3>Need Help?</h3>
+						<p>Don’t hestiate to ask us something. Email us directly hi@loremipsum.com or call us at 1-800-275-0002. Sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat. Donec a scelerisque turpis. Eu pro expetenda contentiones. Dolor maiestatis mea ut, oportere corrumpit eu duo.</p>
+					</div>
+				</div>
+				<div class="flex-bg-50 flex-md-100">
+					<div class="contacts-item slide-from-bottom" id="feedback">
+						<h3>Tell Us Something</h3>
+						<p>We would like to get your feedback on your overall view of the site and some things you may want to see in future. Feel free to enter your details below and email us</p>
+						<form id="feedback_form">
+							<input type="text" name="names" id="names" placeholder="Your Name">
+							<input type="email" name="email" id="email" placeholder="Your Email">
+							<textarea name="feedback" id="feedback" rows="2" placeholder="Message"></textarea>
+							<button type="submit" class="btn-pr">Submit</button>
+						</form>
+					</div>
+				</div>
+				<div class="flex-bg-50 flex-md-100">
+					<div class="contacts-item slide-from-bottom">
+						<h3>Give us a call</h3>
+						<p>Sed at diam habeo vulputate, per persius sanctus an. An usu minim percipit pericula. Illud sonet iuvaret mea cu, minimum gloriatur vim cu. Mei ne probo rebum interpretaris, ea mel iriure fabulas comprehensam, debitis perfecto conceptam ut nec.</p>
+						<div class="contact-info">
+							<p>Tel: 0713398529 / 0716738787<br>Available from 7:00 am to 9:00 pm</p>
+							<h4>Find us on social media</h4>
+							<div class="social">
+								<a><span class="fa fa-instagram"></span></a>
+								<a><span class="fa fa-twitter"></span></a>
+								<a><span class="fa fa-facebook"></span></a>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="flex-bg-100">
+					<div class="map">
+						<iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d15956.375077176928!2d37.01010373144577!3d-1.0919484532271986!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0xbefd8e40071d3352!2sJomo%20Kenyatta%20University%20Of%20Agriculture%20And%20Technology!5e0!3m2!1sen!2ske!4v1593135232704!5m2!1sen!2ske" width="100%" height="400" frameborder="0" style="border:0;" allowfullscreen="" aria-hidden="false" tabindex="0"></iframe>
+					</div>
+				</div>
+			</div>		
+			<div class="footer">
+				<div class="row">
+					<div class="flex-bg-33 flex-sm-100">
+						<div class="footer-item zoom-in">
+							<h2>Menu</h2>
+							<a href="{{ url_for('routes.index') }}">Home</a>
+							<a href="{{ url_for('routes.index') }}">Premium</a>
+							<a href="{{ url_for('routes.produce') }}">Producer?</a>
+							<a href="{{ url_for('client.login') }}" id="login-link">Login</a>
+							<a href="{{ url_for('client.register') }}" id="register-link">Sign Up</a>
+						</div>
+					</div>
+					<div class="flex-bg-33 flex-sm-100">
+						<div class="footer-item zoom-in">
+							<h2>Legal</h2>
+							<a href="{{ url_for('routes.index') }}">Privacy</a>
+							<a href="{{ url_for('routes.index') }}">Copyrights</a>
+							<a href="{{ url_for('routes.index') }}">Terms and Conditions</a>
+						</div>
+					</div>
+					<div class="flex-bg-33 flex-sm-100">
+						<div class="footer-item zoom-in">
+							<h2>Text</h2>
+							<p>Lorem ipsum dolor sit amet, te est possim invenire. Agam nostrum eleifend vis eu. Fastidii fabellas te has, usu illud fastidii in. Liber maiorum suscipiantur his cu. Et labore tritani propriae nam.</p>
+						</div>
+					</div>
+				</div>
+				<p class="copyright">Copyright &copy; Dropbeats <span id="year"></span></p>
+			</div>	
+		</div>
+	</section>
+{% endblock %}

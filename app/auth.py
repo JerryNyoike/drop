@@ -1,8 +1,11 @@
+from os.path import join
 from flask import Blueprint, request, make_response, current_app
 from . import db
 import jwt
 from datetime import datetime, timedelta
 from hashlib import sha256
+from .helpers import log_error
+
 
 bp = Blueprint('auth', __name__, url_prefix='/auth')
 
@@ -37,7 +40,7 @@ def login():
                 token = jwt.encode({'typ': request_data['type'], 'exp': datetime.now() + timedelta(days=10), 'sub': user_data['c_id']}, current_app.config['SCRT'], algorithm='HS256').decode('utf-8')
             else:
                 token = jwt.encode({'typ': request_data['type'], 'exp': datetime.now() + timedelta(days=10), 'sub': user_data['producer_id']}, current_app.config['SCRT'], algorithm='HS256').decode('utf-8')
-            return make_response({'status': 1, 'message': 'Successful login', 'payload': token})
+            return make_response({'status': 1, 'message': 'Successful login', 'payload': token, 'user_details': user_data})
         else:
             return make_response({'status': 0, 'message': 'User does not exist'})
     else:
@@ -83,7 +86,7 @@ def fetch_user(request_data):
     if table is None or uid is None:
         return None
 
-    query = "SELECT BIN_TO_UUID({}) {} FROM {} WHERE `email` = '{}' AND `pwd` = '{}' LIMIT 1".format(
+    query = "SELECT BIN_TO_UUID({}) {}, email, name FROM {} WHERE `email` = '{}' AND `pwd` = '{}' LIMIT 1".format(
             uid, uid, table, request_data['email'], pwd_hash(request_data['pwd'])
         )
     cur.execute(query)
@@ -95,8 +98,8 @@ def is_logged_in(token):
     try:
         return jwt.decode(token, current_app.config['SCRT'], algorithm='HS256')
     except jwt.exceptions.DecodeError as e:
-        return False
-
+        log_error("At is_logged_in, " + str(e), "jwt_error_logs.txt")
+        return make_response({'status': 0, 'message': 'Must be logged in to perform action'}, 401)
 
 def db_info(user_type):
     if user_type == 'client':

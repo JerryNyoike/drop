@@ -1,0 +1,303 @@
+{% extends 'base.html' %}
+
+{% block style%}
+	<link rel="stylesheet" href="https://cdn.plyr.io/3.6.2/plyr.css" />
+	<link href="{{ url_for('static', filename='assets/css/settings.css') }}" rel="stylesheet">
+{% endblock %}
+
+{% block current_page %}
+	<li class="active"><a href="{{ url_for('client.settings') }}" class="crumb">
+	{{ client.name }}</a></li>
+{% endblock %}
+	
+{% block content %}
+	<div id="settings">
+		<div class="tabs">
+			<a class="tab active" id="profile"><span>Profile</span></a>
+			<a class="tab" id="connected"><span>Connected apps</span></a>
+			<a class="tab" id="notification-settings"><span>Notifications</span></a>
+			<a class="tab" id="account"><span>Account</span></a>
+			<a class="tab" id="payments"><span>Payments</span></a>
+		</div>
+		{% if client %}
+			<div class="settings">		
+				<div class="viewpager">
+					<div class="profile">
+						<form id="profile_form">
+							<div class="bio">
+								<h2>Bio<span> (1000 words or less)</span></h2>
+								<textarea id="bio" name="bio" rows="4" placeholder="Tell us something about yourself">Lorem ipsum dolor sit amet, semper cetero iisque in usu. Sit vocent fuisset consequat ei, at wisi possim sea, utamur lobortis torquatos id sit. Has te bonorum consequat, at dicunt placerat eam, vocibus necessitatibus ei eos. Sea malorum forensibus ne, an mea habeo option copiosae, congue labores eu qui.</textarea>
+							</div>
+							<div class="hor-divider"></div>
+							<div class="name">
+								<h2>Display Name</h2>
+								<input type="text" name="name" id="name" placeholder="Name" value="{{ client.name }}">
+							</div>
+							<div class="hor-divider"></div>
+							<div class="profession">
+								<h2>Profession</h2>
+								<input type="text" name="profession" id="profession" placeholder="Profession">
+							</div>
+							<div class="hor-divider"></div>
+							<div class="phone">
+								<h2>Phone Number</h2>
+								<input type="number" name="phone" id="phone" placeholder="Phone Number" 
+								value="{{ client.phone_number }}">
+							</div>
+							<div class="hor-divider"></div>
+							<div class="location">
+								<h2>Location</h2>
+								<input type="text" name="address" id="address" placeholder="Address">
+								<input type="text" name="city" id="city" placeholder="City">
+							</div>
+							<div class="hor-divider"></div>
+							<div class="skills">
+								<div class="new-skill">
+									<h2>Add Skill</h2>
+									<div class="row">
+										<div class="flex-bg-70">
+											<input type="text" name="skill" id="skill" placeholder="New Skill">
+										</div>
+										<div class="flex-bg-30">
+											<button class="btn-pr" type="button">Add</button>
+										</div>
+									</div>
+								</div>
+								<div class="row" id="skills-body">
+									<p class="skill" id="skill-1">
+										Skill
+										<span class="fa fa-close" target="skill-1"></span>
+									</p>
+								</div>
+							</div>
+							<div class="hor-divider"></div>
+							<button type="submit" class="btn-pr">Submit Profile</button>
+						</form>
+					</div>
+					<div class="connected">
+						<div class="spotify">
+							<div class="activate">
+								<a><span class="fa fa-spotify"></span></a>
+								<p>Spotify</p>
+								<div class="switch">
+									<input type="checkbox" name="spotify" id="spotify" value="spotify">
+	  								<span class="slider round"></span>
+								</div>
+							</div>
+						</div>
+						<div class="hor-divider"></div>
+						<div class="applemusic">
+							<div class="activate">
+								<a><span class="fa fa-apple"></span></a>
+								<p>Apple Music</p>
+								<div class="switch">
+									<input type="checkbox" name="applemusic" id="applemusic" value="applemusic">
+	  								<span class="slider round"></span>
+								</div>
+							</div>
+						</div>
+						<div class="hor-divider"></div>
+						<div class="soundcloud">
+							<div class="activate">
+								<a><span class="fa fa-soundcloud"></span></a>
+								<p>Soundcloud</p>
+								<div class="switch">
+									<input type="checkbox" name="soundcloud" id="soundcloud" value="soundcloud">
+	  								<span class="slider round"></span>
+								</div>
+							</div>
+						</div>
+						<div class="hor-divider"></div>
+						<div class="google">
+							<div class="activate">
+								<a><span class="fa fa-google"></span></a>
+								<p>Google</p>
+								<div class="switch">
+									<input type="checkbox" name="google" id="google" value="google">
+	  								<span class="slider round"></span>
+								</div>
+							</div>
+						</div>
+						<div class="hor-divider"></div>
+						<div class="instagram">
+							<div class="activate">
+								<a><span class="fa fa-instagram"></span></a>
+								<p>Instagram</p>
+								<div class="switch">
+									<input type="checkbox" name="instagram" id="instagram" value="instagram">
+	  								<span class="slider round"></span>
+								</div>
+							</div>
+						</div>
+						<div class="hor-divider"></div>
+						<div class="twitter">
+							<div class="activate">								
+								<a><span class="fa fa-twitter"></span></a>
+								<p>Twitter</p>
+								<div class="switch">
+									<input type="checkbox" name="twitter" id="twitter" value="twitter">
+	  								<span class="slider round"></span>
+								</div>
+							</div>
+						</div>
+						<div class="hor-divider"></div>
+						<div class="facebook">
+							<div class="activate">
+								<a><span class="fa fa-facebook"></span></a>
+								<p>Facebook</p>
+								<div class="switch">
+									<input type="checkbox" name="facebook" id="facebook" value="facebook">
+	  								<span class="slider round"></span>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="notification-settings">
+						<div class="notification">
+							<p>Emails</p>
+							<div class="switch">
+								<input type="checkbox" name="emails" id="emails" value="emails">
+  								<span class="slider round"></span>
+							</div>
+						</div>
+						<div class="hor-divider"></div>
+						<div class="notification">
+							<p>New Releases</p>
+							<div class="switch">
+								<input type="checkbox" name="spotify" id="spotify" value="spotify">
+  								<span class="slider round"></span>
+							</div>
+						</div>
+						<div class="hor-divider"></div>
+						<div class="notification">
+							<p>Promotions</p>
+							<div class="switch">
+								<input type="checkbox" name="spotify" id="spotify" value="spotify">
+  								<span class="slider round"></span>
+							</div>
+						</div>
+						<div class="hor-divider"></div>
+					</div>
+					<div class="account">
+						<div class="go-premium">
+							<h2>Premium Subscription</h2>
+							<div class="row">
+								<p>Your currently using a free account</p>
+								<a href="{{ url_for('routes.premium') }}" class="btn-pr">Try Premium<br><b>(30 days free)</b>
+									<span class="fa fa-diamond"></span>
+								</a>
+							</div>
+						</div>
+						<div class="hor-divider"></div>
+						<form id="account_form">
+							<div class="edit-pass">
+								<h2>Change Password</h2>
+								<div class="row">
+									<div class="flex-bg-30">
+										<p>Old Password</p>
+									</div>
+									<div class="flex-bg-60">
+										<input type="password" name="old-password" id="old-password" 
+										placeholder="Enter Old Password">
+									</div>
+									<div class="flex-bg-30">
+										<p>New Password</p>
+									</div>
+									<div class="flex-bg-60">
+										<input type="password" name="new_password" id="new_password" 
+										placeholder="Enter Old Password">
+									</div>
+									<div class="flex-bg-30">
+										<p>Confirm New Password</p>
+									</div>
+									<div class="flex-bg-60">
+										<input type="password" name="confirm_password" id="confirm_password" 
+										placeholder="Confirm New Password">
+									</div>
+								</div>
+							</div>
+							<div class="hor-divider"></div>
+							<div class="edit-email">
+								<h2>Change Email</h2>
+								<div class="row">
+									<div class="flex-bg-30">
+										<p>Email</p>
+									</div>
+									<div class="flex-bg-60">
+										<input type="email" name="email" id="email" 
+										placeholder="Enter New Email" value="{{ client.email }}">
+									</div>
+								</div>
+							</div>
+							<div class="row">
+								<div class="flex-bg-50">
+									<button class="btn-pr" type="submit">Edit</button>
+								</div>
+								<div class="flex-bg-50">
+									<button class="btn-pr" id="delete-account">Delete account</button>
+								</div>
+							</div>
+						</form>
+					</div>
+					<div class="payments">
+						<div class="row" id="no-payments">
+							<div class="flex-bg-60 flex-sm-100">
+								<p>You have no payment settings added</p>
+							</div>
+							<div class="flex-bg-30 flex-md-40 flex-sm-100">
+								<button class="btn-pr">Add Payment Method<span class="fa fa-plus"></span></button>
+							</div>
+						</div>
+						<div class="hor-divider"></div>
+						<div class="methods">
+							<div class="method">
+								<h2>Card</h2>
+								<div class="switch">
+									<input type="checkbox" name="card" id="card" value="card">
+	  								<span class="slider round"></span>
+								</div>
+								<form class="card_form">	
+									<div class="row">
+										<div class="flex-bg-30">
+											<p>Card Number</p>
+										</div>
+										<div class="flex-bg-60">
+											<input name="card_no" id="card_no" 
+											placeholder="Enter Card No">
+										</div>
+										<div class="flex-bg-30">
+											<p>Expiration</p>
+										</div>
+										<div class="flex-bg-60">
+											<input type="date" name="expiration" id="expiration">
+										</div>
+										<div class="flex-bg-30">
+											<p>Address</p>
+										</div>
+										<div class="flex-bg-60">
+											<input name="address" id="address" placeholder="Address">
+										</div>
+										<div class="flex-bg-30">
+											<p>City</p>
+										</div>
+										<div class="flex-bg-60">
+											<input type="text" name="city" id="city" placeholder="City">
+										</div>
+										<div class="flex-bg-30 flex-md-50">
+											<button type="submit" class="btn-pr">Submit card info</button>
+										</div>
+									</div>
+								</form>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		{% endif %}
+	</div>
+{% endblock %}
+
+{% block scripts %}
+	<script type="text/javascript" src="{{ url_for('static', filename='assets/js/settings.js') }}"></script>
+{% endblock %}
+

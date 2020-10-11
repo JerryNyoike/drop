@@ -1,0 +1,71 @@
+{% extends 'forms_base.html' %}
+
+{% block style %}
+	<style type="text/css">
+		.social-login{
+			width: 60%;
+		}
+		.social-login p{
+			font-size: 13px;
+			margin-top: 10%;
+		}
+		.social-login .btn-pr{
+			width: 100%;
+		}
+		.social-login .btn-pr span{
+			top: 8px;
+			left: 10px;
+			right: unset;
+			font-size: 20px;
+		}
+		.social-login #google{
+			background-image: linear-gradient(to right, #ED213A , #93291E); 
+		}
+		.social-login #twitter{
+			background-color: #1da1f2; 
+		}
+		@media screen and (max-width: 768px){
+			.social-login p{
+				margin-top: 10px;
+			}
+		}
+	</style>
+{% endblock %}
+
+{% block content %}
+	<div class="form-img slide_from_left">
+		<div class="overlay">
+			<div class="welcome">
+				<h1>Welcome<br>Back</h1>
+				<p>We have some cool beats waiting for you</p>
+			</div>
+			<p class="credit">Photo by Chris Yang on Unsplash</p>
+		</div>
+		<img src="{{ url_for('static', filename='assets/images/potrait3.jpg') }}">
+	</div>
+	<div class="dialog slide_from_right">
+		<h2>Login</h2>
+		<form id="login_form" action="{{ url_for('client.login') }}" method="post">
+			<input type="email" name="email" placeholder="Enter your email" required>
+			<input type="password" name="password" placeholder="Enter your password" required>
+			<button type="submit" class="btn-pr"><span class="fa fa-chevron-right"></span>Login</button>
+			<a href="{{ url_for('client.reset_pwd') }}">Forgot password?</a>
+			<a href="{{ url_for('client.register') }}">Don't have an account? Register here</a>
+		</form>
+		<div class="social-login">
+			<p>Login in via social media</p>
+			<button class="btn-pr" id="google"><span class="fa fa-google"></span>Google</button>
+			<button class="btn-pr" id="twitter"><span class="fa fa-twitter"></span>Twitter</button>
+		</div>
+	</div>
+{% endblock %}
+
+{% block scripts %}
+	<script src="{{ url_for('static', filename='assets/js/login.js') }}"></script>
+	<script type="text/javascript">
+		document.forms.login_form.onsubmit = function(event){
+			event.preventDefault();
+			login(0);
+		}
+	</script>
+{% endblock %}

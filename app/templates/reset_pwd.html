@@ -1,0 +1,23 @@
+{% extends 'forms_base.html' %}
+
+{% block content %}
+	<div class="form-img slide_from_left">
+		<div class="overlay">
+			<div class="welcome">
+				<h1>Hmm...<br>No Worries</h1>
+				<p>Just give us your email we'll sort you out</p>
+			</div>
+			<p class="credit">Photo by Chris Yang on Unsplash</p>
+		</div>
+		<img src="{{ url_for('static', filename='assets/images/potrait3.jpg') }}">
+	</div>
+	<div class="dialog">
+		<h2>Reset Password</h2>
+		<form id="reset_pwd_form">
+			<input type="email" id="email" placeholder="Enter your email" required>
+			<button type="submit" class="btn-pr"><span class="fa fa-chevron-right"></span>Submit</button>
+			<a href=" {{ url_for('client.login') }} ">Login here</a>
+			<a href=" {{ url_for('client.register') }} ">Register here</a>
+		</form>
+	</div>
+{% endblock %}

@@ -1,0 +1,59 @@
+.contacts{
+	width: 95%;
+	margin: auto;
+	margin-top: 35px;
+	margin-bottom: 30px;
+	padding: 0;
+	background-color: #ffffff;
+	border-radius: 5px;
+	box-shadow: 1px 1px 5px 3px rgba(0, 0, 0, 0.2);
+}
+.contacts .banner .btn-pr{
+	min-width: 165px;
+}
+.contacts-item{
+	width: 95%;
+	margin: auto;
+	padding: 10px;
+}
+.contacts-item h3{
+	margin-left: 25px;
+}
+.contacts-item p{
+	padding: 0 20px;
+}
+.contacts form{
+	width: 85%;
+	margin: auto;
+	padding: 0;
+}
+.contacts form input,
+.contacts form textarea{
+	width: 100%;
+	height: auto;
+	margin: 0;
+	margin-left: -5%;
+	padding: 10px 2.5%;
+	color: #545455;
+	background-color: transparent;
+	border-color: transparent;
+	border-bottom: 2px #545455 solid;
+}
+.contacts form .btn-pr{
+	width: 40%;
+	position: relative;
+	right: 0;
+	margin: 20px 0;
+}
+.contact-info h4{
+	font-size: 13px;
+	margin-top: 20px;
+	margin-left: 20px;
+}
+.contacts .social{
+	width: 90%;
+	margin: auto;
+}
+.map{
+	margin-bottom: -5px;
+}

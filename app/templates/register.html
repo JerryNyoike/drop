@@ -1,0 +1,77 @@
+{% extends 'forms_base.html' %}
+
+{% block style%}
+	<style type="text/css">
+		#profile-image{
+			width: 60px;
+			height: 60px;
+			border-radius: 50%;
+			padding: 5px;
+			background-color: #e7e7e7;
+		}
+		#profile-image:hover{
+			cursor: pointer;
+		}
+		.profile-img p{
+			font-size: 14px;
+			margin: 5px;
+			margin-bottom: 20px;
+		}
+		.profile-img p:hover{
+			color: var(--main-hover-color);
+			cursor: pointer;
+		}
+		input[type=file]{
+			position: absolute;
+			top: -200px;
+			opacity: 0;
+		}
+		#pwd-tips{
+			font-size: 11px;
+		}
+		@media screen and (max-width: 768px){
+			#profile-image{
+				width: 55px;
+				height: 55px;
+			}
+			.profile-img p{
+				margin-bottom: 10px;
+			}
+		}
+	</style>
+{% endblock %}
+{% block content %}
+	<div class="form-img slide_from_left">
+		<div class="overlay">
+			<div class="welcome">
+				<h1>Welcome<br>To<br>DropBeats</h1>
+				<p>Just a few more steps to all the beats you need</p>
+			</div>
+			<p class="credit">Photo by Chris Yang on Unsplash</p>
+		</div>
+		<img src="{{ url_for('static', filename='assets/images/potrait3.jpg') }}">
+	</div>
+	<div class="dialog slide_from_right">	
+		<h2>Register</h2>
+		<div class="row">
+			<form action="{{ url_for('client.register') }}" method="POST" enctype="multipart/form-data" id="register_form">
+				<div class="profile-img">
+					<img src="{{ url_for('static', filename='assets/images/profile.png') }}" id="profile-image">
+					<p id="select-img">Click to select profile image</p>
+				</div>
+				<input type="file" name="file" id="file" accept="image/gif, image/jpeg, image/png">
+				<input type="text" name="name" id="name" placeholder="Enter your name" required>
+				<input type="number" name="phone" id="phone" placeholder="Enter your phone number" required>
+				<input type="email" name="email" id="email" placeholder="Enter your email" required>
+				<input type="password" name="pwd" id="pwd" placeholder="Enter your password" required>
+				<p id="pwd-tips">Try mixing letters (A-Za-z), numbers[0-9] and special characters(!@#$%^&*:;) for a strong password.</p>
+				<button type="submit" class="btn-pr"><span class="fa fa-chevron-right"></span>Register</button>
+				<a href=" {{ url_for('client.login') }} ">Already have an account? Login here</a>
+			</form>
+		</div>
+	</div>
+{% endblock %}
+
+{% block scripts %}
+	<script src="{{ url_for('static', filename='assets/js/register.js') }}"></script>
+{% endblock %}

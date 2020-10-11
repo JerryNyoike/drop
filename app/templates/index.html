@@ -1,0 +1,37 @@
+{% extends 'base.html' %}
+
+{% block style %}
+	<link href="{{ url_for('static', filename='assets/css/home.css') }}" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.plyr.io/3.6.2/plyr.css" />
+{% endblock %}
+
+{% block current_page %}
+	<li><a href="{{ url_for('routes.index') }}" class="crumb">{{ page }}</a></li>
+{% endblock %}
+	
+{% block content %}
+	<section class="home">
+		<div class="empty">
+			<img src="{{ url_for('static', filename='assets/images/illustration14.svg') }}">
+			<h2 class="message"></h2>
+		</div>
+		<div class="beats">
+			<div class="category">
+				<h2>New Releases</h2>
+				<div class="row" id="new-releases">
+					<!-- Beats appended here -->
+				</div>
+			</div>
+			<div class="category">
+				<h2>Recently Viewed</h2>
+				<div class="row" id="recents">
+					<!-- Beats appended here -->
+				</div>
+			</div>
+		</div>
+	</section>
+{% endblock %}
+
+{% block scripts %}
+	<script type="text/javascript" src="{{ url_for('static', filename='assets/js/home.js') }}"></script>
+{% endblock %}

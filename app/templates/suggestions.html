@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+
+{% block style%}
+	<link href="{{ url_for('static', filename='assets/css/suggestions.css') }}" rel="stylesheet">
+{% endblock %}
+
+{% block current_page %}
+	<li><a href="{{ url_for('routes.suggestions') }}" class="crumb active">{{ page }}</a></li>
+{% endblock %}
+	
+{% block content%}
+	<div class="suggestions">
+		<div class="empty">
+			<img src="{{ url_for('static', filename='assets/images/illustration14.svg') }}">
+			<h2 class="message"></h2>
+		</div>
+		<div class="beats">
+			<!-- Genres go here -->
+		</div>
+	</div>
+{% endblock %}
+
+{% block scripts %}
+	<script type="text/javascript" src="{{ url_for('static', filename='assets/js/suggestions.js') }}"></script>
+{% endblock %}
