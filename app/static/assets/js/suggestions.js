@@ -36,7 +36,7 @@ function checkPreferences(){
 	if (!localStorage.getItem("category-preferences")) {
 		$('.beats').fadeOut('fast');
 		$('.preferences').fadeIn('fast');
-		getcategories();
+		getCategories();
 	} else {
 		$('.preferences').fadeOut('fast');
 		$('.beats').fadeIn('fast');
@@ -44,7 +44,7 @@ function checkPreferences(){
 	}
 }
 
-function getcategories(){
+function getCategories(){
 	$('.loading').fadeIn("fast");
 	const url = server + 'beat/categories';
 
@@ -89,14 +89,26 @@ function getBeats(){
 	$('.loading').fadeIn("fast");
 	const url = server + 'beat/fetch/all?limit=' + beat_request_limit + '&skip=' + skip;
 
-    fetch(url, {method: 'GET'})
+	let headers = new Headers();
+	headers.append("X-CSRFToken", csrf_token);
+
+	const options = {
+		method: 'GET',
+		headers: headers
+	}
+
+    fetch(url, options)
         .then(response => response.json())
         .then(function (response) {
 			$('.loading').fadeOut("fast");
             if (response.status == 1) {
                 populateBeatsBody(response.beats);
+				$('.suggestions .beats').css("display", "block");
+				$('.suggestions .empty').css("display", "none");
             } else {
-				$('.beats').append('<p style="text-align: center">No beats found</p>');
+				$('.suggestions .beats').css("display", "none");
+				$('.suggestions .empty').css("display", "block");
+				$('.suggestions .empty .message').text(response.message);
             }
         })
         .catch(function (error) {
@@ -116,7 +128,23 @@ function populateBeatsBody(beats){
 		let anim_class = 'zoom-in';
 		if (i < 20) anim_class = 'zoom_in';
 		
+		// const categories = beat.beat_categories.split(",")
+		// for (var i = categories.length - 1; i >= 0; i--) {
+		// 	const category = categories[i];
+		// 	let categories_div = `<div class="categories">`;
+	 //        for (var i = categories.length - 1; i >= 0; i--) {
+	 //            let category = categories[i];
+	 //            categories_div += `
+	 //            <a href="category/${category.category.toLowerCase().split(" ").join("_")}">
+	 //                <span class="fa fa-circle"></span>
+	 //                ${category.category}
+	 //            </a>`;
+	 //        }
+	 //        categories_div += `</div>`;
+		// }
+
 		checkcategoryDiv(beat.category, category_id);
+		const upload_date = compareDates(beat.upload_date);
 		const div = `
 		<div class="flex-bg-20 flex-md-30 flex-xs-50">
 			<div class="beat-item ${anim_class}">
@@ -125,10 +153,10 @@ function populateBeatsBody(beats){
 					<div class="overlay"></div>
 				</div>
 				<a href="/beat/${beat.beat_id}" class="play"><span class="fa fa-play"></span></a>
-				<p class="date">${beat.upload_date}</p>
+				<p class="date">${upload_date}</p>
 				<div class="beat-details">
 					<h3>${beat.name}</h3>
-					<p>${beat.producer}</p>
+                    <p>By <a href="${server}producer/${beat.producer_id}"><b>${beat.producer}</b></p>
 				</div>
 			</div>
 		</div>`;

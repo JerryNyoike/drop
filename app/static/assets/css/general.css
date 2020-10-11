@@ -4,7 +4,7 @@ body{
 	height: 100%;
 	margin: auto;
 	overflow-x: hidden;
-	letter-spacing: 1.5px;
+	letter-spacing: 1px;
 	line-height: 1;
 	font-weight: 100;
 	background-color: #ececec;
@@ -103,12 +103,13 @@ input:checked + .slider:before {
 	top: 100px;
 	left: 50%;
 	transform: translateX(-50%);
+	t-webkit-ransform: translateX(-50%);
 	text-align: center;
 	border-radius: 5px;
 	padding: 15px;
 	color: var(--text-color-dark);
 	background-color: #ffffff;
-	box-shadow: 2px 2px 2px 2px rgba(0, 0, 0, 0.5);
+	box-shadow: 1px 1px 3px 3px rgba(0, 0, 0, 0.2);
 	display: none;
 }
 .prompt p,
@@ -206,7 +207,6 @@ input:checked + .slider:before {
 	overflow: hidden;
 	transition: max-height 0.2s ease-out;
 }
-
 .loading{
 	width: 100%;
 	height: 100%;
@@ -249,9 +249,11 @@ input:checked + .slider:before {
 @keyframes wave{
     0%{
         transform: rotate(0);
+        -webkit-transform: rotate(0);
     }
     100%{
         transform: rotate(300deg);
+        -webkit-transform: rotate(300deg);
     }
 }
 .overlay{
@@ -261,6 +263,27 @@ input:checked + .slider:before {
 	left: 0;
 	position: absolute;
 	background-color: var(--overlay-bg-color);
+}
+.empty{
+	width: 300px;
+	margin: auto;
+	text-align: center;
+	margin-top: 20px;
+	padding: 10px 20px;
+	border-radius: 3px;
+	background-color: #ffffff;
+	box-shadow: 2px 2px 3px 3px rgba(0, 0, 0, 0.2); 
+	display: none;
+}
+.empty img{
+	width: 200px;
+	height: auto;
+}
+.home .empty h2{
+	margin-left: 0;
+}
+.empty h2{
+	margin: 20px 0;
 }
 .container{	
 	width: 79%;
@@ -365,6 +388,12 @@ a.btn-pr{
 	background-color: var(--main-hover-color);
 	transition: color .5s ease;
 }
+input.text-only{
+	width: auto;
+	border: 0;
+	background-color: transparent;
+}
+
 /* Table */
 .table{
 	width: 100%;
@@ -503,15 +532,15 @@ a.btn-pr{
 }
 @media screen and (max-width: 1100px){
 	.container{
-		width: 74%;
-		left: 26%;
+		width: 79%;
+		left: 21%;
 	}
 }
 @media screen and (max-width: 900px){	
-	.container{
+	/*.container{
 		width: 69%;
 		left: 31%;
-	}		
+	}*/		
 	.flex-md-100{
 		flex: 99%;
 		max-width: 99%;

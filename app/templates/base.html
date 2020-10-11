@@ -22,9 +22,9 @@
 	<body>
 		<div class="navbar">
 			<div class="brand">
-				<a class="navbar-toggle"><span class="fa fa-bars"></span></a>
-				<a class="navbar-collapse"><span class="fa fa-chevron-left"></span></a>
-				<a class="name">DropBeats</a>
+				<a href="javascript:void(0)" class="navbar-toggle"><span class="fa fa-bars"></span></a>
+				<a href="javascript:void(0)" class="navbar-collapse"><span class="fa fa-chevron-left"></span></a>
+				<a href="javascript:void(0)" class="name">DropBeats</a>
 			</div>
 			<nav>
 				<div class="search">
@@ -37,9 +37,9 @@
 					<span class="fa fa-home"></span>
 					<p>Home</p>
 				</a>
-				<a class="nav-link" href="{{ url_for('routes.discover') }}" id="explore-link">
+				<a class="nav-link" href="{{ url_for('routes.discover') }}" id="discover-link">
 					<span class="fa fa-music"></span>
-					<span class="fa fa-circle" id="explore-reminder"></span>
+					<span class="fa fa-circle" id="discover-reminder"></span>
 					<p>Discover</p>
 				</a>
 				<a class="nav-link" href="{{ url_for('routes.suggestions') }}" id="for-you-link">
@@ -97,9 +97,9 @@
 				<a class="nav-link active" href="{{ url_for('routes.index') }}" id="home-link">
 					<span class="fa fa-home"></span>
 				</a>
-				<a class="nav-link" href="{{ url_for('routes.discover') }}" id="explore-link">
+				<a class="nav-link" href="{{ url_for('routes.discover') }}" id="discover-link">
 					<span class="fa fa-music"></span>
-					<!-- <span class="fa fa-circle" id="explore-reminder"></span> -->
+					<!-- <span class="fa fa-circle" id="discover-reminder"></span> -->
 				</a>
 				<a class="nav-link" href="{{ url_for('routes.suggestions') }}" id="for-you-link">
 					<span class="fa fa-heart"></span>
@@ -140,28 +140,35 @@
 			<ul>
 				<li>
 					<a class="tooltip-container" href="{{ url_for('routes.premium') }}" id="premium-link">
-						<span class="fa fa-certificate"></span>
+						<span class="fa fa-diamond"></span>
 						<span class="fa fa-circle" id="premium-reminder"></span>
 						<div class="tooltip">
 						  <span class="tooltiptext" id="tooltiptext-bottom">Try Premium For Free!</span>
 						</div> 
 					</a>
 				</li>
-				<li><a href="#" id="toggle-notifications"><span class="fa fa-bell"></span></a></li>
+				<li><a href="javascript:void(0)" id="toggle-notifications"><span class="fa fa-bell"></span></a></li>
 			</ul>
 			<div class="dropdown">
 				<a class="dropdown-toggle" id="dropdown-toggle">
 					<img src="{{ url_for('static', filename='assets/images/profile.png') }}" id="profile-image">
 				</a>
 				<div class="dropdown-menu">
-					<div class="dropdown-item" id="dropdown-item-1">
-						<p>Account</p>
+					<div class="dropdown-item">
+						<p>Profile</p>
 						<a href="{{ url_for('client.profile') }}" id="profile-link">
 							<span class="fa fa-user"></span>
 							<span class="fa fa-circle" id="profile-reminder"></span>
 						</a>
 					</div>
-					<div class="dropdown-item" id="dropdown-item-2">
+					<div class="dropdown-item">
+						<p>Your Beats</p>
+						<a href="{{ url_for('client.yourbeats') }}" id="your-beats-link">
+							<span class="fa fa-music"></span>
+							<span class="fa fa-circle" id="your-beats-reminder"></span>
+						</a>
+					</div>	
+					<div class="dropdown-item">
 						<p>Cart</p>
 						<a href="{{ url_for('client.cart') }}" id="cart-link">
 							<span class="fa fa-shopping-cart"></span>
@@ -181,7 +188,11 @@
 					</li>
 					{% if crumbs %}
 						{% for crumb in crumbs %}
-							<li><a href="{{ crumb.url }}" class="crumb">{{ crumb.name }}</a></li>
+							{% if 'active' in crumb %}
+								<li><a class="active" href="{{ crumb.url }}" class="crumb">{{ crumb.name }}</a></li>
+							{% else %}
+								<li><a href="{{ crumb.url }}" class="crumb">{{ crumb.name }}</a></li>
+							{% endif %}
 						{% endfor %}
 					{% endif %}
 					{% block current_page %}{% endblock %}
@@ -268,17 +279,21 @@
 		    	<div class="hor-divider"></div>
 	    	</div>
 	    </div>
+		<div class="to-top">
+			<a href="#top"><span class="fa fa-arrow-up"></span></a>
+		</div>
 		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
 		<script src="{{ url_for('static', filename='assets/js/config.js') }}"></script>
 		<script src="{{ url_for('static', filename='assets/js/general.js') }}"></script>
 		<script type="text/javascript">
-			const page = "{{ page }}".toLowerCase().split(" ").join("-");
+			const page = "{{ page }}".toLowerCase().split(" ").join("_");
 			$('.nav-link').each(function(){
 				$(this).removeClass("active");
 			});
             $("#" + page + "-link").each(function(){
             	$(this).addClass("active");
             });
+            const csrf_token = "{{ csrf_token() }}";
 		</script>
 		{% if success %}
 			<script type="text/javascript">

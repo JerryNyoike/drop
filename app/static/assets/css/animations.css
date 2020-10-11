@@ -23,12 +23,12 @@
 }
 .squeeze_from_top{
 	animation-name: squeeze_from_top;
-	animation-duration: .8s;
+	animation-duration: .6s;
 	animation-timing-function: ease;
 	animation-fill-mode: forwards;
 	transform-origin: top;
 	-webkit-animation-name: squeeze_from_top;
-	-webkit-animation-duration: .8s;
+	-webkit-animation-duration: .6s;
 	-webkit-animation-timing-function: ease;
 	-webkit-animation-fill-mode: forwards;
 }
@@ -57,12 +57,12 @@
 }
 .squeeze_to_top{
 	animation-name: squeeze_to_top;
-	animation-duration: .8s;
+	animation-duration: .6s;
 	animation-timing-function: ease;
 	animation-fill-mode: forwards;
 	transform-origin: top;
 	-webkit-animation-name: squeeze_to_top;
-	-webkit-animation-duration: .8s;
+	-webkit-animation-duration: .6s;
 	-webkit-animation-timing-function: ease;
 	-webkit-animation-fill-mode: forwards;
 	-webkit-transform-origin: top;
@@ -92,11 +92,11 @@
 }
 .slide_from_top{
 	animation-name: slide_from_top;
-	animation-duration: .8s;
+	animation-duration: .6s;
 	animation-timing-function: ease;
 	animation-fill-mode: forwards;
 	-webkit-animation-name: slide_from_top;
-	-webkit-animation-duration: .8s;
+	-webkit-animation-duration: .6s;
 	-webkit-animation-timing-function: ease;
 	-webkit-animation-fill-mode: forwards;
 }
@@ -125,11 +125,11 @@
 }
 .slide_from_bottom{
 	animation-name: slide_from_bottom;
-	animation-duration: .8s;
+	animation-duration: .6s;
 	animation-timing-function: ease;
 	animation-fill-mode: forwards;
 	-webkit-animation-name: slide_from_bottom;
-	-webkit-animation-duration: .8s;
+	-webkit-animation-duration: .6s;
 	-webkit-animation-timing-function: ease;
 	-webkit-animation-fill-mode: forwards;
 }
@@ -158,11 +158,11 @@
 }
 .slide_to_top{
 	animation-name: slide_to_top;
-	animation-duration: .8s;
+	animation-duration: .6s;
 	animation-timing-function: ease;
 	animation-fill-mode: forwards;
 	-webkit-animation-name: slide_to_top;
-	-webkit-animation-duration: .8s;
+	-webkit-animation-duration: .6s;
 	-webkit-animation-timing-function: ease;
 	-webkit-animation-fill-mode: forwards;
 }
@@ -191,11 +191,11 @@
 }
 .slide_from_top_zoom_in{
 	animation-name: slide_from_top_zoom_in;
-	animation-duration: .8s;
+	animation-duration: .6s;
 	animation-timing-function: ease;
 	animation-fill-mode: forwards;
 	-webkit-animation-name: slide_from_top_zoom_in;
-	-webkit-animation-duration: .8s;
+	-webkit-animation-duration: .6s;
 	-webkit-animation-timing-function: ease;
 	-webkit-animation-fill-mode: forwards;
 }
@@ -224,11 +224,11 @@
 }
 .slide_from_top_skewed{
 	animation-name: slide_from_top_skewed;
-	animation-duration: .8s;
+	animation-duration: .6s;
 	animation-timing-function: ease;
 	animation-fill-mode: forwards;
 	-webkit-animation-name: slide_from_top_skewed;
-	-webkit-animation-duration: .8s;
+	-webkit-animation-duration: .6s;
 	-webkit-animation-timing-function: ease;
 	-webkit-animation-fill-mode: forwards;
 }
@@ -258,11 +258,11 @@
 }
 .slide_from_left{
 	animation-name: slide_from_left;
-	animation-duration: .8s;
+	animation-duration: .6s;
 	animation-timing-function: ease;
 	animation-fill-mode: forwards;
 	-webkit-animation-name: slide_from_left;
-	-webkit-animation-duration: .8s;
+	-webkit-animation-duration: .6s;
 	-webkit-animation-timing-function: ease;
 	-webkit-animation-fill-mode: forwards;
 }
@@ -291,11 +291,11 @@
 }
 .slide_from_left_skewed{
 	animation-name: slide_from_left_skewed;
-	animation-duration: .8s;
+	animation-duration: .6s;
 	animation-timing-function: ease;
 	animation-fill-mode: forwards;
 	-webkit-animation-name: slide_from_left_skewed;
-	-webkit-animation-duration: .8s;
+	-webkit-animation-duration: .6s;
 	-webkit-animation-timing-function: ease;
 	-webkit-animation-fill-mode: forwards;
 }
@@ -324,11 +324,11 @@
 }
 .slide_from_left_zoom_in{
 	animation-name: slide_from_left_zoom_in;
-	animation-duration: .8s;
+	animation-duration: .6s;
 	animation-timing-function: ease;
 	animation-fill-mode: forwards;
 	-webkit-animation-name: slide_from_left_zoom_in;
-	-webkit-animation-duration: .8s;
+	-webkit-animation-duration: .6s;
 	-webkit-animation-timing-function: ease;
 	-webkit-animation-fill-mode: forwards;
 }
@@ -357,11 +357,11 @@
 }
 .slide_from_right{
 	animation-name: slide_from_right;
-	animation-duration: .8s;
+	animation-duration: .6s;
 	animation-timing-function: ease;
 	animation-fill-mode: forwards;
 	-webkit-animation-name: slide_from_right;
-	-webkit-animation-duration: .8s;
+	-webkit-animation-duration: .6s;
 	-webkit-animation-timing-function: ease;
 	-webkit-animation-fill-mode: forwards;
 }
@@ -390,11 +390,11 @@
 }
 .slide_from_right_skewed{
 	animation-name: slide_from_right_skewed;
-	animation-duration: .8s;
+	animation-duration: .6s;
 	animation-timing-function: ease;
 	animation-fill-mode: forwards;
 	-webkit-animation-name: slide_from_right_skewed;
-	-webkit-animation-duration: .8s;
+	-webkit-animation-duration: .6s;
 	-webkit-animation-timing-function: ease;
 	-webkit-animation-fill-mode: forwards;
 }
@@ -423,11 +423,11 @@
 }
 .slide_from_right_zoom_in{
 	animation-name: slide_from_right_zoom_in;
-	animation-duration: .8s;
+	animation-duration: .6s;
 	animation-timing-function: ease;
 	animation-fill-mode: forwards;
 	-webkit-animation-name: slide_from_right_zoom_in;
-	-webkit-animation-duration: .8s;
+	-webkit-animation-duration: .6s;
 	-webkit-animation-timing-function: ease;
 	-webkit-animation-fill-mode: forwards;
 }
@@ -456,11 +456,11 @@
 }
 .zoom_in{
 	animation-name: zoom_in;
-	animation-duration: .8s;
+	animation-duration: .6s;
 	animation-timing-function: ease;
 	animation-fill-mode: forwards;
 	-webkit-animation-name: zoom_in;
-	-webkit-animation-duration: .8s;
+	-webkit-animation-duration: .6s;
 	-webkit-animation-timing-function: ease;
 	-webkit-animation-fill-mode: forwards;
 }
@@ -486,11 +486,11 @@
 }
 .zoom_out{
 	animation-name: zoom_out;
-	animation-duration: .8s;
+	animation-duration: .6s;
 	animation-timing-function: ease;
 	animation-fill-mode: forwards;
 	-webkit-animation-name: zoom_out;
-	-webkit-animation-duration: .8s;
+	-webkit-animation-duration: .6s;
 	-webkit-animation-timing-function: ease;
 	-webkit-animation-fill-mode: forwards;
 }
@@ -543,11 +543,11 @@
 }
 .zoom_in_sequential{
 	animation-name: zoom_in_sequential;
-	animation-duration: .8s;
+	animation-duration: .6s;
 	animation-timing-function: ease;
 	animation-fill-mode: forwards;
 	-webkit-animation-name: zoom_in_sequential;
-	-webkit-animation-duration: .8s;
+	-webkit-animation-duration: .6s;
 	-webkit-animation-timing-function: ease;
 	-webkit-animation-fill-mode: forwards;
 }
@@ -584,11 +584,11 @@
 }
 .bounce_from_top{
 	animation-name: bounce_from_top;
-	animation-duration: .8s;
+	animation-duration: .6s;
 	animation-timing-function: ease;
 	animation-fill-mode: forwards;
 	-webkit-animation-name: bounce_from_top;
-	-webkit-animation-duration: .8s;
+	-webkit-animation-duration: .6s;
 	-webkit-animation-timing-function: ease;
 	-webkit-animation-fill-mode: forwards;
 }
@@ -689,11 +689,11 @@
 }
 }.bounce_from_left{
 	animation-name: bounce_from_left;
-	animation-duration: .8s;
+	animation-duration: .6s;
 	animation-timing-function: ease;
 	animation-fill-mode: forwards;
 	-webkit-animation-name: bounce_from_left;
-	-webkit-animation-duration: .8s;
+	-webkit-animation-duration: .6s;
 	-webkit-animation-timing-function: ease;
 	-webkit-animation-fill-mode: forwards;
 }
@@ -722,11 +722,11 @@
 }
 .shake_x{
 	animation-name: shake_x;
-	animation-duration: .8s;
+	animation-duration: .6s;
 	animation-timing-function: ease;
 	animation-fill-mode: forwards;
 	-webkit-animation-name: shake_x;
-	-webkit-animation-duration: .8s;
+	-webkit-animation-duration: .6s;
 	-webkit-animation-timing-function: ease;
 	-webkit-animation-fill-mode: forwards;
 }
@@ -784,11 +784,11 @@
 }
 .spin{
 	animation-name: spin;
-	animation-duration: .8s;
+	animation-duration: .6s;
 	animation-timing-function: linear;
 	animation-iteration-count: infinite;
 	-webkit-animation-name: spin;
-	-webkit-animation-duration: .8s;
+	-webkit-animation-duration: .6s;
 	-webkit-animation-timing-function: ease;
 	-webkit-animation-iteration-count: infinite;
 }
@@ -822,11 +822,11 @@
 }
 .blink_and_bounce{
 	animation-name: blink_and_bounce;
-	animation-duration: .8s;
+	animation-duration: .6s;
 	animation-timing-function: linear;
 	animation-iteration-count: infinite;
 	-webkit-animation-name: blink_and_bounce;
-	-webkit-animation-duration: .8s;
+	-webkit-animation-duration: .6s;
 	-webkit-animation-timing-function: ease;
 	-webkit-animation-iteration-count: infinite;
 }

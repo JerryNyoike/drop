@@ -13,8 +13,12 @@ function upload(){
 	formdata.append("leasePrice", document.forms.beat_form.leasePrice.value);
 	formdata.append("sellingPrice", document.forms.beat_form.sellingPrice.value);
 
+	let headers = new Headers();
+	headers.append("X-CSRFToken", csrf_token);
+
 	var requestOptions = {
 	  method: 'POST',
+	  headers: headers,
 	  body: formdata
 	};
 

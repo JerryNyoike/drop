@@ -27,6 +27,9 @@
 							<p><b>Occupation: </b>Musician</p>
 						</div>
 						<div class="social">
+							<a><span class="fa fa-spotify"></span></a>
+							<a><span class="fa fa-apple"></span></a>
+							<a><span class="fa fa-soundcloud"></span></a>
 							<a><span class="fa fa-instagram"></span></a>
 							<a><span class="fa fa-twitter"></span></a>
 							<a><span class="fa fa-facebook"></span></a>
@@ -42,7 +45,6 @@
 			</div>
 			<div class="tabs">
 				<a class="tab active" id="profile"><span>Profile</span></a>
-				<a class="tab" id="history"><span>History</span></a>
 				<a class="tab" id="starred"><span>Starred</span></a>
 			</div>		
 			<div class="viewpager">
@@ -76,12 +78,11 @@
 						</div>
 					</div>
 				</div>
-				<div class="history">
-					<div class="row" id="history-body">
-						
-					</div>
-				</div>
 				<div class="starred">
+					<div class="empty">
+						<img src="{{ url_for('static', filename='assets/images/illustration14.svg') }}">
+						<h2 class="message"></h2>
+					</div>
 					<div class="row" id="starred-body">
 						
 					</div>

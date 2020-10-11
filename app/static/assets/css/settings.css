@@ -113,6 +113,8 @@ span[target*="skill"]{
 .connected a:hover span{
 	transform: scale(1.1, 1.1);
 	transform-origin: center;
+	-webkit-transform: scale(1.1, 1.1);
+	-webkit-transform-origin: center;
 	transition: all .3s ease;
 }
 .connected p{
@@ -238,5 +240,8 @@ span[target*="skill"]{
 	.settings .notification p,
 	.method h2{
 		width: 70%;
+	}
+	.account .go-premium .btn-pr{
+		width: 80%;
 	}
 }

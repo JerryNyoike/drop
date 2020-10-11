@@ -2,6 +2,7 @@ from os import path, makedirs
 import pymysql
 from . import routes, client, auth, db, beat, errors, category
 from flask import Flask, current_app
+from flask_wtf.csrf import CSRFProtect
 from datetime import datetime
 from .helpers import log_error
 from flask_cors import CORS
@@ -50,5 +51,6 @@ def create_app(test_config=None):
     app.register_blueprint(errors.bp)
 
     CORS(app)
+    CSRFProtect().init_app(app)
 
     return app

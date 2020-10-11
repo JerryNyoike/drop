@@ -1,5 +1,5 @@
 .client{
-	width: 85%;
+	width: 90%;
 	margin: auto;
 	margin-bottom: 30px;
 	position: relative;
@@ -88,7 +88,28 @@ a.btn-pr{
 .beat-item p{
 	margin: 0;
 }
-
+.client .social a{
+	margin-top: 8px;
+}
+.client .social a:nth-child(1){
+	background-color: #4caf50;
+	background-image: unset;
+}
+.client .social a:nth-child(2){
+	background-color: #2d2d30;
+}
+.client .social a:nth-child(3){
+	background-color: #ff5500;
+}
+.client .social a:nth-child(4){
+	background-image: linear-gradient(to right, #ee0979 , #ff6a00);
+}
+.client .social a:nth-child(5){
+	background-color: #1da1f2;
+}
+.client .social a:nth-child(6){
+	background-color: #3b5998;
+}
 /* Media Queries */
 @media screen and (max-width: 900px){
 	a.btn-pr{
@@ -112,6 +133,9 @@ a.btn-pr{
 	.intro{
 		width: 100%;
 		text-align: center;
+	}
+	.social a{
+		margin-top: 8px;
 	}
 	a.btn-pr{
 		width: 50%;

@@ -1,18 +1,30 @@
 let skip = 0;
-let player_open = false;
+let player_open = false; 
 
 function getBeats(category){
 	$('.loading').fadeIn("fast");
-	const url = server + 'category/' + category + '?limit=' + beat_request_limit + '&skip=' + skip;
+	const url = server + 'category/' + category.toLowerCase().split(" ").join("_") + '?limit=' + beat_request_limit + '&skip=' + skip;
 
-    fetch(url, {method: 'POST'})
+	let headers = new Headers();
+	headers.append("X-CSRFToken", csrf_token);
+
+	const options = {
+		method: 'POST',
+		headers: headers
+	}
+
+    fetch(url, options)
         .then(response => response.json())
         .then(function (response) {
 			$('.loading').fadeOut("fast");
             if (response.status == 1) {
-                populateBeatsBody(response.beats);
+                populateBeatsBody(response.beats, '#beats-body');
+				$('.related .beats').css("display", "block");
+				$('.related .empty').css("display", "none");
             } else {
-            	showPrompt(response.message, response.status);
+				$('.related .beats').css("display", "none");
+				$('.related .empty').css("display", "block");
+				$('.related .empty .message').text(response.message);
             }
         })
         .catch(function (error) {
@@ -21,31 +33,4 @@ function getBeats(category){
         });
 }
 
-function populateBeatsBody(beats){
-	for (var i = 0; i < beats.length; i++) {
-		const beat = beats[i];
-		const photo = beat_images[Math.floor(Math.random() * 10)];
-		const category = beat.category.toLowerCase().split(' ').join('_');
-
-		let anim_class = 'zoom-in';
-		if (i < 20) anim_class = 'zoom_in';
-
-		const div = `
-		<div class="flex-bg-20 flex-md-30 flex-xs-50">
-			<div class="beat-item ${anim_class}" id="${beat.beat_id}">
-				<div class="image">
-					<img src="${photo}">
-					<div class="overlay"></div>
-				</div>
-				<a href="/beat/${beat.beat_id}" class="play"><span class="fa fa-play"></span></a>
-				<p class="date">${beat.upload_date}</p>
-				<div class="beat-details">
-					<h3>${beat.name}</h3>
-					<p>${beat.producer}</p>
-				</div>
-			</div>
-		</div>`;
-		$('#beats-body').append(div);
-	}
-}
 
