@@ -13,7 +13,7 @@ def create_app(test_config=None):
     app.config.from_mapping(
         ALLOWED_EXTENSIONS=['mp3', 'flac', 'ogg', 'wav', 'm4a']
     )
-    app.config.from_pyfile("../config.py", silent=True)
+    app.config.from_pyfile("config.py", silent=True)
 
     with app.app_context():
         # Set the secret key to some random bytes. Keep this really secret!
