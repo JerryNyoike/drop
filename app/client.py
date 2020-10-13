@@ -77,12 +77,12 @@ def reset_pwd():
 @bp.route('profile', methods=['GET'])
 def profile():
     crumbs = [
-        {"name": "Home", "url": url_for('routes.index')}
+        {"name": "Home", "url": url_for('routes.index'), "active": "true"}
     ]
 
     token = is_logged_in(request.cookies.get('token'))
     if not token:
-        return render_template('login.html', page="Login", error="Login for this action"), 200
+        return redirect(url_for('client.login'), 401)
 
     if token['typ'] != 'client':
         return render_template('login.html', page="Login", error="Login as client for this action"), 200
@@ -101,22 +101,32 @@ def profile():
 
     return render_template('client_profile.html', page=client["name"], crumbs=crumbs, client=client), 200
 
+
 @bp.route('cart', methods=['GET'])
 def cart():
     crumbs = [
-        {"name": "Home", "url": url_for('routes.index')}
+        {"name": "Home", "url": url_for('routes.index'), "active": "true"}
     ]
     return render_template('cart.html', page="Cart", crumbs=crumbs), 200
+
+
+@bp.route('yourbeats', methods=['GET'])
+def yourbeats():
+    crumbs = [
+        {"name": "Home", "url": url_for('routes.index'), "active": "true"}
+    ]
+    return render_template('yourbeats.html', page="Your Beats", crumbs=crumbs), 200
+
 
 @bp.route('settings', methods=['GET'])
 def settings():
     crumbs = [
-        {"name": "Home", "url": url_for('routes.index')}
+        {"name": "Home", "url": url_for('routes.index'), "active": "true"}
     ]
 
     token = is_logged_in(request.cookies.get('token'))
     if not token:
-        return render_template('login.html', page="Login", error="Login for this action"), 200
+        return redirect(url_for('client.login'), 401)
 
     if token['typ'] != 'client':
         return render_template('login.html', page="Login", error="Login as client for this action"), 200
@@ -135,6 +145,7 @@ def settings():
 
     return render_template('settings.html', page="Settings", crumbs=crumbs, client=client), 200
 
+
 @bp.route('logout', methods=['GET'])
 def logout():
     token = is_logged_in(request.cookies.get('token'))
@@ -142,7 +153,7 @@ def logout():
 
     token = is_logged_in(request.cookies.get('token'))
     if not token:
-        return render_template('login.html', page="Login", error="Login for this action"), 200
+        return redirect(url_for('client.login'), 401)
 
     if token['typ'] != 'client':
         return render_template('login.html', page="Login", error="Login as client for this action"), 200
@@ -156,7 +167,7 @@ def register_user(filename, user_data):
     conn = db.get_db()
     cur = conn.cursor()
 
-    phone_number = sub(r"^[^0-9]$", user_data['phone'], '')
+    phone_number = sub(r"^[^0-9-]$", user_data['phone'], '')
     query = '''INSERT INTO client (c_id, email, phone_number, name, pwd, profile_image)
             VALUES (UUID_TO_BIN(UUID()), '{}', {}, '{}', '{}', '{}')'''.format(
                 user_data['email'], phone_number, user_data['name'], string_hash(user_data['pwd']), filename

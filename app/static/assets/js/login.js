@@ -8,6 +8,7 @@ function login(user_type){
     }
 
     let headers = new Headers();
+    headers.append("X-CSRFToken", csrf_token);
     headers.append("Content-Type", "application/json");
 
     let fetchData = {

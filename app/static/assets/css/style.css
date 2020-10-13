@@ -164,7 +164,6 @@ nav a.active .fa,
 	box-shadow: 1px 1px 5px 2px rgba(0, 0, 0, 0.2);
 }
 .nav-right a span{
-	margin-left: 1px;
 	color: var(--main-bg-color);
 }
 .nav-right .dropdown-menu a,
@@ -207,7 +206,8 @@ nav a.active .fa,
 .nav-right .dropdown-item p{
 	flex: 55%;
 	flex-shrink: 1;
-	height: 18px;
+	height: auto;
+	min-height: 18px;
 	color: #ffffff;
 	text-align: center;
 	margin: auto;
@@ -237,7 +237,8 @@ nav a.active .fa,
 .nav-right .dropdown-item a span{
 	font-size: 20px;
 	margin-top: 5px;
-	transform: none;
+	transform: unset;
+	-webkit-transform: unset;
 	color: var(--main-bg-color);
 }
 .nav-right a,
@@ -251,6 +252,7 @@ nav a span:nth-child(2){
 	right: 0;
 	font-size: 6px;
 	color: #e0012d !important;
+	display: none;
 }
 .navbar a span:nth-child(2){
 	top: 50%;
@@ -262,7 +264,7 @@ nav a.active span:nth-child(2){
 nav a.visited span:nth-child(2),
 .nav-right ul li a.visited span:nth-child(2),
 .dropdown-item a.visited span:nth-child(2){
-	display: none;
+	display: none !important;
 }
 
 
@@ -396,15 +398,24 @@ nav a.visited span:nth-child(2),
 	opacity: 1;
 	transition: all .5s ease; 
 }
-.beat-item .date{
+.beat-item .date,
+.beat-item .categories{
 	position: absolute;
-	top: 90px;
+	top: 105px;
 	right: 5px;
+	margin: 8px 0;
 	color: #ffffff;
-	font-size: 13px;
-	font-family: 'Amatic SC', sans-serif;
-	font-style: italic;
+	font-size: 10px;
 	text-align: right;
+	opacity: 0.8;
+}
+.beat-item .date{
+	top: 90px;
+}
+.beat-details h3{
+	font-size: 14px;
+	margin: 0;
+	margin-bottom: 6px;
 }
 .beat-details{
 	min-height: 55px;
@@ -414,17 +425,37 @@ nav a.visited span:nth-child(2),
 	border-bottom-left-radius: 5px;
 	border-bottom-right-radius: 5px;
 }
-.beat-details h3{
-	font-size: 12px;
-	margin: 0;
-	margin-top: 2.5px;
-	margin-bottom: 8px;
-}
 .beat-details p{
 	font-size: 13px;
 	margin: 0;
 	padding: 0;
 	margin-bottom: 5px;
+}
+.beat-item .categories a,
+.beat-details p a{
+	display: inline-block;
+	color: #ffffff;
+}
+.beat-details p a{
+	color: var(--text-color-dark);
+}
+.beat-details p a,
+.beat-item .categories a{
+	font-size: 13px;
+	font-weight: 400;
+	font-family: 'Source Sans Pro', sans-serif;
+}
+.beat-item .categories a{
+	font-size: 10px;
+	margin-left: 2.5px;
+	margin-right: 2.5px;
+}
+.beat-item .categories a span{
+	font-size: 3px;
+	color: #ffffff;
+	font-weight: 400;
+	transform: translateY(-2px);
+	-webkit-transform: translateY(-2px);
 }
 
 /* Banner */
@@ -508,6 +539,8 @@ nav a.visited span:nth-child(2),
 .social a:hover span{
 	transform: scale(1.1, 1.1);
 	transform-origin: center;
+	-webkit-transform: scale(1.1, 1.1);
+	-webkit-transform-origin: center;
 	transition: all .3s ease;
 }
 .vert-divider{
@@ -662,7 +695,7 @@ nav a.visited span:nth-child(2),
 	margin-bottom: 0;
 }
 /* Media Queries */
-@media screen and (min-width: 768px){
+@media screen and (min-width: 770px){
 	.navbar{
 		display: block !important;
 	}
@@ -680,16 +713,14 @@ nav a.visited span:nth-child(2),
 }
 @media screen and (max-width: 1100px){
 	.navbar{
-		width: 25%;
+		width: 20%;
+	}
+	.brand a{
+		font-size: 16px;
 	}
 	.banner .illustration{
 		left: 55%;
 	}
-}
-@media screen and (max-width: 900px){
-	.navbar{
-		width: 30%;
-	}	
 }
 @media screen and (max-width: 768px){			
 	.navbar{
@@ -752,6 +783,7 @@ nav a.visited span:nth-child(2),
 	.nav-right a span{
 		font-size: 15px;
 		transform: translate(-1px, -2.5px);
+		-webkit-transform: translate(-1px, -2.5px);
 	}
 	.dropdown{
 		top: 8px;
@@ -776,6 +808,7 @@ nav a.visited span:nth-child(2),
 		margin-top: 50px;
 		position: static;
 		transform: translateY(0);
+		-webkit-transform: translateY(0);
 	}
 	.banner .intro{
 		padding: 20px 40px;
@@ -806,6 +839,7 @@ nav a.visited span:nth-child(2),
 		max-width: 100px;
 		padding: 0 5px 0 5px;
 		transform: translateX(10px);
+		-webkit-transform: translateX(10px);
 	}
 	#home-crumb{
 		margin-left: -13px;
@@ -854,6 +888,12 @@ nav a.visited span:nth-child(2),
 	.beat-item:hover .play{
 		top: unset;
 		transition: all .5s ease;
+	}
+	.beat-item .categories{
+		top: 95px;
+	}
+	.beat-item .date{
+		top: 80px;
 	}
 }
 @media screen and (max-width: 350px){

@@ -30,6 +30,9 @@
 		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
 		<script src="{{ url_for('static', filename='assets/js/config.js') }}"></script>
 		<script src="{{ url_for('static', filename='assets/js/general.js') }}"></script>
+		<script type="text/javascript">
+            const csrf_token = "{{ csrf_token() }}";
+		</script>
 		{% if success %}
 			<script type="text/javascript">
 				showPrompt("{{ success }}", 0);

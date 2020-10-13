@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+
+{% block style %}
+	<link href="{{ url_for('static', filename='assets/css/dashboard/style.css') }}" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.plyr.io/3.6.2/plyr.css" />
+{% endblock %}
+
+{% block current_page %}
+	<li><a href="{{ url_for('routes.index') }}" class="crumb">{{ page }}</a></li>
+{% endblock %}
+	
+{% block content %}
+	<section class="home">
+		
+	</section>
+{% endblock %}
+
+{% block scripts %}
+	<script type="text/javascript" src="{{ url_for('static', filename='assets/js/dashboard/dashboard.js') }}"></script>
+{% endblock %}

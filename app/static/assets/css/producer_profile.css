@@ -8,10 +8,16 @@
 	box-shadow: 1px 1px 5px 3px rgba(0, 0, 0, 0.2);
 	position: relative;
 }
+.producer h2{
+	margin: 10px;
+}
 .profile{
 	width: 90%;
 	max-width: 90%;
 	height: auto;
+}
+.producer .profile h2{
+	margin: 20px 0 5px 10px;
 }
 .profile-img{
 	width: 100%;
@@ -23,10 +29,6 @@
 	width: 200px;
 	height: 180px;
 	border-radius: 5px;
-}
-.profile h2{
-	margin: 20px 0 5px 10px;
-	margin-left: 10px;
 }
 .profile h3{
 	font-size: 14px;

@@ -183,14 +183,10 @@
 							<h2>Premium Subscription</h2>
 							<div class="row">
 								<p>Your currently using a free account</p>
-								<div class="switch">
-									<input type="checkbox" name="spotify" id="spotify" value="spotify">
-	  								<span class="slider round"></span>
-								</div>
+								<a href="{{ url_for('routes.premium') }}" class="btn-pr">Try Premium<br><b>(30 days free)</b>
+									<span class="fa fa-diamond"></span>
+								</a>
 							</div>
-							<a href="{{ url_for('routes.premium') }}" class="btn-pr">Try Premium<br><b>(30 days free)</b>
-								<span class="fa fa-certificate"></span>
-							</a>
 						</div>
 						<div class="hor-divider"></div>
 						<form id="account_form">

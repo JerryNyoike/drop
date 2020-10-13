@@ -31,7 +31,6 @@ CREATE TABLE beat(
 	producer_id BINARY(16) NOT NULL,
 	beat_image VARCHAR(100) NOT NULL,
 	name VARCHAR(36) NOT NULL,
-	category VARCHAR(36) NOT NULL,
 	address VARCHAR(100) NOT NULL,
 	prev_address VARCHAR(100) NOT NULL,
 	lease_price INT(11) NOT NULL,

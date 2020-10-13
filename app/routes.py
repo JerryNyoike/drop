@@ -1,7 +1,6 @@
 from flask import Blueprint, current_app, render_template, url_for, redirect, session, send_from_directory
 from markupsafe import escape
 from werkzeug.utils import secure_filename
-from werkzeug.exceptions import HTTPException
 from . import db
 
 
@@ -42,10 +41,16 @@ def contacts():
 def premium():
     return render_template('premium.html', page="Try Premium"), 200
 
+
+@bp.route('producer/dashboard', methods=['GET'])
+def dashboard():
+    return render_template("dashboard/index.html", page="Dashboard"), 200
+
+
 @bp.route('producer/<producer_id>', methods=['GET'])
 def producer_profile(producer_id):
     crumbs = [
-        {"name": "Home", "url": url_for('.index')}
+        {"name": "Home", "url": url_for('.index'), "active": "true"}
     ]
 
     producer_query = '''SELECT (BIN_TO_UUID(producer_id)) producer_id, profile_image, email, name, phone_number 
@@ -82,8 +87,3 @@ def uploaded_preview(filename):
 @bp.route('resource/images/<filename>', methods=['GET'])
 def uploaded_image(filename):
     return send_from_directory(current_app.config['PHOTO_DIR'], secure_filename(filename))
-
-
-@bp.errorhandler(HTTPException)
-def error_handler(e):
-    return render_template("error_handler.html", page="Not Found", error=e.code, message=e.name), e.code
