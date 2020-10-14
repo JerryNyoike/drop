@@ -57,7 +57,7 @@ def extract_features(beat_path):
         header += f' mfcc{i}'
     header = header.split()
 
-    with file as open('beat_data.csv', 'w', newline=''):
+    with open('beat_data.csv', 'w', newline='') as file:
         writer = csv.writer(file)
         writer.writerow(header)
 
@@ -73,8 +73,7 @@ def extract_features(beat_path):
         to_append = f'{beat_path} {np.mean(chroma_stft)} {np.mean(rms)} {np.mean(spec_cent)} {np.mean(spec_bw)} {np.mean(rolloff)} {np.mean(zcr)}'    
         for e in mfcc:
             to_append += f' {np.mean(e)}'
-            file = open('beat_data.csv', 'a', newline='')
-            with file:
+            with open('beat_data.csv', 'a', newline='') as file:
                 writer = csv.writer(file)
                 writer.writerow(to_append.split())
 
@@ -106,9 +105,10 @@ def insertBeat():
 
                         # crop a 30 seconds preview of the beat
                         preview_path = crop_beat(beatFilePath)
+                        print(preview_path)
 
                         # extract features from the beat preview
-                        extract_features(preview_path)
+                        # extract_features(preview_path)
 
                         # Get metadata from the audio file using ffmpeg
                         run(main(beatFilePath))
@@ -146,7 +146,7 @@ def insertBeat():
 @bp.route('beat/delete', methods=['POST'])
 def delete_beat():
     ''' remove the beat with beat_id from the database'''
-    if request.content_type is 'application/json':
+    if request.content_type == 'application/json':
         token = request.headers.get('Authorization').split(' ')[1]
         if is_logged_in(token): 
             beat_details = beat_exists()
