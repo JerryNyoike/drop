@@ -12,6 +12,12 @@ from .auth import is_logged_in
 from datetime import datetime
 from .helpers import log_error
 from markupsafe import escape
+import librosa
+import pandas as pd
+import numpy as np
+import os
+import pathlib
+import csv
 
 
 bp = Blueprint('beat', __name__, url_prefix='/beat')
@@ -46,28 +52,31 @@ def crop_beat(beat_path):
 def extract_features(beat_path):
     ''' This function extracts features required by the AI model to generate genres
     '''
+    header = 'filename chroma_stft rms spectral_centroid spectral_bandwidth rolloff zero_crossing_rate'
+    for i in range(1, 21):
+        header += f' mfcc{i}'
+    header = header.split()
+
     with file as open('beat_data.csv', 'w', newline=''):
         writer = csv.writer(file)
         writer.writerow(header)
 
         genres = 'blues classical country disco hiphop jazz metal pop reggae rock'.split()
-        for filename in os.listdir(f'./instance/previews/{g}'):
-            songname = f'./instance/previews/{g}/{filename}'
-            y, sr = librosa.load(songname, mono=True, duration=30)
-            chroma_stft = librosa.feature.chroma_stft(y=y, sr=sr)
-            spec_cent = librosa.feature.spectral_centroid(y=y, sr=sr)
-            spec_bw = librosa.feature.spectral_bandwidth(y=y, sr=sr)
-            rolloff = librosa.feature.spectral_rolloff(y=y, sr=sr)
-            zcr = librosa.feature.zero_crossing_rate(y)
-            mfcc = librosa.feature.mfcc(y=y, sr=sr)
-            to_append = f'{filename} {np.mean(chroma_stft)} {np.mean(rmse)} {np.mean(spec_cent)} {np.mean(spec_bw)} {np.mean(rolloff)} {np.mean(zcr)}'    
-            for e in mfcc:
-                to_append += f' {np.mean(e)}'
-                to_append += f' {g}'
-                file = open('beat_data.csv', 'a', newline='')
-                with file:
-                    writer = csv.writer(file)
-                    writer.writerow(to_append.split())
+        y, sr = librosa.load(beat_path, mono=True, duration=30)
+        chroma_stft = librosa.feature.chroma_stft(y=y, sr=sr)
+        spec_cent = librosa.feature.spectral_centroid(y=y, sr=sr)
+        spec_bw = librosa.feature.spectral_bandwidth(y=y, sr=sr)
+        rolloff = librosa.feature.spectral_rolloff(y=y, sr=sr)
+        zcr = librosa.feature.zero_crossing_rate(y)
+        rms = librosa.feature.rms(y)
+        mfcc = librosa.feature.mfcc(y=y, sr=sr)
+        to_append = f'{beat_path} {np.mean(chroma_stft)} {np.mean(rms)} {np.mean(spec_cent)} {np.mean(spec_bw)} {np.mean(rolloff)} {np.mean(zcr)}'    
+        for e in mfcc:
+            to_append += f' {np.mean(e)}'
+            file = open('beat_data.csv', 'a', newline='')
+            with file:
+                writer = csv.writer(file)
+                writer.writerow(to_append.split())
 
 @bp.route('beat/upload', methods=['POST'])
 def insertBeat():
