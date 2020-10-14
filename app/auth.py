@@ -31,12 +31,13 @@ def login():
     if request.content_type == 'application/json':
         request_data = request.get_json()
         user_data = fetch_user(request_data)
+        print(user_data)
         if user_data is not None:
             # create token and return it to client side
             if 'c_id' in user_data:
                 token = jwt.encode({'typ': request_data['type'], 'exp': datetime.now() + timedelta(days=10), 'sub': user_data['c_id']}, current_app.config['SCRT'], algorithm='HS256').decode('utf-8')
             else:
-                token = jwt.encode({'typ': request_data['type'], 'exp': datetime.now() + timedelta(days=10), 'sub': user_data['producer_id']}, current_app.config['SCRT'], algorithm='HS256').decode('utf-8')
+                token = jwt.encode({'typ': request_data['type'], 'exp': datetime.now() + timedelta(days=10), 'sub': user_data['producer_id'].decode('utf-8')}, current_app.config['SCRT'], algorithm='HS256').decode('utf-8')
             return make_response({'status': 1, 'message': 'Successful login', 'payload': token})
         else:
             return make_response({'status': 0, 'message': 'User does not exist'})
@@ -83,9 +84,10 @@ def fetch_user(request_data):
     if table is None or uid is None:
         return None
 
-    query = "SELECT BIN_TO_UUID({}) {} FROM {} WHERE `email` = '{}' AND `pwd` = '{}' LIMIT 1".format(
+    query = "SELECT BIN_TO_UUID({}) {} FROM {} WHERE `email` = '{}' LIMIT 1".format(
             uid, uid, table, request_data['email'], pwd_hash(request_data['pwd'])
         )
+    print(query)
     cur.execute(query)
     result = cur.fetchone()
     return result
