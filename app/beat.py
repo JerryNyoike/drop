@@ -5,7 +5,12 @@ import pymysql
 from flask import Blueprint, make_response, request, current_app
 from werkzeug.utils import secure_filename
 from hashlib import md5  
-
+import librosa
+import pandas as pd
+import numpy as np
+import os
+import pathlib
+import csv
 
 from . import db
 from .auth import is_logged_in
@@ -25,7 +30,7 @@ def crop_beat(beat_path):
     seconds and saves the preview to the file system and
     returns the path to the preview.
     '''
-    extension = beat_path.split('.')[2]
+    extension = beat_path.split('.')[-1]
     preview_name = beat_path.split(sep)[-1]
     if extension in current_app.config['ALLOWED_EXTENSIONS']:
         beat = AudioSegment.from_file(beat_path, format=extension)
@@ -42,6 +47,38 @@ def crop_beat(beat_path):
     
     return None
 
+
+def extract_features(beat_path):
+    filename = beat_path.split('/')[-1]
+    print(filename)
+    header = 'filename chroma_stft rmse spectral_centroid spectral_bandwidth rolloff zero_crossing_rate'
+    header = header.split()
+    for i in range(1, 21):
+        header.append(f'mfcc{i}')
+
+    with open('beat_data.csv', 'a+', newline='') as file:
+        writer = csv.writer(file)
+        writer.writerow(header)
+
+        genres = 'blues classical country disco hiphop jazz metal pop reggae rock'.split()
+        y, sr = librosa.load(beat_path, mono=True, duration=30)
+        chroma_stft = librosa.feature.chroma_stft(y=y, sr=sr)
+        rmse = librosa.feature.rms(y=y)
+        spec_cent = librosa.feature.spectral_centroid(y=y, sr=sr)
+        spec_bw = librosa.feature.spectral_bandwidth(y=y, sr=sr)
+        rolloff = librosa.feature.spectral_rolloff(y=y, sr=sr)
+        zcr = librosa.feature.zero_crossing_rate(y)
+        mfcc = librosa.feature.mfcc(y=y, sr=sr)
+        to_append = f'{filename} {np.mean(chroma_stft)} {np.mean(rmse)} {np.mean(spec_cent)} {np.mean(spec_bw)} {np.mean(rolloff)} {np.mean(zcr)}'    
+        for e in mfcc:
+            to_append += f' {np.mean(e)}'
+
+        print(to_append)
+        file = open('beat_data.csv', 'a', newline='')
+        with file:
+            writer = csv.writer(file)
+            writer.writerow(to_append.split())
+
 @bp.route('/upload', methods=['POST'])
 def insertBeat():
     if request.content_type != 'multipart/form-data':
@@ -54,7 +91,7 @@ def insertBeat():
 
                 if allowed_filename(beat.filename): 
                     beatFileName = secure_filename(beat.filename)
-                    beatFilePath = path.join(current_app.config['TEMP_FOLDER'], beatFileName)
+                    beatFilePath = path.join(current_app.config['TEMP_DIR'], beatFileName)
                     beat.save(beatFilePath)
                     
                     is_duplicate, beat_hash = check_beat_duplicate(beatFilePath)
@@ -69,6 +106,8 @@ def insertBeat():
                         beatFilePath = save_file_permanently(beatFilePath)
                         # crop a 30 seconds preview of the beat
                         preview = crop_beat(beatFilePath)
+
+                        extract_features(preview)
                         
                         if preview is None:
                             return make_response({'status': 0, 'message':  'Could not upload beat successfully.'})
@@ -103,7 +142,7 @@ def insertBeat():
 @bp.route('delete', methods=['POST'])
 def delete_beat():
     ''' remove the beat with beat_id from the database'''
-    if request.content_type is 'application/json':
+    if request.content_type == 'application/json':
         if is_logged_in(request['tkn']):
             beat_details = beat_exists()
             if beat_details[0]:
@@ -145,7 +184,7 @@ def fetch_beats():
     # check that user is logged in
     if user is not False:    
         # check the user type
-        if user['typ'] is 'producer':
+        if user['typ'] == 'producer':
             # fetch only beats uploaded by the producer
             beats = get_beats(limit, skip, user['sub'])
             if beats is not None:
