@@ -41,6 +41,8 @@ def crop_beat(beat_path):
 
         preview.export(filename, format='mp3')
 
+        return f'{filename}.mp3'
+
 def extract_features(beat_path):
     ''' This function extracts features required by the AI model to generate genres
     '''
@@ -94,7 +96,10 @@ def insertBeat():
                         beatFilePath = save_beat_permanently(beatFileName)
 
                         # crop a 30 seconds preview of the beat
-                        crop_beat(beatFilePath)
+                        preview_path = crop_beat(beatFilePath)
+
+                        # extract features from the beat preview
+                        extract_features(preview_path)
 
                         # Get metadata from the audio file using ffmpeg
                         run(main(beatFilePath))
