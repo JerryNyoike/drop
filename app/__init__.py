@@ -20,8 +20,8 @@ def create_app(test_config=None):
         if not path.exists(app.config['PREVIEW_DIR']):
             makedirs(app.config['PREVIEW_DIR'])
 
-        if not path.exists(app.config['TEMP_FOLDER']):
-            makedirs(app.config['TEMP_FOLDER'])
+        if not path.exists(app.config['TEMP_DIR']):
+            makedirs(app.config['TEMP_DIR'])
 
     except OSError:
         pass
