@@ -71,17 +71,23 @@ def login():
 
 @bp.route('reset/password', methods=['GET', 'POST'])
 def reset_pwd():
-    token = is_logged_in(request.cookies.get('token'))
+    producerInfo = is_logged_in(request.cookies.get('token'))
 
     if not token:
-        return redirect(url_for('client.login'), 401)
+        return redirect(url_for('producer.login'), 401)
 
     user_data = request.form
-    if token[''] != 'producer':
-        return render_template('login.html', page="Login", error="Login as client for this action"), 200
+    if token['typ'] != 'producer':
+        return render_template('login.html', page="Login", error="Login as producer for this action"), 200
      
-    changePasswordQuery = '''UPDATE producer SET pwd = {} WHERE producer_id = UUID_TO_BIN("{}")'''.format(string_hash(user_data['new_pwd']), token)
-    return render_template('reset_pwd.html', page="Reset Password"), 200
+    changePasswordQuery = '''UPDATE producer SET pwd = {} WHERE producer_id = UUID_TO_BIN("{}")'''.format(string_hash(user_data['new_pwd']), producerInfo['sub'])
+    conn = db.get_db()
+    cur = conn.cursor()
+    result = cur.execute(changePasswordQuery)
+    if result == 1:
+        return render_template('reset_pwd.html', page="Reset Password"), 200
+    else:
+        return render_template('reset_pwd.html', page="Reset Password"), 200
 
 
 @bp.route('profile', methods=['GET'])
@@ -123,6 +129,51 @@ def profile():
 
     return render_template('client_profile.html', page=client["name"], crumbs=crumbs, client=client), 200
 
+
+@bp.route('profile', methods=['GET', 'PUT'])
+def profile():
+    crumbs = [
+        {"name": "Home", "url": url_for('routes.index'), "active": "true"}
+    ]
+
+    token = is_logged_in(request.cookies.get('token'))
+    if not token:
+        return redirect(url_for('client.login'), 401)
+
+    if token['typ'] != 'producer':
+        return render_template('login.html', page="Login", error="Login as client for this action"), 200
+
+    if request.method == 'PUT':
+        userData = request.form
+
+        updateProducerQuery = '''UPDATE producer SET profile_image, email, name'''
+        updateProducerProfileQuery = ''''''
+
+    producerProfileQuery = '''SELECT
+        p.producer_id,
+        p.profile_image,
+        p.email,
+        p.name,
+        p.phone_number,
+        pp.bio,
+        pp.profession,
+        pp.address,
+        pp.city,
+       FROM
+        producer p
+       INNER JOIN producer_profile pp ON p.producer_id == pp.producer_id
+       WHERE p.producer_id = UUID_TO_BIN("{}")'''.format(escape(token['sub']))
+
+    conn = db.get_db()
+    cur = conn.cursor()
+
+    cur.execute(producerProfileQuery) 
+    producerProfile = cur.fetchone()
+
+    if not producerProfile:
+        return render_template('login.html', page="Login", error="Login for this action"), 200
+
+    return render_template('client_profile.html', page=client["name"], crumbs=crumbs, client=client), 200
 
 @bp.route('cart', methods=['GET'])
 def cart():
