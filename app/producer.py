@@ -84,19 +84,31 @@ def profile():
     if not token:
         return redirect(url_for('client.login'), 401)
 
-    if token['typ'] != 'client':
+    if token['typ'] != 'producer':
         return render_template('login.html', page="Login", error="Login as client for this action"), 200
 
-    client_query = '''SELECT (BIN_TO_UUID(c_id)) client_id, profile_image, email, name, phone_number 
-    FROM client WHERE c_id = UUID_TO_BIN("{}")'''.format(escape(token['sub']))
+    producerProfileQuery = '''SELECT
+        p.producer_id,
+        p.profile_image,
+        p.email,
+        p.name,
+        p.phone_number,
+        pp.bio,
+        pp.profession,
+        pp.address,
+        pp.city,
+       FROM
+        producer p
+       INNER JOIN producer_profile pp ON p.producer_id == pp.producer_id
+       WHERE p.producer_id = UUID_TO_BIN("{}")'''.format(escape(token['sub']))
 
     conn = db.get_db()
     cur = conn.cursor()
 
-    cur.execute(client_query) 
-    client = cur.fetchone()
+    cur.execute(producerProfileQuery) 
+    producerProfile = cur.fetchone()
 
-    if not client:
+    if not producerProfile:
         return render_template('login.html', page="Login", error="Login for this action"), 200
 
     return render_template('client_profile.html', page=client["name"], crumbs=crumbs, client=client), 200
