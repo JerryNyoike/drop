@@ -71,6 +71,16 @@ def login():
 
 @bp.route('reset/password', methods=['GET', 'POST'])
 def reset_pwd():
+    token = is_logged_in(request.cookies.get('token'))
+
+    if not token:
+        return redirect(url_for('client.login'), 401)
+
+    user_data = request.form
+    if token[''] != 'producer':
+        return render_template('login.html', page="Login", error="Login as client for this action"), 200
+     
+    changePasswordQuery = '''UPDATE producer SET pwd = {} WHERE producer_id = UUID_TO_BIN("{}")'''.format(string_hash(user_data['new_pwd']), token)
     return render_template('reset_pwd.html', page="Reset Password"), 200
 
 
