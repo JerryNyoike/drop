@@ -82,8 +82,6 @@ def resetPasswordRequest():
     # TODO write code to send user an email
 
 
-
-
 @bp.route('reset/password/<token>', methods=['GET', 'POST'])
 def reset_pwd(token):
     if not token:
@@ -104,33 +102,45 @@ def reset_pwd(token):
         return render_template('reset_pwd.html', page="Reset Password"), 200
 
 
-@bp.route('profile', methods=['GET'])
-def profile():
+@bp.route('beats', methods=['GET'])
+def beats():    
+    token = is_logged_in(request.cookies.get('token'))
+
+    if not token:
+        return redirect(url_for('.login'), code=401)
+    
+    crumbs = [
+        {"name": "Home", "url": url_for('.dashboard')}
+    ]
+
+    return render_template('dashboard/beats.html', page="Your Beats", crumbs=crumbs), 200
+
+
+@bp.route('upload/beat', methods=['GET'])
+def upload_beat():    
+    token = is_logged_in(request.cookies.get('token'))
+
+    if not token:
+        return redirect(url_for('.login'), code=401)
+
+    if token['typ'] != 'producer':
+        return render_template('login.html', page="Login", error="Login as producer for this action"), 401
+
+
+@bp.route('<producer_id>', methods=['GET'])
+def producer_profile(producer_id):
     crumbs = [
         {"name": "Home", "url": url_for('routes.index'), "active": "true"}
-    ]
+    ]  
 
     token = is_logged_in(request.cookies.get('token'))
     if not token:
-        return redirect(url_for('client.login'), 401)
+        return redirect(url_for('.login'), code=401)
 
-    if token['typ'] != 'producer':
-        return render_template('login.html', page="Login", error="Login as producer for this action"), 200
+    producer_query = '''SELECT (BIN_TO_UUID(producer.producer_id)) producer_id, producer.profile_image, producer.email, producer.name, producer.phone_number, producer_profile.bio, producer_profile.profession, producer_profile.address, producer_profile.city FROM producer LEFT JOIN producer_profile ON producer.producer_id = producer_profile.producer_id WHERE producer.producer_id = UUID_TO_BIN("{}")'''.format(escape(producer_id))
 
-    producerProfileQuery = '''SELECT
-        p.producer_id,
-        p.profile_image,
-        p.email,
-        p.name,
-        p.phone_number,
-        pp.bio,
-        pp.profession,
-        pp.address,
-        pp.city,
-       FROM
-        producer p
-       INNER JOIN producer_profile pp ON p.producer_id == pp.producer_id
-       WHERE p.producer_id = UUID_TO_BIN("{}")'''.format(escape(token['sub']))
+    beats_query = '''SELECT (BIN_TO_UUID(beat_id)) beat_id, name, upload_date FROM beat WHERE 
+    producer_id = UUID_TO_BIN("{}")'''.format(escape(producer_id))
 
     conn = db.get_db()
     cur = conn.cursor()
@@ -215,7 +225,8 @@ def profile():
     if not producerProfile:
         return render_template('login.html', page="Login", error="Login for this action"), 200
 
-    return render_template('client_profile.html', page=client["name"], crumbs=crumbs, client=client), 200
+    cur.execute(beats_query)
+    beats = cur.fetchall()
 
 @bp.route('profile', methods=['GET', 'PUT'])
 def profile():
@@ -262,12 +273,7 @@ def profile():
 
     return render_template('client_profile.html', page=client["name"], crumbs=crumbs, client=client), 200
 
-@bp.route('cart', methods=['GET'])
-def cart():
-    crumbs = [
-        {"name": "Home", "url": url_for('routes.index'), "active": "true"}
-    ]
-    return render_template('cart.html', page="Cart", crumbs=crumbs), 200
+    return render_template('producer_profile.html', page=producer["name"], crumbs=crumbs, producer=producer, beats=beats), 200
 
 
 @bp.route('yourbeats', methods=['GET'])

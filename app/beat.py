@@ -348,7 +348,7 @@ def fetchProducerBeats(producer_id):
         return redirect(url_for('producer.login'), 401)
 
 
-@bp.route('<beat_id>', methods=['GET'])
+@bp.route('fetch/<beat_id>', methods=['GET'])
 def fetch_beat(beat_id):
     query = '''SELECT (BIN_TO_UUID(beat.beat_id)) beat_id, beat.name, beat.category, beat.beat_file, beat.lease_price, 
     beat.selling_price, beat.upload_date, beat.category, (BIN_TO_UUID(producer.producer_id)) producer_id, producer.profile_image, producer.name producer FROM beat INNER JOIN producer ON 
