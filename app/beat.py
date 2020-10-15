@@ -245,6 +245,18 @@ def fetch_in():
     return make_response({'status': 1, 'message': 'Beats fetched successfully', 'beats': beats}, 200)
 
 
+@bp.route('recent', methods=['GET'])
+def fetchRecent():
+    request_info = request.get_json()
+
+    # fetch all beats
+    beats = get_beats(15, 0)
+    if not beats:
+        return make_response({'status': 0, 'message': 'No beats found'}, 404)
+    # return the beats
+
+    return make_response({'status': 1, 'message': 'Beats fetched successfully', 'beats': beats}, 200)
+
 @bp.route('<beat_id>', methods=['GET'])
 def fetch_beat(beat_id):
     query = '''SELECT (BIN_TO_UUID(beat.beat_id)) beat_id, beat.name, beat.category, beat.beat_file, beat.lease_price, 
