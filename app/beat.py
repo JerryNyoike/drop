@@ -271,6 +271,26 @@ def fetchRecent():
 
     return make_response({'status': 1, 'message': 'Beats fetched successfully', 'beats': beats}, 200)
 
+@bp.route('producer', methods=['GET'])
+def fetchProducerBeats(producer_id):
+    producer_info = is_logged_in(request.cookies.get('token'))
+
+    if producer_info is not None and producer_info['typ'] == 'producer':
+        query = '''SELECT (BIN_TO_UUID(beat.beat_id)) beat_id, beat.name, beat.category, beat.beat_file, beat.lease_price, beat.selling_price, beat.upload_date, beat.category, (BIN_TO_UUID(producer.producer_id)) producer_id, producer.profile_image, producer.name producer FROM beat INNER JOIN producer ON beat.producer_id=producer.producer_id WHERE producer.producer_id = UUID_TO_BIN("{}")'''.format(escape(producer_id))
+
+        conn = db.get_db()
+        cur = conn.cursor()
+        cur.execute(query)
+        beats = cur.fetchall()
+
+        if len(beats) > 0:
+            return make_response({'status': 1, 'message': 'Beats fetched successfully', 'beats': beats}, 200)
+        else:
+            return make_response({'status': 0, 'message': 'No beats found'}, 404)
+    else:
+        return redirect(url_for('producer.login'), 401)
+
+
 @bp.route('<beat_id>', methods=['GET'])
 def fetch_beat(beat_id):
     query = '''SELECT (BIN_TO_UUID(beat.beat_id)) beat_id, beat.name, beat.category, beat.beat_file, beat.lease_price, 
