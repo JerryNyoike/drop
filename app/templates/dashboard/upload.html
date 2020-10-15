@@ -1,0 +1,37 @@
+{% extends 'forms_base.html' %}
+
+{% block style%}
+	<style type="text/css">
+		
+	</style>
+{% endblock %}
+{% block content %}
+	<div class="form-img slide_from_left">
+		<div class="overlay">
+			<div class="welcome">
+				<h1>Hello, There...</h1>
+				<p>Ready to share your talent with the world?</p>
+			</div>
+			<p class="credit">Photo by Chris Yang on Unsplash</p>
+		</div>
+		<img src="{{ url_for('static', filename='assets/images/potrait3.jpg') }}">
+	</div>
+	<div class="dialog slide_from_right">	
+		<h2>Upload Beat</h2>
+		<div class="row">
+			<form action="{{ url_for('beat.insertBeat') }}" method="POST" enctype="multipart/form-data" id="upload_form">
+				<input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+				<input type="file" name="file" id="file" accept="audio/*">
+				<input type="text" name="name" id="name" placeholder="Enter the beat name" required>
+				<input type="text" name="category" id="category" placeholder="Enter the beat genre/category" required>
+				<input type="number" name="leasePrice" id="leasePrice" placeholder="Enter the beat lease price" required>
+				<input type="number" name="sellingPrice" id="sellingPrice" placeholder="Enter the beat selling price" required>
+				<button type="submit" class="btn-pr"><span class="fa fa-chevron-right"></span>Upload</button>
+			</form>
+		</div>
+	</div>
+{% endblock %}
+
+{% block scripts %}
+	<script type="text/javascript" src="{{ url_for('static', filename='assets/js/dashboard/upload.js') }}"></script>
+{% endblock %}

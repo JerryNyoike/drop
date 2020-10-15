@@ -59,9 +59,10 @@
 					<img src="{{ url_for('static', filename='assets/images/profile.png') }}" id="profile-image">
 					<p id="select-img">Click to select profile image</p>
 				</div>
+				<input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
 				<input type="file" name="file" id="file" accept="image/gif, image/jpeg, image/png">
 				<input type="text" name="name" id="name" placeholder="Enter your name" required>
-				<input type="number" name="phone" id="phone" placeholder="Enter your phone number" required>
+				<input type="tel" name="phone" id="phone" placeholder="Enter your phone number" required>
 				<input type="email" name="email" id="email" placeholder="Enter your email" required>
 				<input type="password" name="pwd" id="pwd" placeholder="Enter your password" required>
 				<p id="pwd-tips">Try mixing letters (A-Za-z), numbers[0-9] and special characters(!@#$%^&*:;) for a strong password.</p>

@@ -82,13 +82,13 @@ def profile():
 
     token = is_logged_in(request.cookies.get('token'))
     if not token:
-        return redirect(url_for('client.login'), 401)
+        return redirect(url_for('.login'), 401)
 
     if token['typ'] != 'client':
         return render_template('login.html', page="Login", error="Login as client for this action"), 200
 
-    client_query = '''SELECT (BIN_TO_UUID(c_id)) client_id, profile_image, email, name, phone_number 
-    FROM client WHERE c_id = UUID_TO_BIN("{}")'''.format(escape(token['sub']))
+    client_query = '''SELECT (BIN_TO_UUID(client.c_id)) client_id, client.profile_image, client.email, client.name, client.phone_number, client_profile.bio, 
+    client_profile.profession, client_profile.address, client_profile.city FROM client LEFT JOIN client_profile ON client.c_id = client_profile.client_id WHERE client.c_id = UUID_TO_BIN("{}")'''.format(escape(token['sub']))
 
     conn = db.get_db()
     cur = conn.cursor()
@@ -97,7 +97,7 @@ def profile():
     client = cur.fetchone()
 
     if not client:
-        return render_template('login.html', page="Login", error="Login for this action"), 200
+        return redirect(url_for('.login'), 401)
 
     return render_template('client_profile.html', page=client["name"], crumbs=crumbs, client=client), 200
 
@@ -126,13 +126,12 @@ def settings():
 
     token = is_logged_in(request.cookies.get('token'))
     if not token:
-        return redirect(url_for('client.login'), 401)
+        return redirect(url_for('.login'), 401)
 
     if token['typ'] != 'client':
         return render_template('login.html', page="Login", error="Login as client for this action"), 200
 
-    client_query = '''SELECT (BIN_TO_UUID(c_id)) client_id, profile_image, email, name, phone_number 
-    FROM client WHERE c_id = UUID_TO_BIN("{}")'''.format(escape(token['sub']))
+    client_query = '''SELECT (BIN_TO_UUID(c.c_id)) client_id, c.profile_image, c.email, c.name, c.phone_number, cp.bio, cp.profession, cp.address, cp.city FROM client c INNER JOIN client_profile cp ON c.c_id = cp.client_id WHERE c.c_id = UUID_TO_BIN("{}")'''.format(escape(token['sub']))
 
     conn = db.get_db()
     cur = conn.cursor()
@@ -149,11 +148,8 @@ def settings():
 @bp.route('logout', methods=['GET'])
 def logout():
     token = is_logged_in(request.cookies.get('token'))
-    print(token)
-
-    token = is_logged_in(request.cookies.get('token'))
     if not token:
-        return redirect(url_for('client.login'), 401)
+        return redirect(url_for('.login'), 401)
 
     if token['typ'] != 'client':
         return render_template('login.html', page="Login", error="Login as client for this action"), 200
@@ -167,10 +163,10 @@ def register_user(filename, user_data):
     conn = db.get_db()
     cur = conn.cursor()
 
-    phone_number = sub(r"^[^0-9-]$", user_data['phone'], '')
+    # phone_number = sub(r"^[^0-9-]$", user_data['phone'], '')
     query = '''INSERT INTO client (c_id, email, phone_number, name, pwd, profile_image)
             VALUES (UUID_TO_BIN(UUID()), '{}', {}, '{}', '{}', '{}')'''.format(
-                user_data['email'], phone_number, user_data['name'], string_hash(user_data['pwd']), filename
+                user_data['email'], user_data['phone'], user_data['name'], string_hash(user_data['pwd']), filename
             )
 
     result = cur.execute(query)

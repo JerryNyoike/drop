@@ -46,9 +46,17 @@ function checkPreferences(){
 
 function getCategories(){
 	$('.loading').fadeIn("fast");
-	const url = server + 'beat/categories';
+	const url = server + 'beat/categories';	
 
-    fetch(url, {method: 'GET'})
+	let headers = new Headers();
+	headers.append("X-CSRFToken", $('meta[name="csrf-token"]').attr('content'));
+
+	const options = {
+		method: 'GET',
+		headers: headers
+	}
+
+    fetch(url, options)
         .then(response => response.json())
         .then(function (response) {
 			$('.loading').fadeOut("fast");
@@ -90,7 +98,7 @@ function getBeats(){
 	const url = server + 'beat/fetch/all?limit=' + beat_request_limit + '&skip=' + skip;
 
 	let headers = new Headers();
-	headers.append("X-CSRFToken", csrf_token);
+	headers.append("X-CSRFToken", $('meta[name="csrf-token"]').attr('content'));
 
 	const options = {
 		method: 'GET',
@@ -152,7 +160,7 @@ function populateBeatsBody(beats){
 					<img src="${photo}">
 					<div class="overlay"></div>
 				</div>
-				<a href="/beat/${beat.beat_id}" class="play"><span class="fa fa-play"></span></a>
+				<a href="/beat/fetch/${beat.beat_id}" class="play"><span class="fa fa-play"></span></a>
 				<p class="date">${upload_date}</p>
 				<div class="beat-details">
 					<h3>${beat.name}</h3>

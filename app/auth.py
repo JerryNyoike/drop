@@ -99,7 +99,8 @@ def is_logged_in(token):
         return jwt.decode(token, current_app.config['SCRT'], algorithm='HS256')
     except jwt.exceptions.DecodeError as e:
         log_error("At is_logged_in, " + str(e), "jwt_error_logs.txt")
-        return make_response({'status': 0, 'message': 'Must be logged in to perform action'}, 401)
+        return None
+        # return make_response({'status': 0, 'message': 'Must be logged in to perform action'}, 401)
 
 def db_info(user_type):
     if user_type == 'client':

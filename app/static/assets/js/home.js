@@ -12,7 +12,7 @@ function getNewBeats(){
 	const url = server + 'beat/fetch/all?limit=' + beat_request_limit + '&skip=' + skip;
 
 	let headers = new Headers();
-	headers.append("X-CSRFToken", csrf_token);
+	headers.append("X-CSRFToken", $('meta[name="csrf-token"]').attr('content'));
 
 	const options = {
 		method: 'GET',
@@ -42,7 +42,7 @@ function getRecents(){
 	const url = server + 'beat/fetch/all?limit=' + beat_request_limit + '&skip=' + skip;
 
 	let headers = new Headers();
-	headers.append("X-CSRFToken", csrf_token);
+	headers.append("X-CSRFToken", $('meta[name="csrf-token"]').attr('content'));
 
 	const options = {
 		method: 'GET',

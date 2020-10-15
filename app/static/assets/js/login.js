@@ -8,7 +8,7 @@ function login(user_type){
     }
 
     let headers = new Headers();
-    headers.append("X-CSRFToken", csrf_token);
+    headers.append("X-CSRFToken", $('meta[name="csrf-token"]').attr('content'));
     headers.append("Content-Type", "application/json");
 
     let fetchData = {

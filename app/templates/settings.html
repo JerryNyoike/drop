@@ -1,4 +1,4 @@
-{% extends 'base.html' %}
+{% extends 'dashboard/base.html' %}
 
 {% block style%}
 	<link rel="stylesheet" href="https://cdn.plyr.io/3.6.2/plyr.css" />
@@ -6,8 +6,8 @@
 {% endblock %}
 
 {% block current_page %}
-	<li class="active"><a href="{{ url_for('client.settings') }}" class="crumb">
-	{{ client.name }}</a></li>
+	<li class="active"><a href="{{ url_for('producer.settings') }}" class="crumb">
+	{{ producer.name }}</a></li>
 {% endblock %}
 	
 {% block content %}
@@ -19,7 +19,7 @@
 			<a class="tab" id="account"><span>Account</span></a>
 			<a class="tab" id="payments"><span>Payments</span></a>
 		</div>
-		{% if client %}
+		{% if producer %}
 			<div class="settings">		
 				<div class="viewpager">
 					<div class="profile">
@@ -31,7 +31,7 @@
 							<div class="hor-divider"></div>
 							<div class="name">
 								<h2>Display Name</h2>
-								<input type="text" name="name" id="name" placeholder="Name" value="{{ client.name }}">
+								<input type="text" name="name" id="name" placeholder="Name" value="{{ producer.name }}">
 							</div>
 							<div class="hor-divider"></div>
 							<div class="profession">
@@ -42,7 +42,7 @@
 							<div class="phone">
 								<h2>Phone Number</h2>
 								<input type="number" name="phone" id="phone" placeholder="Phone Number" 
-								value="{{ client.phone_number }}">
+								value="{{ producer.phone_number }}">
 							</div>
 							<div class="hor-divider"></div>
 							<div class="location">
@@ -225,7 +225,7 @@
 									</div>
 									<div class="flex-bg-60">
 										<input type="email" name="email" id="email" 
-										placeholder="Enter New Email" value="{{ client.email }}">
+										placeholder="Enter New Email" value="{{ producer.email }}">
 									</div>
 								</div>
 							</div>

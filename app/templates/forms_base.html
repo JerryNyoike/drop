@@ -5,6 +5,7 @@
 		<meta name="description" content="">
 		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
 		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<meta name="csrf-token" content="{{ csrf_token() }}">
 		<title>DropBeats | {{ page }}</title>
 		<!-- Icon for site-->
 		<link rel="icon" href="{{ url_for('static', filename='assets/images/headphones_icon.png') }}">
@@ -30,12 +31,9 @@
 		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
 		<script src="{{ url_for('static', filename='assets/js/config.js') }}"></script>
 		<script src="{{ url_for('static', filename='assets/js/general.js') }}"></script>
-		<script type="text/javascript">
-            const csrf_token = "{{ csrf_token() }}";
-		</script>
 		{% if success %}
 			<script type="text/javascript">
-				showPrompt("{{ success }}", 0);
+				showPrompt("{{ success }}", 1);
 			</script>
 		{% elif error %}
 			<script type="text/javascript">

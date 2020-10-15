@@ -6,7 +6,7 @@ function getBeats(category){
 	const url = server + 'category/' + category.toLowerCase().split(" ").join("_") + '?limit=' + beat_request_limit + '&skip=' + skip;
 
 	let headers = new Headers();
-	headers.append("X-CSRFToken", csrf_token);
+	headers.append("X-CSRFToken", $('meta[name="csrf-token"]').attr('content'));
 
 	const options = {
 		method: 'POST',

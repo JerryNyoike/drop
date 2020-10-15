@@ -42,38 +42,6 @@ def premium():
     return render_template('premium.html', page="Try Premium"), 200
 
 
-@bp.route('producer/dashboard', methods=['GET'])
-def dashboard():
-    return render_template("dashboard/index.html", page="Dashboard"), 200
-
-
-@bp.route('producer/<producer_id>', methods=['GET'])
-def producer_profile(producer_id):
-    crumbs = [
-        {"name": "Home", "url": url_for('.index'), "active": "true"}
-    ]
-
-    producer_query = '''SELECT (BIN_TO_UUID(producer_id)) producer_id, profile_image, email, name, phone_number 
-    FROM producer WHERE producer_id = UUID_TO_BIN("{}")'''.format(escape(producer_id))
-
-    beats_query = '''SELECT (BIN_TO_UUID(beat_id)) beat_id, name, upload_date FROM beat WHERE 
-    producer_id = UUID_TO_BIN("{}")'''.format(escape(producer_id))
-
-    conn = db.get_db()
-    cur = conn.cursor()
-
-    cur.execute(producer_query) 
-    producer = cur.fetchone()
-
-    cur.execute(beats_query)
-    beats = cur.fetchall()
-
-    if not producer:
-        return render_template('producer_profile.html'), 404
-
-    return render_template('producer_profile.html', page=producer["name"], crumbs=crumbs, producer=producer, beats=beats), 200
-
-
 @bp.route('resource/beat/<filename>', methods=['GET'])
 def uploaded_beat(filename):
     return send_from_directory(current_app.config['BEAT_DIR'], secure_filename(filename))

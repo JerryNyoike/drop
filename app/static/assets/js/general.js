@@ -315,7 +315,7 @@ function populateBeatsBody(beats, parentId){
                     <img src="${photo}">
                     <div class="overlay"></div>
                 </div>
-                <a href="/beat/${beat.beat_id}" class="play"><span class="fa fa-play"></span></a>
+                <a href="/beat/fetch/${beat.beat_id}" class="play"><span class="fa fa-play"></span></a>
                 <p class="date">${upload_date}</p>
                 <div class="beat-details">
                     <h3>${beat.name}</h3>
@@ -402,7 +402,16 @@ function compareDates(upload_date){
 
 function logout(){
     const url = server + 'client/logout';
-    fetch(url, {method: "POST"})
+
+    let headers = new Headers();
+	headers.append("X-CSRFToken", $('meta[name="csrf-token"]').attr('content'));
+
+	const options = {
+		method: 'GET',
+		headers: headers
+    }
+    
+    fetch(url, options)
         .then(response => response.json())
         .then(function(response) {
             if (response.status == 1) {
