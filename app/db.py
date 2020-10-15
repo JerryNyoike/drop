@@ -22,7 +22,7 @@ def init_db():
     db = get_db()
     cur = db.cursor()
 
-    with current_app.open_resource('./schema.sql') as f:
+    with current_app.open_resource('./sql/schema.sql') as f:
         queries = f.read().decode('utf-8').replace('\n', ' ').replace('\t', ' ').split(';')
         for num, query in enumerate(queries):
             query = query.strip()
