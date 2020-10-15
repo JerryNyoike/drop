@@ -259,7 +259,7 @@ def fetch_in():
     return make_response({'status': 1, 'message': 'Beats fetched successfully', 'beats': beats}, 200)
 
 
-@bp.route('recent', methods=['GET'])
+@bp.route('fetch/recent', methods=['GET'])
 def fetchRecent():
     request_info = request.get_json()
 
