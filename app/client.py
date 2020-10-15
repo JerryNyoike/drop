@@ -45,6 +45,7 @@ def login():
     to verify all other queries made by the client
     """
     if request.method == 'POST':
+        
         if request.content_type != 'application/json':
             return render_template('login.html', page="Login", error="Content type needs to be application/json"), 400
 
@@ -71,7 +72,23 @@ def login():
 
 @bp.route('reset/password', methods=['GET', 'POST'])
 def reset_pwd():
-    return render_template('reset_pwd.html', page="Reset Password"), 200
+    clientInfo = is_logged_in(request.cookies.get('token'))
+
+    if not token:
+        return redirect(url_for('client.login'), 401)
+
+    user_data = request.form
+    if token['typ'] != 'client':
+        return render_template('login.html', page="Login", error="Login as a client for this action"), 200
+     
+    changePasswordQuery = '''UPDATE client SET pwd = {} WHERE c_id = UUID_TO_BIN("{}")'''.format(string_hash(user_data['new_pwd']), clientInfo['sub'])
+    conn = db.get_db()
+    cur = conn.cursor()
+    result = cur.execute(changePasswordQuery)
+    if result == 1:
+        return render_template('reset_pwd.html', page="Reset Password"), 200
+    else:
+        return render_template('reset_pwd.html', page="Reset Password"), 200
 
 
 @bp.route('profile', methods=['GET'])
