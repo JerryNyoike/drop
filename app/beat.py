@@ -264,7 +264,14 @@ def fetchRecent():
     request_info = request.get_json()
 
     # fetch all beats
-    beats = get_beats(15, 0)
+    query = '''SELECT (BIN_TO_UUID(beat.beat_id)) beat_id, beat.name, beat.beat_file, beat.lease_price, 
+    beat.selling_price, beat.upload_date, beat.category, BIN_TO_UUID(producer.producer_id) producer_id, producer.name producer FROM 
+    beat INNER JOIN producer ON beat.producer_id=producer.producer_id ORDER BY beat.upload_date DESC LIMIT {}'''.format(15)
+
+    conn = db.get_db()
+    cur = conn.cursor()
+    cur.execute(query)
+    beats = cur.fetchall()
     if not beats:
         return make_response({'status': 0, 'message': 'No beats found'}, 404)
     # return the beats
