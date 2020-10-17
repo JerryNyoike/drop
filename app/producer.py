@@ -74,18 +74,26 @@ def login():
     return render_template('dashboard/login.html', page="Login"), 200
 
 
-@bp.route('reset/password', methods=['GET', 'POST'])
-def reset_pwd():
-    producerInfo = is_logged_in(request.cookies.get('token'))
+@bp.route('reset-password', methods=['POST'])
+def resetPasswordRequest():
+    request_info = request.get_json()
+    user_id = user_exists(request_info['email'])[-1]
+    # TODO write code to send user an email
 
+
+
+
+@bp.route('reset/password/<token>', methods=['GET', 'POST'])
+def reset_pwd(token):
     if not token:
-        return redirect(url_for('producer.login'), 401)
+        return redirect(url_for('client.login'), 401)
 
-    user_data = request.form
+    request_data = request.form
+    user_info = is_logged_in(token)
     if token['typ'] != 'producer':
-        return render_template('login.html', page="Login", error="Login as producer for this action"), 200
+        return render_template('login.html', page="Login", error="Unauthorized"), 200
      
-    changePasswordQuery = '''UPDATE producer SET pwd = {} WHERE producer_id = UUID_TO_BIN("{}")'''.format(string_hash(user_data['new_pwd']), producerInfo['sub'])
+    changePasswordQuery = '''UPDATE producer SET pwd = {} WHERE producer_id = UUID_TO_BIN("{}")'''.format(string_hash(request_data['new_pwd']), user_info['sub'])
     conn = db.get_db()
     cur = conn.cursor()
     result = cur.execute(changePasswordQuery)
@@ -106,7 +114,7 @@ def profile():
         return redirect(url_for('client.login'), 401)
 
     if token['typ'] != 'producer':
-        return render_template('login.html', page="Login", error="Login as client for this action"), 200
+        return render_template('login.html', page="Login", error="Login as producer for this action"), 200
 
     producerProfileQuery = '''SELECT
         p.producer_id,
@@ -174,7 +182,7 @@ def profile():
         return redirect(url_for('client.login'), 401)
 
     if token['typ'] != 'producer':
-        return render_template('login.html', page="Login", error="Login as client for this action"), 200
+        return render_template('login.html', page="Login", error="Login as producer for this action"), 200
 
     if request.method == 'PUT':
         userData = request.form
@@ -219,7 +227,7 @@ def profile():
         return redirect(url_for('client.login'), 401)
 
     if token['typ'] != 'producer':
-        return render_template('login.html', page="Login", error="Login as client for this action"), 200
+        return render_template('login.html', page="Login", error="Login as producer for this action"), 200
 
     if request.method == 'PUT':
         userData = request.form
