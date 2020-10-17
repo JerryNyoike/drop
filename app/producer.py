@@ -274,7 +274,7 @@ def yourbeats():
     return render_template('yourbeats.html', page="Your Beats", crumbs=crumbs), 200
 
 
-@bp.route('settings', methods=['GET'])
+@bp.route('settings', methods=['GET', 'PATCH'])
 def settings():
     crumbs = [
         {"name": "Home", "url": url_for('.dashboard'), "active": "false"}
@@ -287,18 +287,32 @@ def settings():
     if token['typ'] != 'producer':
         return render_template('login.html', page="Login", error="Login as producer for this action"), 401
 
-    producerProfileQuery = '''SELECT (BIN_TO_UUID(producer.producer_id)) producer_id, producer.profile_image, producer.email, producer.name, producer.phone_number, producer_profile.bio, producer_profile.profession, producer_profile.address, producer_profile.city FROM producer LEFT JOIN producer_profile ON producer.producer_id = producer_profile.producer_id WHERE producer.producer_id = UUID_TO_BIN("{}")'''.format(escape(token['sub']))
+    if request.method == 'PATCH':
+        conn = db.get_db()
+        cur = conn.cursor()
+        
+        request_data = request.form
+        addProducerDetailsQuery = '''UPDATE producer_profile SET bio={}, profession={}, address={}, city={} WHERE producer_id=UUID_TO_BIN("{}")'''.format(request_data["bio"], request_data["profession"], request_data["address"], request_data["city"], token["sub"])
 
-    conn = db.get_db()
-    cur = conn.cursor()
+        result = cur.execute(addProducerDetailsQuery)
+        conn.commit()
 
-    cur.execute(producerProfileQuery) 
-    producer = cur.fetchone()
+        if result == 1:
+            return render_template('settings.html', page="Settings", crumbs=crumbs, producer=producer), 200
+        else:
+            return render_template('settings.html', page="Settings", crumbs=crumbs, producer=producer), 500
 
-    if not producer:
-        return redirect(url_for('.login'), code=401)
+    else:
+        producerProfileQuery = '''SELECT (BIN_TO_UUID(producer.producer_id)) producer_id, producer.profile_image, producer.email, producer.name, producer.phone_number, producer_profile.bio, producer_profile.profession, producer_profile.address, producer_profile.city FROM producer LEFT JOIN producer_profile ON producer.producer_id = producer_profile.producer_id WHERE producer.producer_id = UUID_TO_BIN("{}")'''.format(escape(token['sub']))
 
-    return render_template('settings.html', page="Settings", crumbs=crumbs, producer=producer), 200
+        cur.execute(producerProfileQuery) 
+        conn.commmit()
+        producer = cur.fetchone()
+
+        if not producer:
+            return redirect(url_for('.login'), code=401)
+
+        return render_template('settings.html', page="Settings", crumbs=crumbs, producer=producer), 200
 
 
 @bp.route('logout', methods=['GET'])
