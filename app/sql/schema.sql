@@ -15,6 +15,20 @@ CREATE TABLE client(
 	PRIMARY KEY(c_id)
 );
 
+CREATE TABLE client_profile(
+	profile_id BINARY(16) NOT NULL UNIQUE,
+	client_id BINARY(16) NOT NULL,
+
+	bio VARCHAR(255),
+	profession VARCHAR(100),
+	address VARCHAR(100),
+	city VARCHAR(100),
+
+	PRIMARY KEY(profile_id),
+	FOREIGN KEY(client_id) REFERENCES client(c_id)
+	ON UPDATE CASCADE ON DELETE CASCADE
+);
+
 CREATE TABLE producer(
 	producer_id BINARY(16) NOT NULL UNIQUE,
 	profile_image VARCHAR(100) NOT NULL UNIQUE,
@@ -36,20 +50,6 @@ CREATE TABLE producer_profile(
 
 	PRIMARY KEY(profile_id),
 	FOREIGN KEY(producer_id) REFERENCES producer(producer_id)
-	ON UPDATE CASCADE ON DELETE CASCADE
-);
-
-CREATE TABLE client_profile(
-	profile_id BINARY(16) NOT NULL UNIQUE,
-	client_id BINARY(16) NOT NULL,
-
-	bio VARCHAR(255),
-	profession VARCHAR(100),
-	address VARCHAR(100),
-	city VARCHAR(100),
-
-	PRIMARY KEY(profile_id),
-	FOREIGN KEY(client_id) REFERENCES client(c_id)
 	ON UPDATE CASCADE ON DELETE CASCADE
 );
 

@@ -45,7 +45,7 @@
 		<div class="overlay">
 			<div class="welcome">
 				<h1>Welcome<br>To<br>DropBeats</h1>
-				<p>Just a few more steps to all the beats you need</p>
+				<p>Just a few more steps to earning from your beats</p>
 			</div>
 			<p class="credit">Photo by Chris Yang on Unsplash</p>
 		</div>
@@ -54,7 +54,7 @@
 	<div class="dialog slide_from_right">	
 		<h2>Register</h2>
 		<div class="row">
-			<form action="{{ url_for('client.register') }}" method="POST" enctype="multipart/form-data" id="register_form">
+			<form action="{{ url_for('producer.register') }}" method="POST" enctype="multipart/form-data" id="register_form">
 				<div class="profile-img">
 					<img src="{{ url_for('static', filename='assets/images/profile.png') }}" id="profile-image">
 					<p id="select-img">Click to select profile image</p>
@@ -62,12 +62,12 @@
 				<input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
 				<input type="file" name="file" id="file" accept="image/gif, image/jpeg, image/png">
 				<input type="text" name="name" id="name" placeholder="Enter your name" required>
-				<input type="tel" name="phone" id="phone" placeholder="Enter your phone number" required>
+				<input type="number" name="phone" id="phone" placeholder="Enter your phone number" required>
 				<input type="email" name="email" id="email" placeholder="Enter your email" required>
 				<input type="password" name="pwd" id="pwd" placeholder="Enter your password" required>
 				<p id="pwd-tips">Try mixing letters (A-Za-z), numbers[0-9] and special characters(!@#$%^&*:;) for a strong password.</p>
 				<button type="submit" class="btn-pr"><span class="fa fa-chevron-right"></span>Register</button>
-				<a href=" {{ url_for('client.login') }} ">Already have an account? Login here</a>
+				<a href=" {{ url_for('producer.login') }} ">Already have an account? Login here</a>
 			</form>
 		</div>
 	</div>

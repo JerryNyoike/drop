@@ -1,20 +1,225 @@
-{% extends 'base.html' %}
+{% extends 'dashboard/base.html' %}
 
 {% block style %}
-	<link href="{{ url_for('static', filename='assets/css/dashboard/style.css') }}" rel="stylesheet">
+	<link href="{{ url_for('static', filename='assets/css/dashboard/dashboard.css') }}" rel="stylesheet">
 	<link rel="stylesheet" href="https://cdn.plyr.io/3.6.2/plyr.css" />
 {% endblock %}
 
 {% block current_page %}
-	<li><a href="{{ url_for('routes.index') }}" class="crumb">{{ page }}</a></li>
+	<li><a href="{{ url_for('producer.dashboard') }}" class="crumb">{{ page }}</a></li>
 {% endblock %}
 	
 {% block content %}
-	<section class="home">
-		
-	</section>
+	<div class="home">
+        <h2>Dashboard</h2>
+		<div class="charts">
+			<div class="row">
+				<div class="flex-bg-33 flex-md-100">
+					<div class="chart-item">
+						<h3>Daily Sales</h3>
+						<p>Beat Sales from (date)</p>
+						<div class="chart-container">
+							<canvas id="salesChart"></canvas>
+						</div>
+					</div>
+				</div>
+				<div class="flex-bg-33 flex-md-100">
+					<div class="chart-item">
+						<h3>Beat Activity</h3>
+						<p>Average number of interactions with your beats</p>
+						<div class="chart-container">
+							<canvas id="activityChart"></canvas>
+						</div>
+					</div>
+				</div>
+				<div class="flex-bg-33 flex-md-100">
+					<div class="chart-item">
+						<h3>Popular Beats</h3>
+						<p>Beats with most interactions from (date)</p>
+						<div class="chart-container">
+							<canvas id="beatsChart"></canvas>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="averages">
+			<h2>Summaries</h2>
+			<div class="row">
+				<div class="flex-bg-25 flex-md-50 flex-sm-100">
+					<div class="averages-item">
+						<span class="fa fa-music"></span>
+						<h3>30</h3>
+						<p>Beats</p>
+					</div>
+				</div>
+				<div class="flex-bg-25 flex-md-50 flex-sm-100">
+					<div class="averages-item">
+						<span class="fa fa-dollar"></span>
+						<h3>10000</h3>
+						<p>Earnings</p>
+					</div>
+				</div>
+				<div class="flex-bg-25 flex-md-50 flex-sm-100">
+					<div class="averages-item">
+						<span class="fa fa-chain"></span>
+						<h3>15</h3>
+						<p>Interactions</p>
+					</div>
+				</div>
+				<div class="flex-bg-25 flex-md-50 flex-sm-100">
+					<div class="averages-item">
+						<span class="fa fa-money"></span>
+						<h3>10000</h3>
+						<p>Profit</p>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
 {% endblock %}
 
 {% block scripts %}
 	<script type="text/javascript" src="{{ url_for('static', filename='assets/js/dashboard/dashboard.js') }}"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.3/Chart.bundle.min.js"></script>
+    <script type="text/javascript">
+        var salesCtx = document.getElementById('salesChart').getContext('2d');
+        var profitsCtx = document.getElementById('activityChart').getContext('2d');
+        var productCtx = document.getElementById('beatsChart').getContext('2d');
+
+        var barChart = new Chart(salesCtx, {
+            type: 'bar',
+            data: {
+                labels: ['', '', '', '', '', ''],
+                datasets: [{
+                    barThickness: 20,
+                    maxBarThickness: 20,
+                    minBarLength: 2,
+                    label: '# of Items Sold',
+                    data: [12, 19, 3, 5, 2, 3],
+                    backgroundColor: [
+                        'rgba(255, 189, 2, 1)',
+                        'rgba(255, 189, 2, 1)',
+                        'rgba(255, 189, 2, 1)',
+                        'rgba(255, 189, 2, 1)',
+                        'rgba(255, 189, 2, 1)',
+                        'rgba(255, 189, 2, 1)'
+                    ]
+                }]
+            },
+            options: {
+                scales: {
+                    yAxes: [{
+                        ticks: {
+                            beginAtZero: true,
+                            display: false
+                        },
+                        gridLines: {
+                            display: false
+                        }
+                    }],
+                    xAxes: [{
+                        ticks: {
+                            beginAtZero: true,
+                            display: false
+                        },
+                        gridLines: {
+                            display: false
+                        }
+                    }]
+                },
+                legend: {
+                    display: false
+                },
+                responsive: true,
+                responsiveAnimationDuration: 0
+            }
+        });
+
+        var lineChart = new Chart(profitsCtx, {
+            type: 'line',
+            data: {
+                labels: ['', '', '', '', '', ''],
+                datasets: [{
+                    label: 'Amount',
+                    data: [12, 19, 13, 15, 22, 23],
+                    backgroundColor: 'rgba(75, 192, 192, 0.7)'
+                }]
+            },
+            options: {
+                scales: {
+                    yAxes: [{
+                        ticks: {
+                            beginAtZero: true,
+                            display: false
+                        },
+                        gridLines: {
+                            display: false
+                        }
+                    }],
+                    xAxes: [{
+                        ticks: {
+                            beginAtZero: true,
+                            display: false
+                        },
+                        gridLines: {
+                            display: false
+                        }
+                    }]
+                },
+                legend: {
+                    display: false
+                },
+                responsive: true,
+                responsiveAnimationDuration: 0
+            }
+        });
+
+        var doughnutChart = new Chart(productCtx, {
+            type: 'doughnut',
+            data: {
+                labels: ['', '', '', '', '', ''],
+                datasets: [{
+                    label: 'Amount',
+                    data: [12, 19, 13, 15, 22, 23],
+                    backgroundColor: [
+                        'rgba(75, 192, 192, 1)',
+                        'rgba(150, 19, 162, 1)',,
+                        'rgba(75, 92, 12, 1)',
+                        'rgba(175, 18, 112, 1)',
+                        'rgba(12, 192, 134, 1)',
+                        'rgba(205, 192, 19, 1)'
+                    ]
+                }]
+            },
+            options: {
+                cutoutPercentage: 75,
+                scales: {
+                    yAxes: [{
+                        ticks: {
+                            beginAtZero: true,
+                            display: false
+                        },
+                        gridLines: {
+                            display: false
+                        }
+                    }],
+                    xAxes: [{
+                        ticks: {
+                            beginAtZero: true,
+                            display: false
+                        },
+                        gridLines: {
+                            display: false
+                        }
+                    }]
+                },
+                legend: {
+                    position: 'right'
+                },
+                responsive: true,
+                responsiveAnimationDuration: 0
+            }
+        });
+    </script>
 {% endblock %}

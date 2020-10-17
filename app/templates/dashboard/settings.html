@@ -1,12 +1,12 @@
-{% extends 'dashboard/base.html' %}
+{% extends 'base.html' %}
 
 {% block style%}
 	<link rel="stylesheet" href="https://cdn.plyr.io/3.6.2/plyr.css" />
-	<link href="{{ url_for('static', filename='assets/css/settings.css') }}" rel="stylesheet">
+	<link href="{{ url_for('static', filename='assets/css/dashboard/settings.css') }}" rel="stylesheet">
 {% endblock %}
 
 {% block current_page %}
-	<li class="active"><a href="{{ url_for('producer.settings') }}" class="crumb">
+	<li class="active"><a href="{{ url_for('producer.settings') }}" class="crumb active">
 	{{ producer.name }}</a></li>
 {% endblock %}
 	

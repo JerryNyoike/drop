@@ -5,6 +5,7 @@
 		<meta name="description" content="">
 		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
 		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<meta name="csrf-token" content="{{ csrf_token() }}">
 		<title>DropBeats | {{ page }}</title>
 		<!-- Icon for site-->
 		<link rel="icon" href="{{ url_for('static', filename='assets/images/headphones_icon.png') }}">
@@ -16,7 +17,7 @@
 		<!--Style for this site -->
 		<link href="{{ url_for('static', filename='assets/css/general.css') }}" rel="stylesheet">
 		<link href="{{ url_for('static', filename='assets/css/animations.css') }}" rel="stylesheet">
-		<link href="{{ url_for('static', filename='assets/css/style.css') }}" rel="stylesheet">
+		<link href="{{ url_for('static', filename='assets/css/dashboard/style.css') }}" rel="stylesheet">
 		{% block style %}{% endblock %}
 	</head>
 	<body>
@@ -27,58 +28,27 @@
 				<a class="name">DropBeats</a>
 			</div>
 			<nav>
-				<div class="search">
-					<form id="search_form">
-						<input name="query" placeholder="Search for beats">
-						<button type="submit"><span class="fa fa-search"></span></button>
-					</form>
-				</div>
-				<a class="nav-link active" href="{{ url_for('routes.index') }}" id="home-link">
+				<a class="nav-link active" href="{{ url_for('producer.dashboard') }}" id="home-link">
 					<span class="fa fa-home"></span>
 					<p>Home</p>
 				</a>
-				<a class="nav-link" href="{{ url_for('routes.discover') }}" id="discover-link">
+				<a class="nav-link" href="{{ url_for('producer.beats') }}" id="discover-link">
 					<span class="fa fa-music"></span>
 					<span class="fa fa-circle" id="discover-reminder"></span>
-					<p>Discover</p>
+					<p>Your Beats</p>
 				</a>
-				<a class="nav-link" href="{{ url_for('routes.suggestions') }}" id="for-you-link">
-					<span class="fa fa-heart"></span>
-					<span class="fa fa-circle" id="for-you-reminder"></span>
-					<p>Just for you</p>
-				</a>
-				<a class="nav-link" href="{{ url_for('routes.about') }}" id="about-link">
-					<span class="fa fa-info"></span>
-					<span class="fa fa-circle" id="about-reminder"></span>
-					<p>About</p>
-				</a>
-				<a class="nav-link" href="{{ url_for('routes.produce') }}" id="produce-link">
-					<span class="fa fa-microphone"></span>
-					<span class="fa fa-circle" id="produce-reminder"></span>
-					<p>Produce</p>
-				</a>
-				<a class="nav-link" href="{{ url_for('routes.contacts') }}" id="contacts-link">
-					<span class="fa fa-address-book"></span>
-					<span class="fa fa-circle" id="contacts-reminder"></span>
-					<p>Contacts</p>
-				</a>
-				<a class="nav-link" href="{{ url_for('client.login') }}" id="login-link">
-					<span class="fa fa-sign-in"></span>
-					<span class="fa fa-circle" id="login-reminder"></span>
-					<p>Login</p>
-				</a>
-				<a class="nav-link" href="{{ url_for('client.register') }}" id="register-link">
-					<span class="fa fa-user"></span>
-					<span class="fa fa-circle" id="register-reminder"></span>
-					<p>Register</p>
+				<a class="nav-link" href="{{ url_for('producer.upload_beat') }}" id="about-link">
+					<span class="fa fa-upload"></span>
+					<span class="fa fa-circle" id="upload-reminder"></span>
+					<p>Upload Beats</p>
 				</a>
 				<div class="bottom-nav">		
-					<a class="nav-link" href="{{ url_for('client.settings') }}" id="settings-link">
+					<a class="nav-link" href="{{ url_for('producer.settings') }}" id="settings-link">
 						<span class="fa fa-gear"></span>
 						<span class="fa fa-circle" id="settings-reminder"></span>
 						<p>Settings</p>
 					</a>
-					<a class="nav-link" href="{{ url_for('client.logout') }}" id="logout-link">
+					<a class="nav-link" href="{{ url_for('producer.logout') }}" id="logout-link">
 						<span class="fa fa-sign-out"></span>
 						<p>Log Out</p>
 					</a>
@@ -89,48 +59,28 @@
 			<div class="brand">
 				<a class="navbar-toggle"><span class="fa fa-bars"></span></a>
 				<a class="navbar-collapse"><span class="fa fa-chevron-left"></span></a>
-				<a href="{{ url_for('routes.index') }}">
+				<a href="{{ url_for('producer.dashboard') }}">
 					<img class="logo" src="{{ url_for('static', filename='assets/images/headphones_icon.png') }}">
 				</a>
 			</div>
 			<nav>
-				<a class="nav-link active" href="{{ url_for('routes.index') }}" id="home-link">
+				<a class="nav-link active" href="{{ url_for('producer.dashboard') }}" id="home-link">
 					<span class="fa fa-home"></span>
 				</a>
-				<a class="nav-link" href="{{ url_for('routes.discover') }}" id="discover-link">
+				<a class="nav-link" href="{{ url_for('producer.beats') }}" id="discover-link">
 					<span class="fa fa-music"></span>
 					<!-- <span class="fa fa-circle" id="discover-reminder"></span> -->
 				</a>
-				<a class="nav-link" href="{{ url_for('routes.suggestions') }}" id="for-you-link">
-					<span class="fa fa-heart"></span>
+				<a class="nav-link" href="{{ url_for('producer.upload_beat') }}" id="for-you-link">
+					<span class="fa fa-upload"></span>
 					<!-- <span class="fa fa-circle" id="for-you-reminder"></span> -->
 				</a>
-				<a class="nav-link" href="{{ url_for('routes.about') }}" id="about-link">
-					<span class="fa fa-info"></span>
-					<!-- <span class="fa fa-circle" id="about-reminder"></span> -->
-				</a>
-				<a class="nav-link" href="{{ url_for('routes.produce') }}" id="produce-link">
-					<span class="fa fa-microphone"></span>
-					<!-- <span class="fa fa-circle" id="produce-reminder"></span> -->
-				</a>
-				<a class="nav-link" href="{{ url_for('routes.contacts') }}" id="contacts-link">
-					<span class="fa fa-address-book"></span>
-					<!-- <span class="fa fa-circle" id="contacts-reminder"></span> -->
-				</a>
-				<a class="nav-link" href="{{ url_for('client.login') }}" id="login-link">
-					<span class="fa fa-sign-in"></span>
-					<!-- <span class="fa fa-circle" id="login-reminder"></span> -->
-				</a>
-				<a class="nav-link" href="{{ url_for('client.register') }}" id="register-link">
-					<span class="fa fa-user"></span>
-					<!-- <span class="fa fa-circle" id="register-reminder"></span> -->
-				</a>
 				<div class="bottom-nav">		
-					<a class="nav-link" href="{{ url_for('client.settings') }}" id="settings-link">
+					<a class="nav-link" href="{{ url_for('producer.settings') }}" id="settings-link">
 						<span class="fa fa-gear"></span>
 						<!-- <span class="fa fa-circle" id="settings-reminder"></span> -->
 					</a>
-					<a class="nav-link" href="{{ url_for('client.logout') }}" id="logout-link">
+					<a class="nav-link" href="{{ url_for('producer.logout') }}" id="logout-link">
 						<span class="fa fa-sign-out"></span>
 					</a>
 				</div>
@@ -154,20 +104,6 @@
 					<img src="{{ url_for('static', filename='assets/images/profile.png') }}" id="profile-image">
 				</a>
 				<div class="dropdown-menu">
-					<div class="dropdown-item" id="dropdown-item-1">
-						<p>Account</p>
-						<a href="{{ url_for('client.profile') }}" id="profile-link">
-							<span class="fa fa-user"></span>
-							<span class="fa fa-circle" id="profile-reminder"></span>
-						</a>
-					</div>
-					<div class="dropdown-item" id="dropdown-item-2">
-						<p>Cart</p>
-						<a href="{{ url_for('client.cart') }}" id="cart-link">
-							<span class="fa fa-shopping-cart"></span>
-							<span class="fa fa-circle" id="cart-reminder"></span>
-						</a>
-					</div>	
 				</div>
 			</div>
 		</div>
@@ -175,7 +111,7 @@
 			<div class="breadcrumbs">
 				<ul>
 					<li>
-						<a href="{{ url_for('routes.index') }}" class="crumb" id="home-crumb">
+						<a href="{{ url_for('producer.dashboard') }}" class="crumb" id="home-crumb">
 							<span class="fa fa-home"></span>
 						</a>
 					</li>
@@ -191,7 +127,9 @@
 					{% block current_page %}{% endblock %}
 				</ul>
 			</div>
-			{% block content %}{% endblock %}
+			<div class="dashboard">
+				{% block content %}{% endblock %}
+			</div>
 		</div>
 	    <div class="prompt">
 	        <span class="fa fa-check" id="prompt-icon"></span>
@@ -286,11 +224,10 @@
             $("#" + page + "-link").each(function(){
             	$(this).addClass("active");
             });
-            const csrf_token = "{{ csrf_token() }}";
 		</script>
 		{% if success %}
 			<script type="text/javascript">
-				showPrompt("{{ session['success'] }}", 0);
+				showPrompt("{{ session['success'] }}", 1);
 			</script>
 		{% elif error %}
 			<script type="text/javascript">

@@ -1,6 +1,6 @@
 from os import path, makedirs
 import pymysql
-from . import routes, client, auth, db, beat, errors, category
+from . import routes, client, producer, auth, db, beat, errors, category
 from flask import Flask, current_app
 from flask_wtf.csrf import CSRFProtect
 from datetime import datetime
@@ -13,7 +13,7 @@ def create_app(test_config=None):
     app.config.from_mapping(
         ALLOWED_EXTENSIONS=['mp3', 'flac', 'ogg', 'wav', 'm4a']
     )
-    app.config.from_pyfile("config.py", silent=True)
+    app.config.from_pyfile("../config.py", silent=True)
 
     with app.app_context():
         # Set the secret key to some random bytes. Keep this really secret!
@@ -45,6 +45,7 @@ def create_app(test_config=None):
 
     app.register_blueprint(routes.bp)
     app.register_blueprint(client.bp)
+    app.register_blueprint(producer.bp)
     app.register_blueprint(auth.bp)
     app.register_blueprint(beat.bp)
     app.register_blueprint(category.bp)

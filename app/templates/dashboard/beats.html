@@ -1,0 +1,27 @@
+{% extends 'dashboard/base.html' %}
+
+{% block style %}
+	<link href="{{ url_for('static', filename='assets/css/dashboard/dashboard.css') }}" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.plyr.io/3.6.2/plyr.css" />
+{% endblock %}
+
+{% block current_page %}
+	<li><a href="{{ url_for('producer.beats') }}" class="crumb active">{{ page }}</a></li>
+{% endblock %}
+	
+{% block content %}
+    <div class="beats">
+        <h2>Your Beats</h2>
+        <div class="row" id="your-beats">
+            <div class="empty">
+                <img src="{{ url_for('static', filename='assets/images/illustration14.svg') }}">
+                <h2 class="message"></h2>
+            </div>
+            <!-- Beats appended here -->
+        </div>
+    </div>
+{% endblock %}
+
+{% block scripts %}
+    <script type="text/javascript" src="{{ url_for('static', filename='assets/js/dashboard/beats.js') }}"></script>
+{% endblock %}

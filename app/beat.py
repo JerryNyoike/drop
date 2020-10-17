@@ -1,4 +1,4 @@
-from os import path, makedirs
+from os import path, makedirs, sep
 from pydub import AudioSegment
 from pydub.utils import which
 import pymysql
@@ -18,6 +18,9 @@ import numpy as np
 import os
 import pathlib
 import csv
+from tensorflow.keras.models import load_model
+from sklearn.preprocessing import StandardScaler
+import joblib
 
 
 bp = Blueprint('beat', __name__, url_prefix='/beat')
@@ -34,8 +37,8 @@ def crop_beat(beat_path):
     seconds and saves the preview to the file system and
     returns the path to the preview.
     '''
-    preview_name = beat_path.split('\\')[-1]
-    extension = preview_name.split('.')[-1]
+    extension = beat_path.split('.')[-1]
+    preview_name = beat_path.split(sep)[-1]
     if extension in current_app.config['ALLOWED_EXTENSIONS']:
         beat = AudioSegment.from_file(beat_path, format=extension)
 
@@ -47,37 +50,32 @@ def crop_beat(beat_path):
 
         preview.export(filename, format='mp3')
 
-        return f'{filename}.mp3'
+        return filename
+    
+    return None
 
 def extract_features(beat_path):
-    ''' This function extracts features required by the AI model to generate genres
-    '''
-    header = 'filename chroma_stft rms spectral_centroid spectral_bandwidth rolloff zero_crossing_rate'
-    for i in range(1, 21):
-        header += f' mfcc{i}'
-    header = header.split()
+    filename = beat_path.split('/')[-1]
+    # genres = 'blues classical country disco hiphop jazz metal pop reggae rock'.split()
+    y, sr = librosa.load(beat_path, mono=True, duration=30)
+    chroma_stft = librosa.feature.chroma_stft(y=y, sr=sr)
+    rmse = librosa.feature.rms(y=y)
+    spec_cent = librosa.feature.spectral_centroid(y=y, sr=sr)
+    spec_bw = librosa.feature.spectral_bandwidth(y=y, sr=sr)
+    rolloff = librosa.feature.spectral_rolloff(y=y, sr=sr)
+    zcr = librosa.feature.zero_crossing_rate(y)
+    mfcc = librosa.feature.mfcc(y=y, sr=sr)
+    tempo = librosa.beat.tempo(y=y)
+    data = [ 
+        np.mean(chroma_stft), np.mean(rmse), np.mean(spec_cent), np.mean(spec_cent), np.mean(spec_bw), np.mean(rolloff), tempo[0] 
+    ]  
+    for e in mfcc:
+        data.append(np.mean(e))
 
-    with open('beat_data.csv', 'w', newline='') as file:
-        writer = csv.writer(file)
-        writer.writerow(header)
+    return (filename, data)
+            
 
-        genres = 'blues classical country disco hiphop jazz metal pop reggae rock'.split()
-        y, sr = librosa.load(beat_path, mono=True, duration=30)
-        chroma_stft = librosa.feature.chroma_stft(y=y, sr=sr)
-        spec_cent = librosa.feature.spectral_centroid(y=y, sr=sr)
-        spec_bw = librosa.feature.spectral_bandwidth(y=y, sr=sr)
-        rolloff = librosa.feature.spectral_rolloff(y=y, sr=sr)
-        zcr = librosa.feature.zero_crossing_rate(y)
-        rms = librosa.feature.rms(y)
-        mfcc = librosa.feature.mfcc(y=y, sr=sr)
-        to_append = f'{beat_path} {np.mean(chroma_stft)} {np.mean(rms)} {np.mean(spec_cent)} {np.mean(spec_bw)} {np.mean(rolloff)} {np.mean(zcr)}'    
-        for e in mfcc:
-            to_append += f' {np.mean(e)}'
-            with open('beat_data.csv', 'a', newline='') as file:
-                writer = csv.writer(file)
-                writer.writerow(to_append.split())
-
-@bp.route('beat/upload', methods=['POST'])
+@bp.route('upload', methods=['POST'])
 def insertBeat():
     if 'multipart/form-data' in request.content_type:
         token = request.cookies.get('token')
@@ -101,23 +99,39 @@ def insertBeat():
                         beatLeasePrice = beatInfo['leasePrice']
                         beatSellingPrice = beatInfo['sellingPrice']
 
-                        beatFilePath = save_beat_permanently(beatFileName)
+                        beatFilePath = save_beat_permanently(beatFilePath)
 
                         # crop a 30 seconds preview of the beat
                         preview_path = crop_beat(beatFilePath)
-                        print(preview_path)
+
+                        file, features = extract_features(preview_path)
+                        features = np.asarray([features])
+                        print(features.shape)
+                        
+                        scaler = StandardScaler()
+                        X = scaler.fit_transform(np.array(features, dtype = float))
+
+                        model = load_model('app/model/cnn')
+                        # forest = joblib.load("app/model/forest")
+                        prediction = model.predict(X)
+
+                        genres = 'blues classical country disco hiphop jazz metal pop reggae rock'.split()
+                        print("---RESULTS---")
+                        print(prediction)
+                        predicted_genre = genres[np.argmax(prediction[0])]
+                        print("Predicted: " + predicted_genre)
 
                         # extract features from the beat preview
                         # extract_features(preview_path)
 
                         # Get metadata from the audio file using ffmpeg
-                        run(main(beatFilePath))
+                        # run(main(beatFilePath))
                         
-                        if preview is None:
+                        if preview_path is None:
                             return make_response({'status': 0, 'message':  'Could not upload beat successfully.'})
 
                         insertBeatQuery = '''INSERT INTO beat (beat_id, producer_id, name, category, beat_file, lease_price, 
-                        selling_price, beat_hash) VALUES (UUID_TO_BIN(UUID()), UUID_TO_BIN('{}'), '{}', '{}', '{}', '{}', {}, {}, '{}')
+                        selling_price, beat_hash) VALUES (UUID_TO_BIN(UUID()), UUID_TO_BIN('{}'), '{}', '{}', '{}', {}, {}, '{}')
                         '''.format(user_info['sub'], beatName, beatcategory, beatFileName, beatLeasePrice, beatSellingPrice, 
                             beat_hash)
 
@@ -128,26 +142,26 @@ def insertBeat():
                         databaseConnection.commit()
 
                         if result is not None:
-                            return make_response({'status': 1, 'message': 'The beat has been successfully uploaded'}, 200)
+                            return render_template('dashboard/upload.html', page="Upload Beat", success="Beat Uploaded"), 200
                         else:
-                            return make_response({'status': 0, 'message': 'An error occurred when uploading the beat'}, 500)
+                            return render_template('dashboard/upload.html', page="Upload Beat", error="Something went wrong"), 500
                     else:
-                        return make_response({'status': 0, 'message': 'Duplicate file upload.'}, 409)
+                        return render_template('dashboard/upload.html', page="Upload Beat", error="Duplicate file upload."), 500
                 else:
-                    return make_response({'status': 0, 'message': 'File type not allowed.'}, 409)
+                    return render_template('dashboard/upload.html', page="Upload Beat", error="File type not allowed."), 409
             else:
-                return make_response({'status': 0, 'message': 'No beat file uploaded'}, 400)
+                return render_template('dashboard/upload.html', page="Upload Beat", error="No beat file uploaded"), 400
         else:
-            return redirect(url_for('client.login'))
+            return render_template('dashboard/upload.html', page="Upload Beat", error="Must be logged in to upload beat."), 403
     else:
-        return make_response({'status': 0, 'message': 'Bad Request'}, 400)
+        return render_template('dashboard/upload.html', page="Upload Beat", error="Bad Request"), 400
 
 
-@bp.route('beat/delete', methods=['POST'])
+@bp.route('beat/delete', methods=['DELETE'])
 def delete_beat():
     ''' remove the beat with beat_id from the database'''
     if request.content_type == 'application/json':
-        token = request.headers.get('Authorization').split(' ')[1]
+        token = request.cookies.get('token')
         if is_logged_in(token): 
             beat_details = beat_exists()
             if beat_details[0]:
@@ -350,9 +364,9 @@ def save_beat_permanently(beatFilePath):
     Saves the temporary file at beatFilePath to the BEAT_DIR
     then deletes the temporary file
     '''
-    with open(filename, "rb") as f:
+    with open(beatFilePath, "rb") as f:
         try:
-            file_path = path.join(current_app.config['BEAT_DIR'], filename)
+            file_path = path.join(current_app.config['BEAT_DIR'], beatFilePath.split(sep)[-1])
             beatFile = open(file_path, "wb")
             beatFile.write(f.read())
             beatFile.close()

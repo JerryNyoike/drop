@@ -6,7 +6,7 @@
 {% endblock %}
 
 {% block current_page %}
-	<li class="active"><a href="{{ url_for('routes.producer_profile', producer_id=producer.producer_id) }}" class="crumb">
+	<li class="active"><a href="{{ url_for('producer.producer_profile', producer_id=producer.producer_id) }}" class="crumb">
 	{{ page }}</a></li>
 {% endblock %}
 	
@@ -65,7 +65,7 @@
 											<p class="date">{{ beat.upload_date }}</p>
 											<div class="beat-details">
 												<h3>{{ beat.name }}</h3>
-                    							<p>By <a href="{{ url_for('routes.producer_profile', producer_id=producer.producer_id) }}"><b>{{ producer.name }}</b></p>
+                    							<p>By <a href="{{ url_for('producer.producer_profile', producer_id=producer.producer_id) }}"><b>{{ producer.name }}</b></p>
 											</div>
 										</div>
 									</div>
