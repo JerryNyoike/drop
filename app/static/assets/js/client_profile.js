@@ -24,14 +24,21 @@ function switchTab(id){
 
 function getBeats(){
 	$('.loading').fadeIn("fast");
-	const url = server + 'beat/fetch/all?limit=' + beat_request_limit + '&skip=' + skip;
+	const url = server + 'beat/fetch/in?limit=' + beat_request_limit + '&skip=' + skip;
 
 	let headers = new Headers();
+	headers.append("Content-Type", 'application/json');
 	headers.append("X-CSRFToken", $('meta[name="csrf-token"]').attr('content'));
 
+	var starred = localStorage.getItem('starred') ? JSON.parse(localStorage.getItem('starred')) : [];
+	let body = {
+		beat_ids: starred
+	}
+
 	const options = {
-		method: 'GET',
-		headers: headers
+		method: 'POST',
+		headers: headers,
+        body: JSON.stringify(body)
 	}
 
     fetch(url, options)
@@ -39,11 +46,11 @@ function getBeats(){
         .then(function (response) {
 			$('.loading').fadeOut("fast");
             if (response.status == 1) {
+                populateBeatsBody(response.beats, "#starred-body");
+				$('.starred .beats').css("display", "block");
 				$('.starred .empty').css("display", "none");
-                populateBeatsBody(response.beats, '#starred-body');
-				$('.starred #starred-body').css("display", "flex");
             } else {
-				$('.starred #starred-body').css("display", "none");
+				$('.starred .beats').css("display", "none");
 				$('.starred .empty').css("display", "block");
 				$('.starred .empty .message').text(response.message);
             }
@@ -51,5 +58,7 @@ function getBeats(){
         .catch(function (error) {
             console.log(error);
 			$('.loading').fadeOut("fast");
+			$('.beats').append('<p style="text-align: center">Something went wrong</p>');
         });
 }
+

@@ -1,4 +1,4 @@
-{% extends 'base.html' %}
+{% extends 'dashboard/base.html' %}
 
 {% block style%}
 	<link rel="stylesheet" href="https://cdn.plyr.io/3.6.2/plyr.css" />
@@ -49,26 +49,6 @@
 								<h2>Location</h2>
 								<input type="text" name="address" id="address" placeholder="Address">
 								<input type="text" name="city" id="city" placeholder="City">
-							</div>
-							<div class="hor-divider"></div>
-							<div class="skills">
-								<div class="new-skill">
-									<h2>Add Skill</h2>
-									<div class="row">
-										<div class="flex-bg-70">
-											<input type="text" name="skill" id="skill" placeholder="New Skill">
-										</div>
-										<div class="flex-bg-30">
-											<button class="btn-pr" type="button">Add</button>
-										</div>
-									</div>
-								</div>
-								<div class="row" id="skills-body">
-									<p class="skill" id="skill-1">
-										Skill
-										<span class="fa fa-close" target="skill-1"></span>
-									</p>
-								</div>
 							</div>
 							<div class="hor-divider"></div>
 							<button type="submit" class="btn-pr">Submit Profile</button>

@@ -28,7 +28,7 @@
 	        <span class="fa fa-check" id="prompt-icon"></span>
 	        <p class="prompt-message"></p>
 	    </div>
-		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+		<script src="{{ url_for('static', filename='assets/js/jquery-3.5.1.min.js') }}"></script>
 		<script src="{{ url_for('static', filename='assets/js/config.js') }}"></script>
 		<script src="{{ url_for('static', filename='assets/js/general.js') }}"></script>
 		{% if success %}

@@ -21,7 +21,7 @@
 					</div>
 					<div class="flex-bg-30 flex-md-50 flex-sm-100">
 						<div class="info">
-							<a href="{{ url_for('routes.producer_profile', producer_id=beat.producer_id) }}" class="producer">
+							<a href="{{ url_for('producer.producer_profile', producer_id=beat.producer_id) }}" class="producer">
 								<img src="{{ url_for('routes.uploaded_image', filename=beat.profile_image) }}">
 								<p>{{ beat.producer }}</p>
 							</a>
@@ -39,7 +39,7 @@
 							<button class="btn-pr" id="lease">Lease<br><span>Ksh {{ beat.lease_price }}</span></button>
 							<button class="btn-pr" id="sell">Buy<br><span>Ksh {{ beat.selling_price }}</span></button>
 							<div class="icons">
-								<a><span class="fa fa-star"></span><p>Star</p></a>
+								<a class="star-beat" id="{{ beat.beat_id }}"><span class="fa fa-star"></span><p>Star</p></a>
 								<a href="{{ url_for('beat.fetch_beat', beat_id=beat.beat_id) }}" class="copy-link">
 									<span class="fa fa-chain"></span>
 									<p>Link</p>

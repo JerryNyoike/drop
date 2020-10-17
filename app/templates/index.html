@@ -16,14 +16,22 @@
 			<h2 class="message"></h2>
 		</div>
 		<div class="beats">
-			<div class="category">
+			<div class="category new-releases">
 				<h2>New Releases</h2>
+				<div class="empty">
+					<img src="{{ url_for('static', filename='assets/images/illustration14.svg') }}">
+					<h2 class="message"></h2>
+				</div>
 				<div class="row" id="new-releases">
 					<!-- Beats appended here -->
 				</div>
 			</div>
-			<div class="category">
+			<div class="category recents">
 				<h2>Recently Viewed</h2>
+				<div class="empty">
+					<img src="{{ url_for('static', filename='assets/images/illustration14.svg') }}">
+					<h2 class="message"></h2>
+				</div>
 				<div class="row" id="recents">
 					<!-- Beats appended here -->
 				</div>

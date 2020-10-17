@@ -6,8 +6,8 @@
 {% endblock %}
 
 {% block current_page %}
-	<li class="active"><a href="{{ url_for('producer.settings') }}" class="crumb">
-	{{ producer.name }}</a></li>
+	<li class="active"><a href="{{ url_for('client.settings') }}" class="crumb">
+	{{ client.name }}</a></li>
 {% endblock %}
 	
 {% block content %}
@@ -19,7 +19,7 @@
 			<a class="tab" id="account"><span>Account</span></a>
 			<a class="tab" id="payments"><span>Payments</span></a>
 		</div>
-		{% if producer %}
+		{% if client %}
 			<div class="settings">		
 				<div class="viewpager">
 					<div class="profile">
@@ -31,7 +31,7 @@
 							<div class="hor-divider"></div>
 							<div class="name">
 								<h2>Display Name</h2>
-								<input type="text" name="name" id="name" placeholder="Name" value="{{ producer.name }}">
+								<input type="text" name="name" id="name" placeholder="Name" value="{{ client.name }}">
 							</div>
 							<div class="hor-divider"></div>
 							<div class="profession">
@@ -42,33 +42,13 @@
 							<div class="phone">
 								<h2>Phone Number</h2>
 								<input type="number" name="phone" id="phone" placeholder="Phone Number" 
-								value="{{ producer.phone_number }}">
+								value="{{ client.phone_number }}">
 							</div>
 							<div class="hor-divider"></div>
 							<div class="location">
 								<h2>Location</h2>
 								<input type="text" name="address" id="address" placeholder="Address">
 								<input type="text" name="city" id="city" placeholder="City">
-							</div>
-							<div class="hor-divider"></div>
-							<div class="skills">
-								<div class="new-skill">
-									<h2>Add Skill</h2>
-									<div class="row">
-										<div class="flex-bg-70">
-											<input type="text" name="skill" id="skill" placeholder="New Skill">
-										</div>
-										<div class="flex-bg-30">
-											<button class="btn-pr" type="button">Add</button>
-										</div>
-									</div>
-								</div>
-								<div class="row" id="skills-body">
-									<p class="skill" id="skill-1">
-										Skill
-										<span class="fa fa-close" target="skill-1"></span>
-									</p>
-								</div>
 							</div>
 							<div class="hor-divider"></div>
 							<button type="submit" class="btn-pr">Submit Profile</button>
@@ -225,7 +205,7 @@
 									</div>
 									<div class="flex-bg-60">
 										<input type="email" name="email" id="email" 
-										placeholder="Enter New Email" value="{{ producer.email }}">
+										placeholder="Enter New Email" value="{{ client.email }}">
 									</div>
 								</div>
 							</div>

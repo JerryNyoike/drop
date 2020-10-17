@@ -1,6 +1,5 @@
-function login(user_type){
-    const type = user_type == 0 ? 'client' : 'producer';
-    const url = server + type + '/login';
+function login(){
+    const url = server + 'client/login';
 
     let data = {
         email: document.forms.login_form.email.value,
@@ -8,8 +7,8 @@ function login(user_type){
     }
 
     let headers = new Headers();
-    headers.append("X-CSRFToken", $('meta[name="csrf-token"]').attr('content'));
     headers.append("Content-Type", "application/json");
+    headers.append("X-CSRFToken", $('meta[name="csrf-token"]').attr('content'));
 
     let fetchData = {
         method: 'POST',
@@ -23,15 +22,9 @@ function login(user_type){
             if (response.status == 1) {
                 showPrompt(response.message, response.status);
                 localStorage.setItem("user_details", JSON.stringify(response.user_details));
-                if (type === 'client'){
-                    setTimeout(function(){
-                        window.location.assign("/");
-                    }, 1000);
-                } else {
-                    setTimeout(function(){
-                        window.location.assign(server + "producer/");
-                    }, 1000);
-                }
+                setTimeout(function(){
+                    window.location.assign("/");
+                }, 1000);
             }
         })
         .catch(function (error) {

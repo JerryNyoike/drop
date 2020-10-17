@@ -64,10 +64,10 @@
 				</a>
 			</div>
 			<nav>
-				<a class="nav-link active" href="{{ url_for('producer.dashboard') }}" id="home-link">
+				<a class="nav-link active" href="{{ url_for('producer.dashboard') }}" id="dashboard-link">
 					<span class="fa fa-home"></span>
 				</a>
-				<a class="nav-link" href="{{ url_for('producer.beats') }}" id="discover-link">
+				<a class="nav-link" href="{{ url_for('producer.beats') }}" id="your-beats-link">
 					<span class="fa fa-music"></span>
 					<!-- <span class="fa fa-circle" id="discover-reminder"></span> -->
 				</a>
@@ -213,7 +213,7 @@
 		<div class="to-top">
 			<a href="#top"><span class="fa fa-arrow-up"></span></a>
 		</div>
-		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+		<script src="{{ url_for('static', filename='assets/js/jquery-3.5.1.min.js') }}"></script>
 		<script src="{{ url_for('static', filename='assets/js/config.js') }}"></script>
 		<script src="{{ url_for('static', filename='assets/js/general.js') }}"></script>
 		<script type="text/javascript">
@@ -227,11 +227,11 @@
 		</script>
 		{% if success %}
 			<script type="text/javascript">
-				showPrompt("{{ session['success'] }}", 1);
+				showPrompt("{{ success }}", 1);
 			</script>
 		{% elif error %}
 			<script type="text/javascript">
-				showPrompt("{{ session['error'] }}", 0);
+				showPrompt("{{ error }}", 0);
 			</script>
 		{% endif %}
 		{% block scripts %}{% endblock %}

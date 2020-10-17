@@ -164,12 +164,12 @@ def settings():
 
     token = is_logged_in(request.cookies.get('token'))
     if not token:
-        return redirect(url_for('.login'), 401)
+        return render_template('login.html', page="Login", error="Login for this action"), 401
 
     if token['typ'] != 'client':
         return render_template('login.html', page="Login", error="Login as client for this action"), 200
 
-    client_query = '''SELECT (BIN_TO_UUID(c.c_id)) client_id, c.profile_image, c.email, c.name, c.phone_number, cp.bio, cp.profession, cp.address, cp.city FROM client c INNER JOIN client_profile cp ON c.c_id = cp.client_id WHERE c.c_id = UUID_TO_BIN("{}")'''.format(escape(token['sub']))
+    client_query = '''SELECT (BIN_TO_UUID(c.c_id)) client_id, c.profile_image, c.email, c.name, c.phone_number, cp.bio, cp.profession, cp.address, cp.city FROM client c LEFT JOIN client_profile cp ON c.c_id = cp.client_id WHERE c.c_id = UUID_TO_BIN("{}")'''.format(escape(token['sub']))
 
     conn = db.get_db()
     cur = conn.cursor()
@@ -178,7 +178,7 @@ def settings():
     client = cur.fetchone()
 
     if not client:
-        return render_template('login.html', page="Login", error="Login for this action"), 200
+        return render_template('login.html', page="Login", error="Client not found"), 404
 
     return render_template('settings.html', page="Settings", crumbs=crumbs, client=client), 200
 

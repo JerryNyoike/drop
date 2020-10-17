@@ -3,13 +3,13 @@ let player_open = false;
 $(window).ready(function() {
 
 	getNewBeats();
-	getRecents();
+	getRecentlyViewed();
 
 });
 
 function getNewBeats(){
 	$('.loading').fadeIn("fast");
-	const url = server + 'beat/fetch/all?limit=' + beat_request_limit + '&skip=' + skip;
+	const url = server + 'beat/fetch/recent';
 
 	let headers = new Headers();
 	headers.append("X-CSRFToken", $('meta[name="csrf-token"]').attr('content'));
@@ -25,9 +25,11 @@ function getNewBeats(){
 			$('.loading').css("display", "none");
             if (response.status == 1) {
                 populateBeatsBody(response.beats, '#new-releases');
-				$('.home .empty').css("display", "none");
+				$('.new-releases .empty').css("display", "none");
+				$('.new-releases #new-releases').css("display", "flex");
             } else {
-				$('.home .beats').css("display", "none");
+				$('.new-releases #new-releases').css("display", "none");
+				$('.new-releases .empty').css("display", "block");
             	$('.home .empty .message').text(response.message);
             }
         })
@@ -38,32 +40,42 @@ function getNewBeats(){
         });
 }
 
-function getRecents(){
-	const url = server + 'beat/fetch/all?limit=' + beat_request_limit + '&skip=' + skip;
+function getRecentlyViewed(){
+	$('.loading').fadeIn("fast");
+	const url = server + 'beat/fetch/in?limit=' + beat_request_limit + '&skip=' + skip;
 
 	let headers = new Headers();
+	headers.append("Content-Type", 'application/json');
 	headers.append("X-CSRFToken", $('meta[name="csrf-token"]').attr('content'));
 
-	const options = {
-		method: 'GET',
-		headers: headers
+	var viewed = localStorage.getItem('viewed') ? JSON.parse(localStorage.getItem('viewed')) : [];
+	let body = {
+		beat_ids: viewed
 	}
-	
+
+	const options = {
+		method: 'POST',
+		headers: headers,
+        body: JSON.stringify(body)
+	}
+
     fetch(url, options)
         .then(response => response.json())
         .then(function (response) {
-			$('.loading').css("display", "none");
+			$('.loading').fadeOut("fast");
             if (response.status == 1) {
-                populateBeatsBody(response.beats, '#recents');
-				$('.home .empty').css("display", "none");
+                populateBeatsBody(response.beats, "#recents");
+				$('.recents #recents').css("display", "flex");
+				$('.recents .empty').css("display", "none");
             } else {
-				$('.home .beats').css("display", "none");
-            	$('.home .empty .message').text(response.message);
+				$('.recents #recents').css("display", "none");
+				$('.recents .empty').css("display", "block");
+				$('.recents .empty .message').text(response.message);
             }
         })
         .catch(function (error) {
-			$('.loading').css("display", "none");
-			showPrompt("Something went wrong", 0);
             console.log(error);
+			$('.loading').fadeOut("fast");
+			$('.beats').append('<p style="text-align: center">Something went wrong</p>');
         });
 }

@@ -259,48 +259,29 @@ def fetch_beats():
     return make_response({'status': 1, 'message': 'Beats fetched successfully', 'beats': beats}, 200)
 
 
-@bp.route('fetch/new', methods=['GET'])
-def fetch_new():
-    request_info = request.get_json()
-    limit = request.args.get('limit', 30)
-    skip = request.args.get('skip', 0)
-
-    # fetch latest beats
-    query = '''SELECT (BIN_TO_UUID(beat.beat_id)) beat_id, beat.name, beat.beat_file, beat.lease_price, 
-    beat.selling_price, beat.upload_date, beat.category, BIN_TO_UUID(producer.producer_id) producer_id, producer.name producer FROM 
-    beat INNER JOIN producer ON beat.producer_id=producer.producer_id LEFT JOIN beat_category ON 
-    beat.beat_id=beat_category.beat_id LIMIT {} ORDER BY beat.upload_date DESC'''.format(limit)
-
-    cur = db.get_db().cursor()
-    cur.execute(query) 
-    beats = cur.fetchone()
-
-    if not beats:
-        return make_response({'status': 0, 'message': 'No beats found'}, 404)
-    
-    # return the beats
-    return make_response({'status': 1, 'message': 'Beats fetched successfully', 'beats': beats}, 200)
-
-
-@bp.route('fetch/in', methods=['GET'])
+@bp.route('fetch/in', methods=['POST'])
 def fetch_in():
+    if request.content_type != 'application/json':
+        return make_response({'status': 0, 'message': 'Bad request'}, 400)
+        
     request_info = request.get_json()
-
     if not request_info:
         return make_response({'status': 0, 'message': 'Missing request body'}, 400)
+    
+    if not request_info['beat_ids']:
+        return make_response({'status': 0, 'message': 'No beats found'}, 404)
 
     make_bin_id = lambda uuid : "UUID_TO_BIN('" + uuid + "')"
-    beat_ids = list(map(make_bin_id, request_info.beat_ids))
+    beat_ids = list(map(make_bin_id, request_info['beat_ids']))
 
     # fetch beats with above ids
     query = '''SELECT (BIN_TO_UUID(beat.beat_id)) beat_id, beat.name, beat.beat_file, beat.lease_price, 
     beat.selling_price, beat.upload_date, beat.category, BIN_TO_UUID(producer.producer_id) producer_id, producer.name producer FROM 
-    beat INNER JOIN producer ON beat.producer_id=producer.producer_id LEFT JOIN beat_category ON 
-    beat.beat_id=beat_category.beat_id WHERE beat.beat_id IN ({})'''.format(','.join(beat_ids))
+    beat INNER JOIN producer ON beat.producer_id=producer.producer_id WHERE beat.beat_id IN ({})'''.format(','.join(beat_ids))
 
     cur = db.get_db().cursor()
     cur.execute(query) 
-    beats = cur.fetchone()
+    beats = cur.fetchall()
 
     if not beats:
         return make_response({'status': 0, 'message': 'No beats found'}, 404)
@@ -313,7 +294,7 @@ def fetch_in():
 def fetchRecent():
     request_info = request.get_json()
 
-    # fetch all beats
+    # fetch recent beats
     query = '''SELECT (BIN_TO_UUID(beat.beat_id)) beat_id, beat.name, beat.beat_file, beat.lease_price, 
     beat.selling_price, beat.upload_date, beat.category, BIN_TO_UUID(producer.producer_id) producer_id, producer.name producer FROM 
     beat INNER JOIN producer ON beat.producer_id=producer.producer_id ORDER BY beat.upload_date DESC LIMIT {}'''.format(15)
@@ -329,11 +310,11 @@ def fetchRecent():
     return make_response({'status': 1, 'message': 'Beats fetched successfully', 'beats': beats}, 200)
 
 @bp.route('producer', methods=['GET'])
-def fetchProducerBeats(producer_id):
+def fetchProducerBeats():
     producer_info = is_logged_in(request.cookies.get('token'))
 
     if producer_info is not None and producer_info['typ'] == 'producer':
-        query = '''SELECT (BIN_TO_UUID(beat.beat_id)) beat_id, beat.name, beat.category, beat.beat_file, beat.lease_price, beat.selling_price, beat.upload_date, beat.category, (BIN_TO_UUID(producer.producer_id)) producer_id, producer.profile_image, producer.name producer FROM beat INNER JOIN producer ON beat.producer_id=producer.producer_id WHERE producer.producer_id = UUID_TO_BIN("{}")'''.format(escape(producer_id))
+        query = '''SELECT (BIN_TO_UUID(beat.beat_id)) beat_id, beat.name, beat.category, beat.beat_file, beat.lease_price, beat.selling_price, beat.upload_date, beat.category, (BIN_TO_UUID(producer.producer_id)) producer_id, producer.profile_image, producer.name producer FROM beat INNER JOIN producer ON beat.producer_id=producer.producer_id WHERE producer.producer_id = UUID_TO_BIN("{}")'''.format(escape(producer_info['sub']))
 
         conn = db.get_db()
         cur = conn.cursor()

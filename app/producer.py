@@ -29,7 +29,7 @@ def register():
         if user_exists(user_data['email']):
             return render_template('dashboard/register.html', page="Register", error="The email is already in use"), 409
 
-        filename = "default_profile.png"
+        filename = "producer.png"
         if request.files['file']:               
             f = request.files['file']
             filename = f.filename
@@ -38,7 +38,8 @@ def register():
         result = register_user(filename, user_data)
         if not result:
             return render_template('dashboard/register.html', page="Register", error="Something went wrong. Try again later"), 409
-        return redirect(url_for('.login'), code=401)
+
+        return render_template('dashboard/login.html', page="Login", error="Registration Successful. Login Here"), 200
 
     return render_template('dashboard/register.html', page="Register"), 200
 
@@ -55,6 +56,7 @@ def login():
 
         request_data = request.get_json()
         user_data = fetch_user(request_data["email"], request_data["pwd"])
+        print(user_data)
         if not user_data:
             return render_template('dashboard/login.html', page="Login", error="The user doesn\'t exist"), 404
 
@@ -101,13 +103,12 @@ def reset_pwd(token):
     else:
         return render_template('reset_pwd.html', page="Reset Password"), 200
 
-
 @bp.route('beats', methods=['GET'])
 def beats():    
     token = is_logged_in(request.cookies.get('token'))
 
     if not token:
-        return redirect(url_for('.login'), code=401)
+        return render_template('dashboard/login.html', page="Login", error="Login for this action"), 401
     
     crumbs = [
         {"name": "Home", "url": url_for('.dashboard')}
@@ -121,7 +122,7 @@ def upload_beat():
     token = is_logged_in(request.cookies.get('token'))
 
     if not token:
-        return redirect(url_for('.login'), code=401)
+        return render_template('dashboard/login.html', page="Login", error="Login for this action"), 401
 
     if token['typ'] != 'producer':
         return render_template('login.html', page="Login", error="Login as producer for this action"), 401
@@ -135,7 +136,7 @@ def producer_profile(producer_id):
 
     token = is_logged_in(request.cookies.get('token'))
     if not token:
-        return redirect(url_for('.login'), code=401)
+        return render_template('dashboard/login.html', page="Login", error="Login for this action"), 401
 
     producer_query = '''SELECT (BIN_TO_UUID(producer.producer_id)) producer_id, producer.profile_image, producer.email, producer.name, producer.phone_number, producer_profile.bio, producer_profile.profession, producer_profile.address, producer_profile.city FROM producer LEFT JOIN producer_profile ON producer.producer_id = producer_profile.producer_id WHERE producer.producer_id = UUID_TO_BIN("{}")'''.format(escape(producer_id))
 
@@ -226,10 +227,10 @@ def settings():
 
     token = is_logged_in(request.cookies.get('token'))
     if not token:
-        return redirect(url_for('.login'), code=401)
+        return render_template('dashboard/login.html', page="Login", error="Login as producer for this action"), 401
 
     if token['typ'] != 'producer':
-        return render_template('login.html', page="Login", error="Login as producer for this action"), 401
+        return render_template('dashboard/login.html', page="Login", error="Login as producer for this action"), 401
 
     if request.method == 'PATCH':
         conn = db.get_db()
@@ -241,6 +242,7 @@ def settings():
         result = cur.execute(addProducerDetailsQuery)
         conn.commit()
 
+<<<<<<< HEAD
         if result == 1:
             return render_template('settings.html', page="Settings", crumbs=crumbs, producer=producer), 200
         else:
@@ -257,19 +259,25 @@ def settings():
             return redirect(url_for('.login'), code=401)
 
         return render_template('settings.html', page="Settings", crumbs=crumbs, producer=producer), 200
+=======
+    cur.execute(producerProfileQuery)
+    producer = cur.fetchone()
+
+    if not producer:
+        return render_template('dashboard/login.html', page="Login", error="Producer not found"), 404
+
+    return render_template('dashboard/settings.html', page="Settings", crumbs=crumbs, producer=producer), 200
+>>>>>>> Fixed merge errors
 
 
 @bp.route('logout', methods=['GET'])
 def logout():
     token = is_logged_in(request.cookies.get('token'))
-    print(token)
-
-    token = is_logged_in(request.cookies.get('token'))
     if not token:
-        return redirect(url_for('producer.login'), 401)
+        return render_template('dashboard/login.html', page="Login", error="Login for this action"), 401
 
     if token['typ'] != 'producer':
-        return render_template('login.html', page="Login", error="Login as producer for this action"), 200
+        return render_template('dashboard/login.html', page="Login", error="Login as producer for this action"), 200
 
     response = make_response({"status": 1, "message": "Successful"}, 200)
     response.set_cookie('token', '', secure=True, httponly=True, samesite='Lax')
@@ -302,10 +310,7 @@ def user_exists(email):
     query = "SELECT BIN_TO_UUID(producer_id) producer_id FROM producer WHERE email = '%s' LIMIT 1" % email
     cur.execute(query)
     result = cur.fetchone()
-
-    if not result:
-        return False
-    return True
+    return not result
 
 
 def fetch_user(email, pwd):
