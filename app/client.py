@@ -91,7 +91,7 @@ def reset_pwd():
         return render_template('reset_pwd.html', page="Reset Password"), 200
 
 
-@bp.route('profile', methods=['GET'])
+@bp.route('profile', methods=['GET', 'PATCH'])
 def profile():
     crumbs = [
         {"name": "Home", "url": url_for('routes.index'), "active": "true"}
@@ -104,11 +104,23 @@ def profile():
     if token['typ'] != 'client':
         return render_template('login.html', page="Login", error="Login as client for this action"), 200
 
-    client_query = '''SELECT (BIN_TO_UUID(client.c_id)) client_id, client.profile_image, client.email, client.name, client.phone_number, client_profile.bio, 
-    client_profile.profession, client_profile.address, client_profile.city FROM client LEFT JOIN client_profile ON client.c_id = client_profile.client_id WHERE client.c_id = UUID_TO_BIN("{}")'''.format(escape(token['sub']))
+    if request.method == 'PATCH':
+        conn = db.get_db()
+        cur = conn.cursor()
+        
+        request_data = request.form
+        addClientDetailsQuery = '''UPDATE client_profile SET bio={}, profession={}, address={}, city={} WHERE client_id=UUID_TO_BIN("{}")'''.format(request_data["bio"], request_data["profession"], request_data["address"], request_data["city"], token["sub"])
 
-    conn = db.get_db()
-    cur = conn.cursor()
+        result = cur.execute(addClientDetailsQuery)
+        conn.commit()
+
+        if result == 1:
+            return render_template('settings.html', page="Settings", crumbs=crumbs, producer=producer), 200
+        else:
+            return render_template('settings.html', page="Settings", crumbs=crumbs, producer=producer), 500
+    else:
+        client_query = '''SELECT (BIN_TO_UUID(client.c_id)) client_id, client.profile_image, client.email, client.name, client.phone_number, client_profile.bio, 
+    client_profile.profession, client_profile.address, client_profile.city FROM client LEFT JOIN client_profile ON client.c_id = client_profile.client_id WHERE client.c_id = UUID_TO_BIN("{}")'''.format(escape(token['sub']))
 
     cur.execute(client_query) 
     client = cur.fetchone()
