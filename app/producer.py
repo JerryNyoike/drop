@@ -145,32 +145,6 @@ def producer_profile(producer_id):
     conn = db.get_db()
     cur = conn.cursor()
 
-    cur.execute(producerProfileQuery) 
-
-    if not token:
-        return redirect(url_for('.login'), code=401)
-
-    return render_template('dashboard/upload.html', page="Upload Beat"), 200
-
-
-@bp.route('<producer_id>', methods=['GET'])
-def producer_profile(producer_id):
-    crumbs = [
-        {"name": "Home", "url": url_for('routes.index'), "active": "true"}
-    ]  
-
-    token = is_logged_in(request.cookies.get('token'))
-    if not token:
-        return redirect(url_for('.login'), code=401)
-
-    producer_query = '''SELECT (BIN_TO_UUID(producer.producer_id)) producer_id, producer.profile_image, producer.email, producer.name, producer.phone_number, producer_profile.bio, producer_profile.profession, producer_profile.address, producer_profile.city FROM producer LEFT JOIN producer_profile ON producer.producer_id = producer_profile.producer_id WHERE producer.producer_id = UUID_TO_BIN("{}")'''.format(escape(producer_id))
-
-    beats_query = '''SELECT (BIN_TO_UUID(beat_id)) beat_id, name, upload_date FROM beat WHERE 
-    producer_id = UUID_TO_BIN("{}")'''.format(escape(producer_id))
-
-    conn = db.get_db()
-    cur = conn.cursor()
-
     cur.execute(producer_query) 
     producer = cur.fetchone()
 
@@ -182,51 +156,6 @@ def producer_profile(producer_id):
 
     return render_template('producer_profile.html', page=producer["name"], crumbs=crumbs, producer=producer, beats=beats), 200
 
-@bp.route('profile', methods=['GET', 'PUT'])
-def profile():
-    crumbs = [
-        {"name": "Home", "url": url_for('routes.index'), "active": "true"}
-    ]
-
-    token = is_logged_in(request.cookies.get('token'))
-    if not token:
-        return redirect(url_for('client.login'), 401)
-
-    if token['typ'] != 'producer':
-        return render_template('login.html', page="Login", error="Login as producer for this action"), 200
-
-    if request.method == 'PUT':
-        userData = request.form
-
-        updateProducerQuery = '''UPDATE producer SET profile_image, email, name'''
-        updateProducerProfileQuery = ''''''
-
-    producerProfileQuery = '''SELECT
-        p.producer_id,
-        p.profile_image,
-        p.email,
-        p.name,
-        p.phone_number,
-        pp.bio,
-        pp.profession,
-        pp.address,
-        pp.city,
-       FROM
-        producer p
-       INNER JOIN producer_profile pp ON p.producer_id == pp.producer_id
-       WHERE p.producer_id = UUID_TO_BIN("{}")'''.format(escape(token['sub']))
-
-    conn = db.get_db()
-    cur = conn.cursor()
-
-    cur.execute(producerProfileQuery) 
-    producerProfile = cur.fetchone()
-
-    if not producerProfile:
-        return render_template('login.html', page="Login", error="Login for this action"), 200
-
-    cur.execute(beats_query)
-    beats = cur.fetchall()
 
 @bp.route('profile', methods=['GET', 'PUT'])
 def profile():
