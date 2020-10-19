@@ -216,15 +216,15 @@ def createInteraction():
         return make_response({"status": 1, "message": "Unauthorized"}, 403)
 
 
-@bp.route('interactions', methods=['GET'])
-def getInteractions():
+@bp.route('interactions/max', methods=['GET'])
+def getBeatWithMaxInteractions():
     conn = db.get_db()
     cur = conn.cursor()
     def interactions(beat):
         query = '''SELECT interaction_time FROM beat_interaction WHERE  TIMESTAMPDIFF(DAY, CURRENT_TIMESTAMP, interaction_time)=5 AND beat_id=UUID_TO_BIN("{}")'''.format(beat['beat_id'])
         result = cur.execute(query)
         conn.commit()
-        return result
+        return beat['beat_id'], result
 
     def getProducerUploads(producer):
         query = '''SELECT beat_id, name FROM beats WHERE producer_id=UUID_TO_BIN("{}")'''.format(producer)
@@ -239,7 +239,7 @@ def getInteractions():
     uploadInteractions = list(map(interactions, uploads))
 
     if userInfo is not None and userInfo['typ'] == 'producer':
-        return make_response({"status": 1, "message": "Request successful", "data": max(uploadInteractions, key=lambda x: len(x) }, 200)
+        return make_response({"status": 1, "message": "Request successful", "data": uploadInteractions}, 200)
     else:
         return make_response({"status": 1, "message": "Unauthorized"}, 403)
 
