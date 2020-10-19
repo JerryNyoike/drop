@@ -28,11 +28,11 @@ def string_hash(to_hash):
     return sha256(to_hash.encode()).hexdigest()
 
 
-def create_token(user_id):
+def create_token(user_id, user_type):
     expiration = datetime.now() + timedelta(days=10)
     token = jwt.encode(
             {
-                'typ': 'client', 
+                'typ': user_type, 
                 'exp': expiration, 
                 'sub': user_id
             }, current_app.config['SCRT'], algorithm='HS256').decode('utf-8')
