@@ -74,6 +74,7 @@ def login():
 def resetPasswordRequest():
     request_info = request.get_json()
     user_id = user_exists(request_info['email'])[-1]
+    token = createToken(user_id, 'client')
     # TODO write code to send user an email
 
 
@@ -214,7 +215,7 @@ def register_user(filename, user_data):
 def user_exists(email):
     cur = db.get_db().cursor()
 
-    query = "SELECT (BIN_TO_UUID(c_id)) FROM client WHERE email = '%s' LIMIT 1" % email
+    query = "SELECT (BIN_TO_UUID(c_id) client_id) FROM client WHERE email = '%s' LIMIT 1" % email
     cur.execute(query)
     result = cur.fetchone()
 
