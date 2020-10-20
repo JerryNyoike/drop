@@ -194,6 +194,56 @@ def delete_beat():
         return make_response({'status':0, 'message': 'Invalid content type.'}, 404)
 
 
+@bp.route('interaction', methods=['POST'])
+def createInteraction():
+    def recordInteraction(beat_id):
+        conn = db.get_db()
+        cur = conn.cursor()
+        query = '''INSERT INTO beat_interaction (interaction_id, beat_id) VALUES (UUID_TO_BIN(UUID()), UUID_TO_BIN("{}"))'''.format(beat_id)
+        
+        result = cur.execute(query)
+        cur.commit()
+        return result
+
+    requestInfo = request.get_json()
+    userInfo = is_logged_in(request.cookies.get('token'))
+    if userInfo is not None and userInfo['typ'] == 'client':
+        if recordInteraction(beat_id) == 1:
+            return make_response({"status": 1, "message": "Successful request"}, 200)
+        else:
+            return make_response({"status": 1, "message": "Request not successful"}, 200)
+    else:
+        return make_response({"status": 1, "message": "Unauthorized"}, 403)
+
+
+@bp.route('interactions/max', methods=['GET'])
+def getBeatWithMaxInteractions():
+    conn = db.get_db()
+    cur = conn.cursor()
+    def interactions(beat):
+        query = '''SELECT interaction_time FROM beat_interaction WHERE  TIMESTAMPDIFF(DAY, CURRENT_TIMESTAMP, interaction_time)=5 AND beat_id=UUID_TO_BIN("{}")'''.format(beat['beat_id'])
+        result = cur.execute(query)
+        conn.commit()
+        return beat['beat_id'], result
+
+    def getProducerUploads(producer):
+        query = '''SELECT beat_id, name FROM beats WHERE producer_id=UUID_TO_BIN("{}")'''.format(producer)
+        cur.execute(query)
+        conn.commit()
+        return cur.fetchall()
+
+    requestInfo = request.get_json()
+    userInfo = is_logged_in(request.cookies.get('token'))
+
+    uploads = getProducerUploads(userInfo['sub'])
+    uploadInteractions = list(map(interactions, uploads))
+
+    if userInfo is not None and userInfo['typ'] == 'producer':
+        return make_response({"status": 1, "message": "Request successful", "data": uploadInteractions}, 200)
+    else:
+        return make_response({"status": 1, "message": "Unauthorized"}, 403)
+
+
 @bp.route('fetch/all', methods=['GET'])
 def fetch_beats():
     request_info = request.get_json()

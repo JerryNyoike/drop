@@ -70,14 +70,20 @@ CREATE TABLE beat(
 	ON UPDATE CASCADE ON DELETE CASCADE
 );
 
-CREATE TABLE beat_category(
-	entry_id BINARY(16) UNIQUE NOT NULL,
+CREATE TABLE beat_interaction(
+	interaction_id BINARY(16) UNIQUE NOT NULL,
+	interaction_time DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
 	beat_id BINARY(16) NOT NULL,
-	category VARCHAR(36) NOT NULL,
 
-	PRIMARY KEY(entry_id),
+	PRIMARY KEY(interaction_id),
 	FOREIGN KEY(beat_id) REFERENCES beat(beat_id)
 	ON UPDATE CASCADE ON DELETE CASCADE
+);
+
+CREATE TABLE category(
+	category_id BINARY(16) UNIQUE NOT NULL,
+	category_name VARCHAR(36) NOT NULL,
+	PRIMARY KEY(entry_id),
 );
 
 CREATE TABLE payment(

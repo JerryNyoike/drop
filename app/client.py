@@ -21,7 +21,7 @@ def register():
             return render_template('register.html', page="Register", error="Bad Request"), 400
 
         user_data = request.form
-        if user_exists(user_data['email']):
+        if user_exists(user_data['email'])[0]:
             return render_template('register.html', page="Register", error="The email is already in use"), 409
 
         filename = "default_profile.png"
@@ -70,18 +70,27 @@ def login():
     return render_template('login.html', page="Login"), 200
 
 
-@bp.route('reset/password', methods=['GET', 'POST'])
-def reset_pwd():
-    clientInfo = is_logged_in(request.cookies.get('token'))
+@bp.route('reset-password', methods=['POST'])
+def resetPasswordRequest():
+    request_info = request.get_json()
+    user_id = user_exists(request_info['email'])[-1]
+    token = createToken(user_id, 'client')
+    # TODO write code to send user an email
 
+
+
+
+@bp.route('reset/password/<token>', methods=['GET', 'POST'])
+def reset_pwd(token):
     if not token:
         return redirect(url_for('client.login'), 401)
 
-    user_data = request.form
+    request_data = request.form
+    user_info = is_logged_in(token)
     if token['typ'] != 'client':
         return render_template('login.html', page="Login", error="Login as a client for this action"), 200
      
-    changePasswordQuery = '''UPDATE client SET pwd = {} WHERE c_id = UUID_TO_BIN("{}")'''.format(string_hash(user_data['new_pwd']), clientInfo['sub'])
+    changePasswordQuery = '''UPDATE client SET pwd = {} WHERE c_id = UUID_TO_BIN("{}")'''.format(string_hash(request_data['new_pwd']), user_info['sub'])
     conn = db.get_db()
     cur = conn.cursor()
     result = cur.execute(changePasswordQuery)
@@ -91,7 +100,7 @@ def reset_pwd():
         return render_template('reset_pwd.html', page="Reset Password"), 200
 
 
-@bp.route('profile', methods=['GET'])
+@bp.route('profile', methods=['GET', 'PATCH'])
 def profile():
     crumbs = [
         {"name": "Home", "url": url_for('routes.index'), "active": "true"}
@@ -104,11 +113,23 @@ def profile():
     if token['typ'] != 'client':
         return render_template('login.html', page="Login", error="Login as client for this action"), 200
 
-    client_query = '''SELECT (BIN_TO_UUID(client.c_id)) client_id, client.profile_image, client.email, client.name, client.phone_number, client_profile.bio, 
-    client_profile.profession, client_profile.address, client_profile.city FROM client LEFT JOIN client_profile ON client.c_id = client_profile.client_id WHERE client.c_id = UUID_TO_BIN("{}")'''.format(escape(token['sub']))
+    if request.method == 'PATCH':
+        conn = db.get_db()
+        cur = conn.cursor()
+        
+        request_data = request.form
+        addClientDetailsQuery = '''UPDATE client_profile SET bio={}, profession={}, address={}, city={} WHERE client_id=UUID_TO_BIN("{}")'''.format(request_data["bio"], request_data["profession"], request_data["address"], request_data["city"], token["sub"])
 
-    conn = db.get_db()
-    cur = conn.cursor()
+        result = cur.execute(addClientDetailsQuery)
+        conn.commit()
+
+        if result == 1:
+            return render_template('settings.html', page="Settings", crumbs=crumbs, producer=producer), 200
+        else:
+            return render_template('settings.html', page="Settings", crumbs=crumbs, producer=producer), 500
+    else:
+        client_query = '''SELECT (BIN_TO_UUID(client.c_id)) client_id, client.profile_image, client.email, client.name, client.phone_number, client_profile.bio, 
+    client_profile.profession, client_profile.address, client_profile.city FROM client LEFT JOIN client_profile ON client.c_id = client_profile.client_id WHERE client.c_id = UUID_TO_BIN("{}")'''.format(escape(token['sub']))
 
     cur.execute(client_query) 
     client = cur.fetchone()
@@ -194,13 +215,13 @@ def register_user(filename, user_data):
 def user_exists(email):
     cur = db.get_db().cursor()
 
-    query = "SELECT (BIN_TO_UUID(c_id)) FROM client WHERE email = '%s' LIMIT 1" % email
+    query = "SELECT (BIN_TO_UUID(c_id) client_id) FROM client WHERE email = '%s' LIMIT 1" % email
     cur.execute(query)
     result = cur.fetchone()
 
     if not result:
-        return False
-    return True
+        return False, None
+    return True, result
 
 
 def fetch_user(email, pwd):

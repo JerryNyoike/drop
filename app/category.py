@@ -6,7 +6,7 @@ from . import db
 bp = Blueprint('category', __name__, url_prefix='/category')
 
 
-@bp.route('<category>', methods=['GET', 'POST'])
+@bp.route('all/<category>', methods=['GET', 'POST'])
 def category(category):
     if request.method == 'POST':
         request_info = request.get_json()
@@ -37,7 +37,7 @@ def category(category):
 
 @bp.route('categories', methods = ['GET'])
 def fetch_categories():
-    query = 'SELECT DISTINCT category FROM beat_category';
+    query = 'SELECT * category FROM beat_category';
 
     conn = db.get_db()
     cur = conn.cursor()

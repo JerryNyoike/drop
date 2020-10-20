@@ -74,18 +74,27 @@ def login():
     return render_template('dashboard/login.html', page="Login"), 200
 
 
-@bp.route('reset/password', methods=['GET', 'POST'])
-def reset_pwd():
-    producerInfo = is_logged_in(request.cookies.get('token'))
+@bp.route('reset-password', methods=['POST'])
+def resetPasswordRequest():
+    request_info = request.get_json()
+    user_id = user_exists(request_info['email'])[-1]
+    token = createToken(user_id['producer_id'], "producer")
+    # TODO write code to send user an email
 
+
+
+
+@bp.route('reset/password/<token>', methods=['GET', 'POST'])
+def reset_pwd(token):
     if not token:
-        return redirect(url_for('producer.login'), 401)
+        return redirect(url_for('client.login'), 401)
 
-    user_data = request.form
+    request_data = request.form
+    user_info = is_logged_in(token)
     if token['typ'] != 'producer':
-        return render_template('login.html', page="Login", error="Login as producer for this action"), 200
+        return render_template('login.html', page="Login", error="Unauthorized"), 200
      
-    changePasswordQuery = '''UPDATE producer SET pwd = {} WHERE producer_id = UUID_TO_BIN("{}")'''.format(string_hash(user_data['new_pwd']), producerInfo['sub'])
+    changePasswordQuery = '''UPDATE producer SET pwd = {} WHERE producer_id = UUID_TO_BIN("{}")'''.format(string_hash(request_data['new_pwd']), user_info['sub'])
     conn = db.get_db()
     cur = conn.cursor()
     result = cur.execute(changePasswordQuery)
@@ -106,7 +115,7 @@ def profile():
         return redirect(url_for('client.login'), 401)
 
     if token['typ'] != 'producer':
-        return render_template('login.html', page="Login", error="Login as client for this action"), 200
+        return render_template('login.html', page="Login", error="Login as producer for this action"), 200
 
     producerProfileQuery = '''SELECT
         p.producer_id,
@@ -174,7 +183,7 @@ def profile():
         return redirect(url_for('client.login'), 401)
 
     if token['typ'] != 'producer':
-        return render_template('login.html', page="Login", error="Login as client for this action"), 200
+        return render_template('login.html', page="Login", error="Login as producer for this action"), 200
 
     if request.method == 'PUT':
         userData = request.form
@@ -219,7 +228,7 @@ def profile():
         return redirect(url_for('client.login'), 401)
 
     if token['typ'] != 'producer':
-        return render_template('login.html', page="Login", error="Login as client for this action"), 200
+        return render_template('login.html', page="Login", error="Login as producer for this action"), 200
 
     if request.method == 'PUT':
         userData = request.form
@@ -274,7 +283,7 @@ def yourbeats():
     return render_template('yourbeats.html', page="Your Beats", crumbs=crumbs), 200
 
 
-@bp.route('settings', methods=['GET'])
+@bp.route('settings', methods=['GET', 'PATCH'])
 def settings():
     crumbs = [
         {"name": "Home", "url": url_for('.dashboard'), "active": "false"}
@@ -287,18 +296,32 @@ def settings():
     if token['typ'] != 'producer':
         return render_template('login.html', page="Login", error="Login as producer for this action"), 401
 
-    producerProfileQuery = '''SELECT (BIN_TO_UUID(producer.producer_id)) producer_id, producer.profile_image, producer.email, producer.name, producer.phone_number, producer_profile.bio, producer_profile.profession, producer_profile.address, producer_profile.city FROM producer LEFT JOIN producer_profile ON producer.producer_id = producer_profile.producer_id WHERE producer.producer_id = UUID_TO_BIN("{}")'''.format(escape(token['sub']))
+    if request.method == 'PATCH':
+        conn = db.get_db()
+        cur = conn.cursor()
+        
+        request_data = request.form
+        addProducerDetailsQuery = '''UPDATE producer_profile SET bio={}, profession={}, address={}, city={} WHERE producer_id=UUID_TO_BIN("{}")'''.format(request_data["bio"], request_data["profession"], request_data["address"], request_data["city"], token["sub"])
 
-    conn = db.get_db()
-    cur = conn.cursor()
+        result = cur.execute(addProducerDetailsQuery)
+        conn.commit()
 
-    cur.execute(producerProfileQuery) 
-    producer = cur.fetchone()
+        if result == 1:
+            return render_template('settings.html', page="Settings", crumbs=crumbs, producer=producer), 200
+        else:
+            return render_template('settings.html', page="Settings", crumbs=crumbs, producer=producer), 500
 
-    if not producer:
-        return redirect(url_for('.login'), code=401)
+    else:
+        producerProfileQuery = '''SELECT (BIN_TO_UUID(producer.producer_id)) producer_id, producer.profile_image, producer.email, producer.name, producer.phone_number, producer_profile.bio, producer_profile.profession, producer_profile.address, producer_profile.city FROM producer LEFT JOIN producer_profile ON producer.producer_id = producer_profile.producer_id WHERE producer.producer_id = UUID_TO_BIN("{}")'''.format(escape(token['sub']))
 
-    return render_template('settings.html', page="Settings", crumbs=crumbs, producer=producer), 200
+        cur.execute(producerProfileQuery) 
+        conn.commmit()
+        producer = cur.fetchone()
+
+        if not producer:
+            return redirect(url_for('.login'), code=401)
+
+        return render_template('settings.html', page="Settings", crumbs=crumbs, producer=producer), 200
 
 
 @bp.route('logout', methods=['GET'])
@@ -341,7 +364,7 @@ def register_user(filename, user_data):
 def user_exists(email):
     cur = db.get_db().cursor()
 
-    query = "SELECT (BIN_TO_UUID(producer_id)) FROM producer WHERE email = '%s' LIMIT 1" % email
+    query = "SELECT BIN_TO_UUID(producer_id) producer_id FROM producer WHERE email = '%s' LIMIT 1" % email
     cur.execute(query)
     result = cur.fetchone()
 
