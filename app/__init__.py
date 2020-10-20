@@ -1,6 +1,6 @@
 from os import path, makedirs
 import pymysql
-from . import routes, client, producer, auth, db, beat, errors, category
+from . import routes, client, producer, db, beat, errors, category
 from flask import Flask, current_app
 from flask_wtf.csrf import CSRFProtect
 from datetime import datetime
@@ -46,7 +46,6 @@ def create_app(test_config=None):
     app.register_blueprint(routes.bp)
     app.register_blueprint(client.bp)
     app.register_blueprint(producer.bp)
-    app.register_blueprint(auth.bp)
     app.register_blueprint(beat.bp)
     app.register_blueprint(category.bp)
     app.register_blueprint(errors.bp)
