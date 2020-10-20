@@ -12,7 +12,14 @@ bp = Blueprint('producer', __name__, url_prefix='/producer')
 
 
 @bp.route('dashboard', methods=['GET'])
-def dashboard():
+def dashboard():    
+    token = is_logged_in(request.cookies.get('token'))
+    if not token:
+        return render_template('dashboard/login.html', page="Login", error="Login for this action"), 401
+
+    if token['typ'] != 'producer':
+        return render_template('login.html', page="Login", error="Login as producer for this action"), 401
+
     return render_template("dashboard/index.html", page="Dashboard"), 200
 
 
@@ -87,7 +94,7 @@ def resetPasswordRequest():
 @bp.route('reset/password/<token>', methods=['GET', 'POST'])
 def reset_pwd(token):
     if not token:
-        return redirect(url_for('client.login'), 401)
+        return render_template('dashboard/login.html', page="Login", error="Login for this action"), 401
 
     request_data = request.form
     user_info = is_logged_in(token)
@@ -153,9 +160,9 @@ def producer_profile(producer_id):
     beats = cur.fetchall()
 
     if not producer:
-        return render_template('producer_profile.html'), 404
+        return render_template('producer_profile.html', error="Producer not found"), 404
 
-    return render_template('producer_profile.html', page=producer["name"], crumbs=crumbs, producer=producer, beats=beats), 200
+    return render_template('producer_profile.html', page=producer["name"], crumbs=crumbs, producer=producer, beats=beats, no_of_beats=len(beats)), 200
 
 
 @bp.route('profile', methods=['GET', 'PUT'])
@@ -166,10 +173,10 @@ def profile():
 
     token = is_logged_in(request.cookies.get('token'))
     if not token:
-        return redirect(url_for('client.login'), 401)
+        return render_template('dashboard/login.html', page="Login", error="Login for this action"), 401
 
     if token['typ'] != 'producer':
-        return render_template('login.html', page="Login", error="Login as producer for this action"), 200
+        return render_template('login.html', page="Login", error="Login as producer for this action"), 401
 
     if request.method == 'PUT':
         userData = request.form
@@ -242,7 +249,6 @@ def settings():
         result = cur.execute(addProducerDetailsQuery)
         conn.commit()
 
-<<<<<<< HEAD
         if result == 1:
             return render_template('settings.html', page="Settings", crumbs=crumbs, producer=producer), 200
         else:
@@ -251,23 +257,14 @@ def settings():
     else:
         producerProfileQuery = '''SELECT (BIN_TO_UUID(producer.producer_id)) producer_id, producer.profile_image, producer.email, producer.name, producer.phone_number, producer_profile.bio, producer_profile.profession, producer_profile.address, producer_profile.city FROM producer LEFT JOIN producer_profile ON producer.producer_id = producer_profile.producer_id WHERE producer.producer_id = UUID_TO_BIN("{}")'''.format(escape(token['sub']))
 
-        cur.execute(producerProfileQuery) 
-        conn.commmit()
+        cur.execute(producerProfileQuery)
         producer = cur.fetchone()
 
         if not producer:
-            return redirect(url_for('.login'), code=401)
+            return render_template('dashboard/login.html', page="Login", error="Producer not found"), 404
 
-        return render_template('settings.html', page="Settings", crumbs=crumbs, producer=producer), 200
-=======
-    cur.execute(producerProfileQuery)
-    producer = cur.fetchone()
+        return render_template('dashboard/settings.html', page="Settings", crumbs=crumbs, producer=producer), 200
 
-    if not producer:
-        return render_template('dashboard/login.html', page="Login", error="Producer not found"), 404
-
-    return render_template('dashboard/settings.html', page="Settings", crumbs=crumbs, producer=producer), 200
->>>>>>> Fixed merge errors
 
 
 @bp.route('logout', methods=['GET'])

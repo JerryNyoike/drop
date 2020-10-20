@@ -96,3 +96,10 @@ CREATE TABLE payment(
 	FOREIGN KEY (beat_id) REFERENCES beat(beat_id)
 	ON UPDATE CASCADE ON DELETE CASCADE
 );
+
+CREATE TABLE category(
+	category_id BINARY(16) UNIQUE NOT NULL,
+	category_name VARCHAR(16) NOT NULL,
+
+	PRIMARY KEY(category_id)
+);

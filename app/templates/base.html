@@ -297,11 +297,11 @@
 		</script>
 		{% if success %}
 			<script type="text/javascript">
-				showPrompt("{{ success }}", 1);
+				showPrompt("{{ session['success'] }}", 1);
 			</script>
 		{% elif error %}
 			<script type="text/javascript">
-				showPrompt("{{ error }}", 0);
+				showPrompt("{{ session['error'] }}", 0);
 			</script>
 		{% endif %}
 		{% block scripts %}{% endblock %}

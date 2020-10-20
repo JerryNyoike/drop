@@ -17,7 +17,11 @@ function login(){
     }
 
     fetch(url, fetchData)
-        .then(response => response.json())
+        .then(response => {
+            if(response.ok) 
+                return response.json();
+            return {};
+        })
         .then(function (response) {
             if (response.status == 1) {
                 showPrompt(response.message, response.status);

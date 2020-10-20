@@ -111,7 +111,7 @@ def profile():
         return redirect(url_for('.login'), 401)
 
     if token['typ'] != 'client':
-        return render_template('login.html', page="Login", error="Login as client for this action"), 200
+        return render_template('login.html', page="Login", error="Login as client for this action"), 401
 
     if request.method == 'PATCH':
         conn = db.get_db()
@@ -232,4 +232,3 @@ def fetch_user(email, pwd):
     cur.execute(query)
     result = cur.fetchone()
     return result
-

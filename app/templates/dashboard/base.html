@@ -227,10 +227,12 @@
 		</script>
 		{% if success %}
 			<script type="text/javascript">
+				alert("{{ success }}");
 				showPrompt("{{ success }}", 1);
 			</script>
 		{% elif error %}
 			<script type="text/javascript">
+				alert("{{ error }}");
 				showPrompt("{{ error }}", 0);
 			</script>
 		{% endif %}

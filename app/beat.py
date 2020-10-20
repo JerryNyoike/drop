@@ -2,15 +2,14 @@ from os import path, makedirs, sep
 from pydub import AudioSegment
 from pydub.utils import which
 import pymysql
-from flask import Blueprint, make_response, url_for, render_template, request, current_app
+from flask import Blueprint, make_response, url_for, render_template, request, current_app, redirect
 from werkzeug.utils import secure_filename
 from hashlib import md5  
 from asyncio import run
 from . import db
 from .routines import main
-from .auth import is_logged_in
 from datetime import datetime
-from .helpers import log_error
+from .helpers import log_error, is_logged_in
 from markupsafe import escape
 import librosa
 import pandas as pd
@@ -189,7 +188,7 @@ def delete_beat():
             else:
                 return make_response({'status':0, 'message': 'Beat does not exists or has been deleted.'} , 404)
         else:
-            return redirect(url_for('client.login'), 401)
+            return render_template('dashboard/login.html', page="Login", error="Login for this action"), 401
     else:
         return make_response({'status':0, 'message': 'Invalid content type.'}, 404)
 
@@ -326,7 +325,7 @@ def fetchProducerBeats():
         else:
             return make_response({'status': 0, 'message': 'No beats found'}, 404)
     else:
-        return redirect(url_for('producer.login'), 401)
+        return render_template('dashboard/login.html', page="Login", error="Login for this action"), 401
 
 
 @bp.route('fetch/<beat_id>', methods=['GET'])

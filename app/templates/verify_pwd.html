@@ -1,0 +1,40 @@
+{% extends 'forms_base.html' %}
+
+{% block content %}
+	<div class="form-img slide_from_left">
+		<div class="overlay">
+			<div class="welcome">
+				<h1>Sorry for all that</h1>
+				<p>Security you know...</p>
+			</div>
+			<p class="credit">Photo by Chris Yang on Unsplash</p>
+		</div>
+		<img src="{{ url_for('static', filename='assets/images/potrait3.jpg') }}">
+	</div>
+	<div class="dialog">
+		<h2>Reset Password</h2>
+		<form action="{{ url_for('producer.verify_pwd') }}" method="POST" id="verify_pwd_form">
+			<input type="password" id="old_password" placeholder="Enter old password" required>
+			<input type="password" id="new_pwd" placeholder="Enter new password" required>
+			<input type="password" id="confirm_pwd" placeholder="Confirm new password" required>
+			<button type="submit" class="btn-pr"><span class="fa fa-chevron-right"></span>Submit</button>
+			<a href=" {{ url_for('producer.login') }} ">Login here</a>
+			<a href=" {{ url_for('producer.register') }} ">Register here</a>
+		</form>
+	</div>
+{% endblock %}
+
+{% block scripts %}
+<script type="text/javascript">
+	$(document).ready(function(){
+		document.forms.verify_pwd_form.onsubmit = function(event){
+			event.preventDefault()
+			if(document.forms.verify_pwd_form.new_pwd.value == document.forms.verify_pwd_form.confirm_pwd.value){
+				document.forms.verify_pwd_form.submit();
+			} else {
+				showPrompt("Passwords don't match");
+			}
+		};
+	});
+</script>
+{% endblock %}

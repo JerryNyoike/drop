@@ -187,4 +187,7 @@
 	.testimonial p{
 		font-size: 13px;
 	}
+	.pricing-item{
+		margin-top: 20px;
+	}
 }
