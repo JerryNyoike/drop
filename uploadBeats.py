@@ -6,15 +6,17 @@ from functools import partial
 uploadUrl = 'http://127.0.0.1/producer/upload'
 headers = { 'Authorization': 'Bearer ' }
 
+
+
 def upload(beatDir, beat):
     def beat_category(beat_name):
-        return beat_name.split('0')[0]
+        return beat_name.split('.')[0]
 
     beatPath = os.path.join(beatDir, beat)
     files = {'file': open(beatPath, 'rb')}
     payload = {
             'name': beat,
-            'category': beat_category,
+            'category': beat_category(name),
             'leasePrice': random.randrange(200, 300),
             'sellingPrice': random.randrange(500, 1000)
             }
@@ -23,9 +25,13 @@ def upload(beatDir, beat):
 
 
 def uploadBeats(beat_directory_path):
-    upload_part = partial(upload, beat_directory_path)
-    responses = list()
-    beat_list = os.listdir(beat_directory_path)[0:5]
-    responses = list(map(upload_part, beat_list))
+    def upload_all(beat_folder, upload_func):
+        upload_part = partial(upload, beat_directory_path)
+        folder_path = os.path.join(root_path, beat_folder)
+        beat_list = os.list_dir(folder_path)
+        return list(map(upload_part, beat_list))
+        
+    beat_folders = os.listdir(beat_directory_path)
+    return list(map(upload_all, beat_folders))
 
-uploadBeats(os.path.join(os.getcwd(), "static", "test-beats"))
+uploadBeats(os.path.join(os.getcwd(), "app", "GTZAN", "genres_original"))
