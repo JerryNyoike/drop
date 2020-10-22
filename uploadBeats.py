@@ -25,7 +25,7 @@ def upload(beatDir, beat):
 def uploadBeats(beat_directory_path):
     upload_part = partial(upload, beat_directory_path)
     responses = list()
-    with os.listdir(beat_directory_path) as beat_list:
-        responses = list(map(upload_part, beat_list))
+    beat_list = os.listdir(beat_directory_path)[0:5]
+    responses = list(map(upload_part, beat_list))
 
 uploadBeats(os.path.join(os.getcwd(), "static", "test-beats"))
