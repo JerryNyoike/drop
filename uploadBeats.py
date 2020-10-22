@@ -25,9 +25,9 @@ def upload(beatDir, beat):
 
 
 def uploadBeats(beat_directory_path):
-    def upload_all(beat_folder, upload_func):
-        upload_part = partial(upload, beat_directory_path)
-        folder_path = os.path.join(root_path, beat_folder)
+    def upload_all(beat_folder):
+        folder_path = os.path.join(beat_directory_path, beat_folder)
+        upload_part = partial(upload, folder_path)
         beat_list = os.list_dir(folder_path)
         return list(map(upload_part, beat_list))
         
